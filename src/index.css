@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body {
+  background-color: #eff6ff;
+  transition: background-color 0.2s ease;
+}
+
+html.dark,
+html.dark body {
+  background-color: #05070d;
+}
+
+.gradient-clip-text {
+  background-image: linear-gradient(120deg, var(--grad-from), var(--grad-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

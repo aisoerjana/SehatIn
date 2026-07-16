@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import UpperNavbar from './UpperNavbar'
 import BottomNavbar from './BottomNavbar'
+import { useTheme } from '../context/ThemeContext'
+import AnatomyFigure from './AnatomyFigure'
 
 /* ============================================================
    VARENPRIL LABS — Muscle Scan (React + Tailwind port)
@@ -10,21 +12,47 @@ import BottomNavbar from './BottomNavbar'
    ============================================================ */
 
 /* ---------- design tokens ---------- */
-const C = {
+const LIGHT_C = {
   bg: "#FFFFFF",
   bgSoft: "#F8FAFC",
   panel: "#FFFFFF",
   panel2: "#F4F8FB",
-  line: "rgba(15,123,74,0.16)",
-  line2: "rgba(15,123,74,0.10)",
-  teal: "#0F7B4A",
-  blue: "#0A5C37",
+  line: "rgba(37,99,235,0.16)",
+  line2: "rgba(37,99,235,0.10)",
+  teal: "#2563EB",
+  blue: "#1E40AF",
   orange: "#F5A97F",
   ink: "#1F2937",
   ink2: "#4B5563",
   ink3: "#9CA3AF",
-  glowTeal: "0 0 24px rgba(15,123,74,.25)",
+  glowTeal: "0 0 24px rgba(37,99,235,.25)",
+  page: "#eff6ff",
+  stageBg: `radial-gradient(ellipse at 50% 28%, rgba(37,99,235,.06), transparent 62%), #FFFFFF`,
+  panelSoft: "rgba(248,250,252,0.85)",
 };
+
+const DARK_C = {
+  bg: "#0b0f17",
+  bgSoft: "#0f1420",
+  panel: "#0e131d",
+  panel2: "#121826",
+  line: "rgba(34,211,238,0.25)",
+  line2: "rgba(34,211,238,0.14)",
+  teal: "#22d3ee",
+  blue: "#3b82f6",
+  orange: "#F5A97F",
+  ink: "#e5e7eb",
+  ink2: "#9aa4b2",
+  ink3: "#64748b",
+  glowTeal: "0 0 24px rgba(34,211,238,.35)",
+  page: "#05070d",
+  stageBg: `radial-gradient(ellipse at 50% 28%, rgba(34,211,238,.08), transparent 62%), #0b0f17`,
+  panelSoft: "rgba(15,20,32,0.85)",
+};
+
+/* mutated per-render by MuscleScan based on the active theme; ProtoCard/VideoModal
+   read this same module binding when React calls them during the same render pass */
+let C = LIGHT_C;
 
 /* ===================== DATA ===================== */
 const MUSCLE_DATA = {
@@ -239,90 +267,16 @@ const CHIP_GROUPS = [
   },
 ];
 
-/* ===================== SVG FIGURE GEOMETRY ===================== */
-/* each part: { m, paths: [d...], nodes: [[cx,cy]...] } */
-const FRONT_PARTS = [
-  { m: "trap", paths: ["M104 84 Q120 77 136 84 L150 100 Q120 92 90 100 Z"], nodes: [[120, 91]] },
-  { m: "shoulder", paths: ["M84 98 Q70 100 66 116 Q64 129 77 131 Q90 127 92 110 Q92 100 84 98 Z", "M156 98 Q170 100 174 116 Q176 129 163 131 Q150 127 148 110 Q148 100 156 98 Z"], nodes: [[78, 114], [162, 114]] },
-  { m: "chest", paths: ["M92 102 Q108 100 118 107 L118 134 Q104 141 94 132 Q86 119 92 102 Z", "M148 102 Q132 100 122 107 L122 134 Q136 141 146 132 Q154 119 148 102 Z"], nodes: [[105, 119], [135, 119]] },
-  { m: "bicep", paths: ["M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z", "M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"], nodes: [[65, 144], [175, 144]] },
-  { m: "forearm", paths: ["M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z", "M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"], nodes: [[62, 196], [178, 196]] },
-  { m: "abs", paths: ["M104 138 Q120 136 136 138 L138 206 Q120 214 102 206 Z"], nodes: [[120, 172]] },
-  { m: "quad", paths: ["M100 215 Q88 219 88 245 L94 322 Q106 330 112 320 L116 245 Q116 219 108 215 Q104 214 100 215 Z", "M140 215 Q152 219 152 245 L146 322 Q134 330 128 320 L124 245 Q124 219 132 215 Q136 214 140 215 Z"], nodes: [[102, 268], [138, 268]] },
-  { m: "calf", paths: ["M98 360 Q92 362 92 384 L96 438 Q106 444 110 436 L112 384 Q112 362 106 360 Z", "M142 360 Q148 362 148 384 L144 438 Q134 444 130 436 L128 384 Q128 362 134 360 Z"], nodes: [[101, 400], [139, 400]] },
-];
-
-const BACK_PARTS = [
-  { m: "trap", paths: ["M120 80 L150 102 Q140 120 124 126 L116 126 Q100 120 90 102 Z"], nodes: [[120, 104]] },
-  { m: "shoulder", paths: ["M84 100 Q70 102 66 118 Q64 131 77 133 Q90 129 92 112 Q92 102 84 100 Z", "M156 100 Q170 102 174 118 Q176 131 163 133 Q150 129 148 112 Q148 102 156 100 Z"], nodes: [[78, 116], [162, 116]] },
-  { m: "back", paths: ["M92 122 Q78 128 80 162 L113 186 L117 132 Q105 124 92 122 Z", "M148 122 Q162 128 160 162 L127 186 L123 132 Q135 124 148 122 Z", "M108 150 L132 150 L129 198 Q120 202 111 198 Z"], nodes: [[98, 152], [142, 152]] },
-  { m: "tricep", paths: ["M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z", "M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"], nodes: [[65, 144], [175, 144]] },
-  { m: "forearm", paths: ["M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z", "M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"], nodes: [[62, 196], [178, 196]] },
-  { m: "glute", paths: ["M100 200 Q88 202 88 220 Q90 238 106 238 Q118 236 118 218 L116 204 Q108 200 100 200 Z", "M140 200 Q152 202 152 220 Q150 238 134 238 Q122 236 122 218 L124 204 Q132 200 140 200 Z"], nodes: [[104, 220], [136, 220]] },
-  { m: "hamstring", paths: ["M100 242 Q90 244 90 266 L96 330 Q108 338 112 328 L114 266 Q114 244 106 242 Z", "M140 242 Q150 244 150 266 L144 330 Q132 338 128 328 L126 266 Q126 244 134 242 Z"], nodes: [[102, 288], [138, 288]] },
-  { m: "calf", paths: ["M98 360 Q90 362 90 388 Q92 414 102 420 Q108 422 110 414 L112 388 Q112 362 106 360 Z", "M142 360 Q150 362 150 388 Q148 414 138 420 Q132 422 130 414 L128 388 Q128 362 134 360 Z"], nodes: [[101, 392], [139, 392]] },
-];
-
-/* frame (head, neck, joints, hands, feet) */
-const FrameFront = () => (
-  <>
-    <ellipse cx="120" cy="46" rx="23" ry="27" className="frame-fill" />
-    <path d="M108 70 h24 v16 h-24 z" className="frame-fill" />
-    <ellipse cx="56" cy="232" rx="11" ry="13" className="frame-fill" />
-    <ellipse cx="184" cy="232" rx="11" ry="13" className="frame-fill" />
-    <path d="M88 196 q32 8 64 0 l5 22 q-37 9 -74 0 z" className="frame-fill" />
-    <ellipse cx="101" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="101" cy="446" rx="14" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="446" rx="14" ry="9" className="frame-fill" />
-  </>
-);
-
-const FrameBack = () => (
-  <>
-    <ellipse cx="120" cy="46" rx="23" ry="27" className="frame-fill" />
-    <path d="M108 70 h24 v14 h-24 z" className="frame-fill" />
-    <ellipse cx="56" cy="232" rx="11" ry="13" className="frame-fill" />
-    <ellipse cx="184" cy="232" rx="11" ry="13" className="frame-fill" />
-    <ellipse cx="101" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="101" cy="446" rx="14" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="446" rx="14" ry="9" className="frame-fill" />
-  </>
-);
-
-/* one avatar figure (front or back) */
-function Figure({ parts, Frame, active, onSelect }) {
-  return (
-    <svg viewBox="0 0 240 540" xmlns="http://www.w3.org/2000/svg" className={`w-full h-auto block ${active ? "has-sel" : ""}`}>
-      <defs>
-        <linearGradient id="msIdle" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E3F4EB" /><stop offset="1" stopColor="#C8E6D9" />
-        </linearGradient>
-        <linearGradient id="msHover" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#A8D5BA" /><stop offset="1" stopColor="#7BC49A" />
-        </linearGradient>
-        <linearGradient id="msOn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#4ADE80" /><stop offset="0.5" stopColor="#16A34A" /><stop offset="1" stopColor="#0F7B4A" />
-        </linearGradient>
-      </defs>
-      <Frame />
-      {parts.map((p) => (
-        <g key={p.m} className={`ms ${active === p.m ? "on" : ""}`} onClick={() => onSelect(p.m)}>
-          {p.paths.map((d, i) => <path key={i} className="seg" d={d} />)}
-          {p.nodes.map(([cx, cy], i) => <circle key={i} className="node" cx={cx} cy={cy} r="2.4" />)}
-        </g>
-      ))}
-    </svg>
-  );
-}
+/* SVG figure geometry moved to AnatomyFigure.jsx */
 
 /* ===================== SMALL UI PIECES ===================== */
-const ROLE_STYLE = {
-  Main: { background: "rgba(15,123,74,.12)", color: C.teal },
-  Secondary: { background: "rgba(10,92,55,.12)", color: C.blue },
-  Finisher: { background: "rgba(245,169,127,.18)", color: "#d4784b" },
-};
+function getRoleStyle(role) {
+  return {
+    Main: { background: "rgba(15,123,74,.12)", color: C.teal },
+    Secondary: { background: "rgba(10,92,55,.12)", color: C.blue },
+    Finisher: { background: "rgba(245,169,127,.18)", color: "#d4784b" },
+  }[role];
+}
 
 function ProtoCard({ ex }) {
   return (
@@ -331,7 +285,7 @@ function ProtoCard({ ex }) {
       style={{ background: C.panel, border: `1px solid ${C.line2}` }}
     >
       <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="font-display text-white uppercase rounded-md px-2 py-1" style={{ ...ROLE_STYLE[ex.role], fontSize: "0.52rem", letterSpacing: "1.5px" }}>
+        <span className="font-display text-white uppercase rounded-md px-2 py-1" style={{ ...getRoleStyle(ex.role), fontSize: "0.52rem", letterSpacing: "1.5px" }}>
           {ex.role}
         </span>
         <span className="font-bold" style={{ color: C.ink, fontSize: "0.96rem" }}>{ex.name}</span>
@@ -405,6 +359,9 @@ function VideoModal({ muscleId, idx, onClose }) {
 
 /* ===================== MAIN COMPONENT ===================== */
 export default function MuscleScan() {
+  const { theme } = useTheme();
+  C = theme === "dark" ? DARK_C : LIGHT_C;
+
   const [muscle, setMuscle] = useState(null);
   const [view, setView] = useState("front");
   const [modal, setModal] = useState(null); // { muscleId, idx } | null
@@ -418,24 +375,12 @@ export default function MuscleScan() {
   const proto = muscle ? PROTOCOL[muscle] : null;
 
   return (
-    <div className="flex flex-col h-screen w-full" style={{ background: C.bgSoft, fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col h-screen w-full transition-colors" style={{ background: C.page, fontFamily: "'Inter', sans-serif" }}>
       <UpperNavbar />
       <div className="flex-1 overflow-y-auto py-10 px-4">
       {/* fonts + SVG interaction styles (things Tailwind can't express) */}
       <style>{`
         .font-display{font-family:'Inter',sans-serif;letter-spacing:1.2px;}
-        .frame-fill{fill:rgba(227,244,235,.45);stroke:rgba(15,123,74,.18);stroke-width:.8;}
-        .ms{cursor:pointer;transition:opacity .3s,filter .3s;}
-        .ms .seg{fill:url(#msIdle);stroke:rgba(15,123,74,.25);stroke-width:1;transition:fill .3s,stroke .3s;}
-        .ms .node{fill:rgba(15,123,74,.45);transition:.3s;}
-        .ms:hover .seg{fill:url(#msHover);stroke:rgba(22,163,74,.6);}
-        svg.has-sel .ms{opacity:.3;}
-        svg.has-sel .ms:hover{opacity:.55;}
-        svg.has-sel .ms.on{opacity:1;}
-        .ms.on .seg{fill:url(#msOn);stroke:#86EFAC;stroke-width:1.4;}
-        .ms.on{filter:drop-shadow(0 0 5px rgba(22,163,74,.6)) drop-shadow(0 0 16px rgba(22,163,74,.3));}
-        .ms.on .node{fill:#DCFCE7;animation:nodePulse 1.4s ease-in-out infinite;}
-        @keyframes nodePulse{0%,100%{r:2.4;opacity:1;}50%{r:3.6;opacity:.6;}}
         .scanline-anim{animation:scan 4.5s ease-in-out infinite;}
         @keyframes scan{0%{top:6%;}50%{top:78%;}100%{top:6%;}}
         .blink-anim{animation:blink 1.4s infinite;}
@@ -443,7 +388,7 @@ export default function MuscleScan() {
         .spin-slow{animation:spinS 12s linear infinite;}
         @keyframes spinS{to{transform:rotate(360deg);}}
         @media (prefers-reduced-motion: reduce){
-          .scanline-anim,.blink-anim,.spin-slow,.ms.on .node{animation:none;}
+          .scanline-anim,.blink-anim,.spin-slow{animation:none;}
         }
       `}</style>
 
@@ -457,7 +402,7 @@ export default function MuscleScan() {
           </div>
           <h2 className="font-display font-extrabold text-3xl md:text-4xl mb-3" style={{ color: C.ink }}>
             Select a target.{" "}
-            <span style={{ background: `linear-gradient(120deg, ${C.teal}, ${C.blue})`, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span className="gradient-clip-text" style={{ '--grad-from': C.teal, '--grad-to': C.blue }}>
               Get the protocol.
             </span>
           </h2>
@@ -483,7 +428,7 @@ export default function MuscleScan() {
                       <button
                         key={item.id}
                         onClick={() => selectMuscle(item.id)}
-                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                         style={{
                           fontSize: "0.94rem",
                           letterSpacing: ".5px",
@@ -511,7 +456,7 @@ export default function MuscleScan() {
             style={{
               minHeight: 560,
               border: `1px solid ${C.line}`,
-              background: `radial-gradient(ellipse at 50% 28%, rgba(15,123,74,.06), transparent 62%), #FFFFFF`,
+              background: C.stageBg,
               backdropFilter: "blur(14px)",
             }}
           >
@@ -552,11 +497,11 @@ export default function MuscleScan() {
             {/* figure */}
             <div className="relative flex-1 flex items-center justify-center w-full z-10">
               <div className="w-full max-w-xs">
-                {view === "front" ? (
-                  <Figure parts={FRONT_PARTS} Frame={FrameFront} active={muscle} onSelect={selectMuscle} />
-                ) : (
-                  <Figure parts={BACK_PARTS} Frame={FrameBack} active={muscle} onSelect={selectMuscle} />
-                )}
+                <AnatomyFigure
+                  view={view}
+                  activeMuscle={muscle}
+                  onSelectMuscle={selectMuscle}
+                />
               </div>
             </div>
 
@@ -570,7 +515,7 @@ export default function MuscleScan() {
           {/* ---- AI REC PANEL ---- */}
           <div
             className="lg:col-span-4 rounded-3xl overflow-hidden"
-            style={{ minHeight: 560, background: "rgba(248,250,252,0.85)", border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
+            style={{ minHeight: 560, background: C.panelSoft, border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
           >
             {!muscle ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 gap-4" style={{ minHeight: 480, color: C.ink3 }}>
@@ -600,7 +545,7 @@ export default function MuscleScan() {
                   <button
                     key={e.name}
                     onClick={() => setModal({ muscleId: muscle, idx: i })}
-                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                     style={{ background: C.panel, border: `1px solid ${C.line2}`, color: C.ink2, fontSize: "0.9rem" }}
                     onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = C.teal; ev.currentTarget.style.color = C.teal; }}
                     onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = C.line2; ev.currentTarget.style.color = C.ink2; }}

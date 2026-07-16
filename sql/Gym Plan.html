@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>leon bontet — Gym & Nutrition Intelligence & Many More Facts</title>
+<meta name="description" content="bodybuilding dashboard — cyber muscle scan, 2x-failure meta, nutrition check, and supplement reviews.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VARENPRIL LABS — design tokens
+   ============================================================ */
+:root{
+  --bg:#04070d;
+  --bg-soft:#070c15;
+  --panel:#0b1320;
+  --panel-2:#0f1a28;
+  --panel-3:#13202f;
+  --line:rgba(0,229,212,0.16);
+  --line-2:rgba(130,170,210,0.10);
+  --teal:#00e5d4;
+  --teal-bright:#3afff0;
+  --teal-deep:#00b4a8;
+  --cyan:#22d3ee;
+  --blue:#2f7bff;
+  --blue-deep:#1452d6;
+  --orange:#ff8a3d;
+  --orange-deep:#ff6a1f;
+  --rose:#ff5d73;
+  --ink:#eaf4ff;
+  --ink-2:#9bb7d4;
+  --ink-3:#5d7c9c;
+  --glow-teal:0 0 24px rgba(0,229,212,.35);
+  --glow-soft:0 0 80px rgba(0,229,212,.10);
+  --glow-orange:0 0 24px rgba(255,138,61,.30);
+  --shadow:0 26px 70px -28px rgba(0,0,0,.85);
+  --radius:20px;
+  --radius-sm:12px;
+  --maxw:1180px;
+  --glass:rgba(15,26,40,0.62);
+  --glass-2:rgba(13,22,34,0.78);
+}
+[data-theme="light"]{
+  --bg:#eef4fb;
+  --bg-soft:#e6eef8;
+  --panel:#ffffff;
+  --panel-2:#f3f8fd;
+  --panel-3:#eaf2fb;
+  --line:rgba(0,150,140,0.22);
+  --line-2:rgba(40,90,140,0.12);
+  --teal:#00a99c;
+  --teal-bright:#00c4b4;
+  --teal-deep:#008a80;
+  --blue:#1f63e0;
+  --ink:#0a1828;
+  --ink-2:#33536f;
+  --ink-3:#5a7794;
+  --glow-teal:0 0 22px rgba(0,169,156,.22);
+  --glow-soft:0 0 60px rgba(0,169,156,.10);
+  --shadow:0 24px 60px -30px rgba(20,60,110,.30);
+  --glass:rgba(255,255,255,0.72);
+  --glass-2:rgba(255,255,255,0.86);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:80px;}
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.5;
+  transition:background .45s ease,color .45s ease;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Ambient background: grid + drifting orbs */
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-fx::before{
+  content:'';position:absolute;inset:-2px;
+  background-image:
+    linear-gradient(rgba(0,229,212,0.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,212,0.035) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 40%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 40%,transparent 100%);
+}
+[data-theme="light"] .bg-fx::before{background-image:linear-gradient(rgba(0,150,140,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,150,140,0.06) 1px,transparent 1px);}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;}
+.orb.a{width:480px;height:480px;background:radial-gradient(circle,rgba(0,229,212,.35),transparent 70%);top:-160px;left:-120px;animation:drift 22s ease-in-out infinite;}
+.orb.b{width:520px;height:520px;background:radial-gradient(circle,rgba(47,123,255,.30),transparent 70%);bottom:-200px;right:-160px;animation:drift 28s ease-in-out infinite reverse;}
+.orb.c{width:360px;height:360px;background:radial-gradient(circle,rgba(255,138,61,.16),transparent 70%);top:46%;left:60%;animation:drift 34s ease-in-out infinite;}
+[data-theme="light"] .orb{opacity:.25;}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(60px,40px) scale(1.08);}66%{transform:translate(-40px,30px) scale(.96);}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:var(--bg-soft);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--teal-deep),var(--blue-deep));border-radius:4px;}
+
+/* ============================================================
+   Shared utilities
+   ============================================================ */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Orbitron',sans-serif;font-size:.66rem;font-weight:600;
+  letter-spacing:3.5px;text-transform:uppercase;color:var(--teal);
+  background:rgba(0,229,212,0.08);border:1px solid var(--line);
+  padding:6px 14px;border-radius:30px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);}
+.section{position:relative;z-index:1;padding:6.5rem 0;}
+.section-head{text-align:center;max-width:680px;margin:0 auto 3.4rem;}
+.section-head h2{
+  font-family:'Orbitron',sans-serif;font-weight:800;
+  font-size:clamp(1.6rem,4vw,2.7rem);line-height:1.1;margin:1.1rem 0 .9rem;
+  letter-spacing:-.5px;
+}
+.section-head p{color:var(--ink-2);font-size:1.04rem;font-weight:500;}
+.grad-text{background:linear-gradient(110deg,var(--ink) 0%,var(--teal) 45%,var(--blue) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.grad-text-warm{background:linear-gradient(110deg,var(--ink) 0%,var(--orange) 55%,var(--teal) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* Reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:none;}
+.reveal.d1{transition-delay:.08s;}
+.reveal.d2{transition-delay:.16s;}
+.reveal.d3{transition-delay:.24s;}
+
+/* Glass card base */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:var(--shadow);
+  position:relative;
+}
+.glass::after{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(160deg,rgba(255,255,255,.10),transparent 40%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;}
+
+/* Buttons */
+.btn{
+  font-family:'Orbitron',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:1.8px;
+  padding:14px 28px;border-radius:11px;cursor:pointer;border:none;text-transform:uppercase;
+  transition:transform .25s,box-shadow .25s,background .25s,color .25s;display:inline-flex;align-items:center;gap:9px;
+}
+.btn-primary{background:linear-gradient(120deg,var(--teal),var(--blue));color:#04101a;box-shadow:0 10px 30px -8px rgba(0,229,212,.55);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px -8px rgba(0,229,212,.7);}
+.btn-ghost{background:rgba(0,229,212,0.05);color:var(--teal);border:1px solid var(--teal);}
+.btn-ghost:hover{background:rgba(0,229,212,0.12);transform:translateY(-3px);box-shadow:var(--glow-teal);}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;background:rgba(5,9,16,0.72);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid var(--line-2);transition:background .45s,box-shadow .35s;
+}
+[data-theme="light"] nav{background:rgba(238,244,251,0.78);}
+nav.scrolled{box-shadow:0 6px 30px -10px rgba(0,0,0,.6);border-bottom-color:var(--line);}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;}
+.brand-mark{width:34px;height:34px;flex-shrink:0;}
+.brand-txt{font-family:'Orbitron',sans-serif;font-weight:800;font-size:.98rem;letter-spacing:2.5px;line-height:1;color:var(--ink);}
+.brand-txt span{display:block;font-size:.54rem;font-weight:500;letter-spacing:2.8px;color:var(--teal);margin-top:4px;font-family:'Orbitron',sans-serif;}
+.nav-links{display:flex;gap:2px;align-items:center;}
+.nav-links a{
+  color:var(--ink-2);text-decoration:none;font-weight:600;font-size:.82rem;letter-spacing:1px;
+  text-transform:uppercase;padding:8px 13px;border-radius:8px;cursor:pointer;transition:.2s;position:relative;
+}
+.nav-links a:hover{color:var(--teal);}
+.nav-links a.active{color:var(--teal);}
+.nav-links a.active::after{content:'';position:absolute;left:13px;right:13px;bottom:2px;height:2px;background:var(--teal);border-radius:2px;box-shadow:0 0 8px var(--teal);}
+.theme-toggle{
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
+  padding:8px 12px;border-radius:30px;cursor:pointer;font-family:'Orbitron',sans-serif;
+  font-size:.62rem;font-weight:600;letter-spacing:1px;display:flex;align-items:center;gap:6px;transition:.3s;
+}
+.theme-toggle:hover{border-color:var(--teal);color:var(--teal);box-shadow:var(--glow-teal);}
+.nav-burger{display:none;background:var(--panel-2);border:1px solid var(--line);color:var(--teal);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:96px 0 60px;overflow:hidden;}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;width:100%;}
+.hero h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2.3rem,6vw,4.4rem);line-height:1.02;letter-spacing:-1px;margin:1.4rem 0 1.2rem;}
+.hero-lead{color:var(--ink-2);font-size:clamp(1rem,1.5vw,1.18rem);font-weight:500;max-width:540px;margin-bottom:2.2rem;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:2.6rem;}
+.hero-chips{display:flex;flex-wrap:wrap;gap:10px;}
+.hero-chip{display:flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:1.5px;color:var(--ink-2);background:var(--glass);border:1px solid var(--line);padding:8px 13px;border-radius:30px;backdrop-filter:blur(10px);}
+.hero-chip b{color:var(--teal);}
+
+/* Hero visual: HUD orb with rotating rings + pulse */
+.hero-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:460px;}
+.hud{position:relative;width:min(420px,86vw);aspect-ratio:1;display:flex;align-items:center;justify-content:center;}
+.hud svg{width:100%;height:100%;overflow:visible;}
+.ring-rot{transform-origin:center;animation:spin 26s linear infinite;}
+.ring-rot.rev{animation:spin 38s linear infinite reverse;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.hud-core{position:absolute;font-family:'Orbitron',sans-serif;text-align:center;}
+.hud-core .big{font-size:3.4rem;font-weight:900;line-height:1;background:linear-gradient(120deg,var(--teal),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:pulseGlow 3s ease-in-out infinite;}
+.hud-core .sub{font-size:.6rem;letter-spacing:3px;color:var(--ink-2);margin-top:8px;}
+@keyframes pulseGlow{0%,100%{filter:drop-shadow(0 0 10px rgba(0,229,212,.4));}50%{filter:drop-shadow(0 0 26px rgba(0,229,212,.8));}}
+.hud-tick{position:absolute;font-family:'Orbitron',sans-serif;font-size:.5rem;letter-spacing:1px;color:var(--teal);opacity:.7;}
+
+/* Divider line */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);position:relative;z-index:1;}
+
+/* ============================================================
+   signatture muscle scan
+   ============================================================ */
+.muscle-section{background:var(--bg-soft);}
+.muscle-wrap{display:grid;grid-template-columns:240px 1fr 360px;gap:26px;align-items:start;}
+
+/* Muscle chip list */
+.m-group{margin-bottom:1.6rem;}
+.m-group-label{font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink-3);margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.m-group-label::after{content:'';flex:1;height:1px;background:var(--line-2);}
+.m-chips{display:flex;flex-direction:column;gap:7px;}
+.m-chip{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--panel);border:1px solid var(--line-2);color:var(--ink-2);
+  padding:11px 14px;border-radius:11px;cursor:pointer;font-family:'Rajdhani',sans-serif;
+  font-size:.94rem;font-weight:600;letter-spacing:.5px;text-align:left;transition:.22s;
+}
+.m-chip .tag{font-family:'Orbitron',sans-serif;font-size:.5rem;letter-spacing:1px;color:var(--ink-3);opacity:.8;}
+.m-chip:hover{border-color:var(--teal);color:var(--ink);transform:translateX(3px);}
+.m-chip.active{background:linear-gradient(100deg,rgba(0,229,212,.16),rgba(47,123,255,.10));border-color:var(--teal);color:var(--teal);box-shadow:var(--glow-teal);}
+.m-chip.active .tag{color:var(--teal);opacity:1;}
+
+/* avatar stage*/
+.avatar-stage{
+  position:relative;border:1px solid var(--line);border-radius:24px;
+  background:radial-gradient(ellipse at 50% 28%,rgba(0,229,212,.07),transparent 62%),var(--glass-2);
+  padding:18px;min-height:560px;display:flex;flex-direction:column;align-items:center;
+  overflow:hidden;backdrop-filter:blur(14px);
+}
+.avatar-stage::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(47,123,255,.08),transparent 55%);pointer-events:none;}
+.hud-corner{position:absolute;width:26px;height:26px;border:2px solid var(--teal);opacity:.55;z-index:3;}
+.hud-corner.tl{top:12px;left:12px;border-right:none;border-bottom:none;border-radius:6px 0 0 0;}
+.hud-corner.tr{top:12px;right:12px;border-left:none;border-bottom:none;border-radius:0 6px 0 0;}
+.hud-corner.bl{bottom:12px;left:12px;border-right:none;border-top:none;border-radius:0 0 0 6px;}
+.hud-corner.br{bottom:12px;right:12px;border-left:none;border-top:none;border-radius:0 0 6px 0;}
+.scanline{position:absolute;left:14px;right:14px;height:60px;z-index:2;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(0,229,212,.16),transparent);animation:scan 4.5s ease-in-out infinite;}
+@keyframes scan{0%{top:6%;}50%{top:78%;}100%{top:6%;}}
+
+.view-toggle{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:30px;padding:4px;z-index:4;margin-bottom:6px;}
+.view-toggle button{background:transparent;border:none;color:var(--ink-3);font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:600;letter-spacing:1.5px;padding:7px 18px;border-radius:30px;cursor:pointer;transition:.25s;}
+.view-toggle button.active{background:linear-gradient(120deg,var(--teal),var(--blue));color:#04101a;}
+
+.figure-zone{position:relative;flex:1;display:flex;align-items:center;justify-content:center;width:100%;z-index:1;}
+.figure{width:100%;max-width:300px;}
+.figure[hidden]{display:none;}
+.figure svg{width:100%;height:auto;display:block;}
+.frame-line{fill:none;stroke:rgba(0,229,212,.30);stroke-width:1;}
+.frame-fill{fill:rgba(13,30,46,.55);stroke:rgba(0,229,212,.14);stroke-width:.8;}
+
+.ms{cursor:pointer;transition:opacity .3s,filter .3s;}
+.ms .seg{fill:url(#msIdle);stroke:rgba(0,229,212,.30);stroke-width:1;transition:fill .3s,stroke .3s;}
+.ms .node{fill:rgba(0,229,212,.55);transition:.3s;}
+.ms:hover .seg{fill:url(#msHover);stroke:rgba(120,255,245,.7);}
+.figure.has-sel .ms{opacity:.26;}
+.figure.has-sel .ms:hover{opacity:.6;}
+.figure.has-sel .ms.on{opacity:1;}
+.ms.on .seg{fill:url(#msOn);stroke:#cffff9;stroke-width:1.4;}
+.ms.on{filter:drop-shadow(0 0 5px rgba(0,229,212,.95)) drop-shadow(0 0 16px rgba(0,229,212,.55));}
+.ms.on .node{fill:#eafffd;animation:nodePulse 1.4s ease-in-out infinite;}
+@keyframes nodePulse{0%,100%{r:2.4;opacity:1;}50%{r:3.6;opacity:.6;}}
+
+.avatar-readout{z-index:4;display:flex;align-items:center;gap:9px;font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:2px;color:var(--ink-3);margin-top:6px;text-transform:uppercase;}
+.avatar-readout .live{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+/* AI recommendation panel */
+.rec-panel{min-height:560px;}
+.rec-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:480px;text-align:center;padding:2rem;gap:1rem;color:var(--ink-3);}
+.rec-empty .scan-icon{width:64px;height:64px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:1.7rem;animation:spin 12s linear infinite;}
+.rec-empty p{font-size:.94rem;max-width:240px;line-height:1.5;}
+.rec-inner{padding:1.6rem;}
+.rec-tag{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:.5rem;}
+.rec-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.12rem;color:var(--ink);margin-bottom:.7rem;line-height:1.25;}
+.rec-func{color:var(--ink-2);font-size:.9rem;line-height:1.65;margin-bottom:1.3rem;}
+.proto-label{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:2.5px;color:var(--orange);text-transform:uppercase;margin:1.2rem 0 .8rem;display:flex;align-items:center;gap:8px;}
+.proto-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,61,.4),transparent);}
+.proto-card{background:var(--panel);border:1px solid var(--line-2);border-radius:13px;padding:.9rem 1rem;margin-bottom:.7rem;transition:.25s;}
+.proto-card:hover{border-color:var(--teal);box-shadow:var(--glow-teal);}
+.proto-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:.5rem;}
+.proto-role{font-family:'Orbitron',sans-serif;font-size:.52rem;letter-spacing:1.5px;padding:3px 8px;border-radius:6px;text-transform:uppercase;}
+.proto-role.main{background:rgba(0,229,212,.14);color:var(--teal);}
+.proto-role.sec{background:rgba(47,123,255,.14);color:#6fa0ff;}
+.proto-role.fin{background:rgba(255,138,61,.14);color:var(--orange);}
+.proto-name{font-weight:700;font-size:.96rem;color:var(--ink);}
+.proto-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:.5rem 0;}
+.proto-stat{background:var(--bg-soft);border:1px solid var(--line-2);border-radius:8px;padding:5px 4px;text-align:center;}
+.proto-stat .k{font-size:.5rem;letter-spacing:.8px;color:var(--ink-3);text-transform:uppercase;font-family:'Orbitron',sans-serif;}
+.proto-stat .v{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:600;color:var(--ink);margin-top:2px;}
+.proto-cue{font-size:.8rem;color:var(--ink-2);line-height:1.5;display:flex;gap:6px;}
+.proto-cue b{color:var(--teal);flex-shrink:0;}
+.rec-videos-label{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:2.5px;color:var(--teal);text-transform:uppercase;margin:1.3rem 0 .7rem;}
+.video-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--panel);border:1px solid var(--line-2);border-radius:10px;padding:9px 13px;cursor:pointer;margin-bottom:6px;transition:.2s;font-size:.9rem;font-weight:600;color:var(--ink-2);}
+.video-row:hover{border-color:var(--teal);color:var(--teal);transform:translateX(3px);}
+.video-row .play{color:var(--teal);font-size:.85rem;}
+
+/* ============================================================
+   META LAB
+   ============================================================ */
+.meta-section{background:var(--bg);position:relative;}
+.meta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(255,138,61,.06),transparent 70%);pointer-events:none;}
+.meta-head h2{font-size:clamp(1.7rem,4.4vw,3rem);}
+.meta-sub{color:var(--ink-2);font-size:1.06rem;font-weight:500;max-width:620px;margin:1rem auto 0;}
+
+.principle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:3rem 0;}
+.principle{padding:1.8rem 1.6rem;overflow:hidden;}
+.principle .p-ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem;}
+.principle.c1 .p-ico{background:rgba(0,229,212,.13);box-shadow:inset 0 0 0 1px rgba(0,229,212,.3);}
+.principle.c2 .p-ico{background:rgba(47,123,255,.13);box-shadow:inset 0 0 0 1px rgba(47,123,255,.3);}
+.principle.c3 .p-ico{background:rgba(255,138,61,.13);box-shadow:inset 0 0 0 1px rgba(255,138,61,.3);}
+.principle h3{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:baseline;gap:8px;}
+.principle .p-key{font-size:.62rem;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;}
+.principle.c1 .p-key{color:var(--teal);}
+.principle.c2 .p-key{color:#6fa0ff;}
+.principle.c3 .p-key{color:var(--orange);}
+.principle p{color:var(--ink-2);font-size:.92rem;line-height:1.65;}
+.principle .p-num{position:absolute;top:14px;right:18px;font-family:'Orbitron',sans-serif;font-size:2.4rem;font-weight:900;color:var(--line);opacity:.5;}
+
+/* Comparison */
+.versus{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;margin:2.5rem 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);}
+.vs-col{padding:2rem 1.8rem;}
+.vs-old{background:linear-gradient(180deg,rgba(20,28,40,.6),rgba(13,20,30,.7));}
+.vs-new{background:linear-gradient(180deg,rgba(0,40,42,.4),rgba(0,28,38,.5));border-left:1px solid var(--line);}
+.vs-tag{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;padding:5px 12px;border-radius:20px;display:inline-block;margin-bottom:.7rem;}
+.vs-old .vs-tag{background:rgba(150,160,175,.12);color:var(--ink-3);}
+.vs-new .vs-tag{background:rgba(0,229,212,.14);color:var(--teal);}
+.vs-col h3{font-family:'Orbitron',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:.3rem;}
+.vs-old h3{color:var(--ink-2);}
+.vs-new h3{color:var(--ink);}
+.vs-col .vs-meta{font-size:.82rem;color:var(--ink-3);margin-bottom:1.3rem;font-weight:600;letter-spacing:.5px;}
+.vs-list{list-style:none;display:flex;flex-direction:column;gap:.7rem;}
+.vs-list li{display:flex;gap:10px;font-size:.9rem;line-height:1.45;color:var(--ink-2);align-items:flex-start;}
+.vs-list li .mk{flex-shrink:0;width:18px;height:18px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;margin-top:1px;}
+.vs-old .mk{background:rgba(255,93,115,.14);color:var(--rose);}
+.vs-new .mk{background:rgba(0,229,212,.16);color:var(--teal);}
+.vs-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;width:54px;height:54px;border-radius:50%;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:800;font-size:.78rem;color:var(--orange);box-shadow:var(--glow-orange);}
+
+/* Warning banner */
+.warn-banner{display:flex;gap:16px;align-items:center;padding:1.3rem 1.6rem;border-radius:var(--radius-sm);background:linear-gradient(100deg,rgba(255,138,61,.12),rgba(255,106,31,.05));border:1px solid rgba(255,138,61,.35);margin:2.2rem 0;}
+.warn-banner .w-ico{width:42px;height:42px;border-radius:11px;background:rgba(255,138,61,.18);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.warn-banner .w-txt b{font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:3px;}
+.warn-banner .w-txt p{color:var(--ink);font-size:.96rem;font-weight:500;}
+
+/* Protocol how-to */
+.howto{padding:2rem 1.9rem;}
+.howto-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1.4rem;display:flex;align-items:center;gap:10px;}
+.howto-title .tg{font-size:.56rem;letter-spacing:2px;color:var(--teal);background:rgba(0,229,212,.12);padding:4px 10px;border-radius:20px;font-weight:600;}
+.howto-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.howto-item{display:flex;gap:13px;align-items:flex-start;}
+.howto-item .n{flex-shrink:0;width:30px;height:30px;border-radius:9px;background:linear-gradient(120deg,rgba(0,229,212,.18),rgba(47,123,255,.12));border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.74rem;font-weight:700;color:var(--teal);}
+.howto-item h4{font-size:.96rem;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.howto-item p{font-size:.85rem;color:var(--ink-2);line-height:1.5;}
+
+/* ============================================================
+   NUTRITION DASHBOARD
+   ============================================================ */
+.nutri-section{background:var(--bg-soft);}
+.nutri-card{padding:2.2rem;max-width:980px;margin:0 auto;}
+.nutri-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.6rem;}
+.field{display:flex;flex-direction:column;gap:.4rem;}
+.field label{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink-3);}
+.field input,.field select{background:var(--bg);border:1px solid var(--line-2);color:var(--ink);padding:11px 14px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;outline:none;transition:.2s;}
+.field input:focus,.field select:focus{border-color:var(--teal);box-shadow:var(--glow-teal);}
+.field select option{background:var(--panel);}
+.calc-btn{width:100%;justify-content:center;margin-bottom:1.5rem;}
+
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.8rem;margin-bottom:1.6rem;}
+.res-card{background:var(--panel);border:1px solid var(--line-2);border-radius:13px;padding:1rem .8rem;text-align:center;transition:.25s;}
+.res-card:hover{border-color:var(--teal);transform:translateY(-3px);box-shadow:var(--glow-teal);}
+.res-card .v{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:var(--teal);line-height:1;}
+.res-card .u{font-size:.66rem;color:var(--ink-3);letter-spacing:.5px;margin-top:4px;}
+.res-card .l{font-family:'Orbitron',sans-serif;font-size:.56rem;letter-spacing:1.2px;color:var(--ink-2);margin-top:5px;text-transform:uppercase;}
+
+.macro-zone{display:grid;grid-template-columns:200px 1fr;gap:1.6rem;align-items:center;background:var(--panel);border:1px solid var(--line-2);border-radius:var(--radius-sm);padding:1.5rem;margin-bottom:1.4rem;}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:.6rem;}
+.donut{width:160px;height:160px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:background .8s;}
+.donut::before{content:'';position:absolute;inset:18px;border-radius:50%;background:var(--panel);}
+.donut-center{position:relative;text-align:center;}
+.donut-center .dc-v{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);line-height:1;}
+.donut-center .dc-l{font-size:.56rem;letter-spacing:1.5px;color:var(--ink-3);font-family:'Orbitron',sans-serif;margin-top:3px;}
+.macro-legend{display:flex;flex-direction:column;gap:1rem;}
+.prog-row{display:flex;align-items:center;gap:1rem;}
+.prog-label{width:78px;font-family:'Orbitron',sans-serif;font-size:.64rem;letter-spacing:1px;text-transform:uppercase;color:var(--ink-2);display:flex;align-items:center;gap:6px;}
+.prog-label .sw{width:9px;height:9px;border-radius:3px;}
+.prog-bg{flex:1;height:9px;background:var(--bg);border-radius:5px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:5px;transition:width 1s cubic-bezier(.16,1,.3,1);}
+.prog-val{width:62px;text-align:right;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.82rem;color:var(--ink);}
+
+.goal-info{background:rgba(0,229,212,.05);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.4rem;}
+.goal-info h4{font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--teal);margin-bottom:.6rem;letter-spacing:1px;}
+.goal-info p{color:var(--ink-2);font-size:.92rem;line-height:1.7;}
+
+/* Food log */
+.food-log{margin-top:2rem;border-top:1px solid var(--line-2);padding-top:1.8rem;}
+.food-log h4{font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--teal);margin-bottom:1rem;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+.food-input-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.5rem;}
+.food-input-row .col-label{font-family:'Orbitron',sans-serif;font-size:.5rem;letter-spacing:1px;color:var(--ink-3);text-transform:uppercase;text-align:center;margin-bottom:5px;}
+.food-input-row input{background:var(--bg);border:1px solid var(--line-2);color:var(--ink);padding:9px 11px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:600;outline:none;width:100%;transition:.2s;}
+.food-input-row input:focus{border-color:var(--teal);}
+.add-food-btn{background:linear-gradient(120deg,var(--teal),var(--blue));color:#04101a;border:none;width:42px;height:40px;border-radius:9px;cursor:pointer;font-weight:800;font-size:1.2rem;transition:.2s;}
+.add-food-btn:hover{transform:translateY(-2px);box-shadow:var(--glow-teal);}
+.food-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.88rem;}
+.food-table th{font-family:'Orbitron',sans-serif;color:var(--ink-3);font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:9px;text-align:left;border-bottom:1px solid var(--line);}
+.food-table td{padding:9px;border-bottom:1px solid var(--line-2);color:var(--ink-2);font-weight:500;}
+.food-table tr:hover td{color:var(--ink);background:rgba(0,229,212,.04);}
+.del-btn{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:1rem;transition:.2s;}
+.del-btn:hover{color:var(--rose);}
+.total-row td{font-family:'Orbitron',sans-serif;font-weight:700;color:var(--teal);border-top:1px solid var(--line);font-size:.82rem;}
+
+/* ============================================================
+   supplemens (kurang penting tp ak masuki be)
+   ============================================================ */
+.supl-section{background:var(--bg);}
+.tabs{display:flex;gap:.6rem;justify-content:center;margin-bottom:2.6rem;flex-wrap:wrap;}
+.tab{background:var(--panel);border:1px solid var(--line-2);color:var(--ink-2);padding:9px 22px;border-radius:30px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:600;letter-spacing:.5px;transition:.25s;}
+.tab.active,.tab:hover{border-color:var(--teal);color:var(--teal);box-shadow:var(--glow-teal);background:rgba(0,229,212,.06);}
+.supl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.5rem;}
+.supl-card{overflow:hidden;transition:.3s;}
+.supl-card:hover{transform:translateY(-6px);border-color:var(--teal);box-shadow:0 28px 60px -22px rgba(0,0,0,.6),var(--glow-soft);}
+.supl-top{padding:1.5rem 1.5rem 1.1rem;background:linear-gradient(135deg,var(--panel-2),var(--panel-3));border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
+.supl-top::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(0,229,212,.16),transparent 70%);}
+.supl-brand{font-family:'Orbitron',sans-serif;font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem;}
+.supl-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;line-height:1.3;margin-bottom:.5rem;}
+.supl-badge{display:inline-block;background:rgba(0,229,212,.1);border:1px solid var(--line);color:var(--teal);font-family:'Orbitron',sans-serif;font-size:.55rem;letter-spacing:1px;padding:3px 10px;border-radius:12px;}
+.supl-emoji{position:absolute;top:1.1rem;right:1.4rem;font-size:2.3rem;opacity:.55;}
+.supl-body{padding:1.5rem;}
+.supl-stats{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.1rem;}
+.supl-stat{background:var(--bg);border:1px solid var(--line-2);border-radius:10px;padding:.6rem .8rem;}
+.supl-stat .sk{font-family:'Orbitron',sans-serif;font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px;}
+.supl-stat .sv{font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:600;color:var(--ink);}
+.supl-flavors{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+.flavor-tag{background:rgba(47,123,255,.1);border:1px solid rgba(47,123,255,.25);color:#6fa0ff;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:12px;}
+.supl-review{color:var(--ink-2);font-size:.86rem;line-height:1.7;margin-bottom:1.1rem;font-style:italic;}
+.pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.1rem;}
+.pc{background:var(--bg);border-radius:10px;padding:.8rem;}
+.pc.pros{border-left:3px solid var(--teal);}
+.pc.cons{border-left:3px solid var(--rose);}
+.pc h5{font-family:'Orbitron',sans-serif;font-size:.56rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.5rem;}
+.pc.pros h5{color:var(--teal);}
+.pc.cons h5{color:var(--rose);}
+.pc li{font-size:.8rem;color:var(--ink-2);line-height:1.55;list-style:none;}
+.pc li::before{content:'▹ ';color:var(--ink-3);}
+.supl-rating{display:flex;align-items:center;gap:.9rem;padding-top:1rem;border-top:1px solid var(--line-2);}
+.rate-num{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#ffd45e,#ff9a3d);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.rate-l{font-family:'Orbitron',sans-serif;font-size:.52rem;letter-spacing:1.5px;color:var(--ink-3);text-transform:uppercase;}
+.rate-stars{font-size:.82rem;color:#ffc24d;}
+.rate-bar{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.rate-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#ffd45e,#ff9a3d);transition:width 1s cubic-bezier(.16,1,.3,1);}
+
+/* ============================================================
+   playlist spotify
+   ============================================================ */
+.play-section{background:var(--bg-soft);}
+.spotify-wrap{max-width:720px;margin:0 auto;padding:2rem;overflow:hidden;}
+.spotify-wrap::before{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse at top left,rgba(30,215,96,.08),transparent 60%);pointer-events:none;}
+.spotify-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;position:relative;}
+.spotify-ico{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#1db954,#1ed760);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;box-shadow:0 6px 20px rgba(30,215,96,.4);}
+.spotify-head h3{font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:.2rem;}
+.spotify-head p{font-size:.86rem;color:var(--ink-2);}
+.spotify-embed{border-radius:14px;overflow:hidden;border:1px solid rgba(30,215,96,.22);position:relative;}
+.spotify-btn{display:inline-flex;align-items:center;gap:8px;margin-top:1.3rem;background:linear-gradient(135deg,#1db954,#1ed760);color:#04140a;border:none;padding:11px 24px;border-radius:30px;font-family:'Orbitron',sans-serif;font-size:.66rem;font-weight:700;letter-spacing:1.5px;cursor:pointer;text-decoration:none;transition:.3s;box-shadow:0 6px 20px rgba(30,215,96,.35);position:relative;}
+.spotify-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(30,215,96,.55);}
+
+/* ============================================================
+   bertia (ini masih ngeseli soalny ak dk bs up todate, hrs beli url tersendiri)
+   ============================================================ */
+.news-section{background:var(--bg);}
+.news-live{display:inline-flex;align-items:center;gap:7px;background:rgba(255,93,115,.12);border:1px solid rgba(255,93,115,.3);color:var(--rose);font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:1rem;}
+.news-live .dot{width:7px;height:7px;background:var(--rose);border-radius:50%;animation:blink 1.2s infinite;}
+.news-filters{display:flex;gap:.5rem;justify-content:center;margin-bottom:2.4rem;flex-wrap:wrap;}
+.filter-btn{background:var(--panel);border:1px solid var(--line-2);color:var(--ink-2);padding:7px 18px;border-radius:30px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.5px;transition:.25s;}
+.filter-btn.active,.filter-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(0,229,212,.06);}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;}
+.news-card{overflow:hidden;cursor:pointer;transition:.3s;}
+.news-card:hover{transform:translateY(-5px);border-color:var(--teal);box-shadow:0 26px 56px -22px rgba(0,0,0,.6),var(--glow-soft);}
+.news-img{height:140px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:linear-gradient(135deg,var(--panel-2),var(--panel-3));position:relative;overflow:hidden;}
+.news-img::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(0,229,212,.1),transparent 60%);}
+.news-body{padding:1.2rem;}
+.news-cat{font-family:'Orbitron',sans-serif;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.5rem;}
+.news-body h3{font-size:1.02rem;font-weight:700;margin-bottom:.5rem;line-height:1.35;color:var(--ink);}
+.news-body p{color:var(--ink-2);font-size:.85rem;line-height:1.6;}
+.news-meta{padding:0 1.2rem .8rem;display:flex;justify-content:space-between;align-items:center;}
+.news-date{font-size:.74rem;color:var(--ink-3);}
+.news-tag{background:rgba(0,229,212,.1);border:1px solid var(--line);color:var(--teal);font-size:.62rem;font-family:'Orbitron',sans-serif;letter-spacing:1px;padding:2px 10px;border-radius:20px;}
+.news-go{margin:0 1.2rem 1rem;display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,212,.07);border:1px solid var(--line);color:var(--teal);font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:1px;padding:6px 13px;border-radius:20px;transition:.2s;}
+.news-card:hover .news-go{background:rgba(0,229,212,.16);}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay{position:fixed;inset:0;background:rgba(2,5,10,.82);backdrop-filter:blur(12px);z-index:2000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:22px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.6),var(--glow-soft);animation:modalUp .35s cubic-bezier(.16,1,.3,1);}
+@keyframes modalUp{from{opacity:0;transform:translateY(30px) scale(.97);}to{opacity:1;transform:none;}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 1.5rem 0;}
+.modal-header h3{font-family:'Orbitron',sans-serif;font-size:1.15rem;color:var(--teal);}
+.modal-close{background:none;border:none;color:var(--ink-3);font-size:1.4rem;cursor:pointer;transition:.2s;}
+.modal-close:hover{color:var(--ink);}
+.modal-body{padding:1.5rem;}
+.modal-hero{width:100%;height:120px;border-radius:14px;margin-bottom:1.4rem;background:linear-gradient(135deg,var(--panel-2),var(--panel-3));display:flex;align-items:center;justify-content:center;font-size:3.4rem;border:1px solid var(--line-2);}
+.modal-block{margin-bottom:1rem;}
+.modal-block h4{font-family:'Orbitron',sans-serif;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem;}
+.modal-block p{color:var(--ink-2);font-size:.94rem;line-height:1.65;}
+.modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.1rem 0;}
+.modal-stat{background:var(--bg);border:1px solid var(--line-2);border-radius:10px;padding:.8rem;}
+.modal-stat h4{margin-bottom:.3rem;}
+.modal-stat p{font-family:'Orbitron',sans-serif;font-weight:700;color:var(--ink);font-size:.84rem;}
+.yt-embed{width:100%;aspect-ratio:16/9;border-radius:14px;border:1px solid var(--line);margin-top:.5rem;}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{background:var(--bg-soft);border-top:1px solid var(--line);padding:3.5rem 0 2.5rem;position:relative;z-index:1;text-align:center;}
+.foot-brand{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:1rem;}
+.foot-brand .brand-txt{font-size:1.1rem;}
+footer .foot-tag{color:var(--ink-2);font-size:.92rem;margin-bottom:1.3rem;}
+footer .foot-ref{color:var(--ink-3);font-size:.74rem;max-width:600px;margin:0 auto;line-height:1.6;}
+.foot-line{height:1px;background:var(--line-2);max-width:200px;margin:1.4rem auto;}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:1040px){
+  .muscle-wrap{grid-template-columns:200px 1fr 320px;}
+}
+@media(max-width:920px){
+  .hero-grid{grid-template-columns:1fr;text-align:center;}
+  .hero-visual{min-height:360px;order:-1;}
+  .hero-lead{margin-left:auto;margin-right:auto;}
+  .hero-cta,.hero-chips{justify-content:center;}
+  .muscle-wrap{grid-template-columns:1fr;}
+  .avatar-stage{order:-1;}
+  .principle-grid{grid-template-columns:1fr;}
+  .macro-zone{grid-template-columns:1fr;}
+  .donut-wrap{margin:0 auto;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;background:var(--glass-2);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:1rem;gap:4px;}
+  .nav-links.open a{padding:12px;}
+  .nav-burger{display:flex;align-items:center;justify-content:center;}
+  .section{padding:4.5rem 0;}
+  .versus{grid-template-columns:1fr;}
+  .vs-new{border-left:none;border-top:1px solid var(--line);}
+  .vs-badge{top:0;}
+  .howto-grid{grid-template-columns:1fr;}
+  .food-input-row{grid-template-columns:1fr 1fr 1fr;}
+  .modal-stats{grid-template-columns:1fr;}
+}
+@media(max-width:440px){
+  .hud-core .big{font-size:2.6rem;}
+  .results-grid{grid-template-columns:1fr 1fr;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+  .reveal{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<div class="bg-fx"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+<!-- ============ SHARED SVG DEFS ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="msIdle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#143047"/><stop offset="1" stop-color="#091a29"/>
+    </linearGradient>
+    <linearGradient id="msHover" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d5a6e"/><stop offset="1" stop-color="#0f3346"/>
+    </linearGradient>
+    <linearGradient id="msOn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5dfff2"/><stop offset="0.5" stop-color="#00e5d4"/><stop offset="1" stop-color="#2f7bff"/>
+    </linearGradient>
+    <radialGradient id="hudGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="rgba(0,229,212,0.25)"/><stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<!-- ============ NAV ============ -->
+<nav id="nav">
+  <div class="brand" onclick="goTop()">
+    <svg class="brand-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="36" height="36" rx="10" stroke="url(#msOn)" stroke-width="2"/>
+      <path d="M11 27V13l5 7 4-5 4 5 5-7v14" stroke="url(#msOn)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="20" cy="20" r="1.6" fill="#00e5d4"/>
+    </svg>
+    <div class="brand-txt">VARENPRIL LABS<span>AI GYM &amp; NUTRITION</span></div>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a data-to="muscle-sec" onclick="navGo('muscle-sec')">Muscle Scan</a>
+    <a data-to="meta-sec" onclick="navGo('meta-sec')">Meta Lab</a>
+    <a data-to="nutri-sec" onclick="navGo('nutri-sec')">Nutrition</a>
+    <a data-to="supl-sec" onclick="navGo('supl-sec')">Supplements</a>
+    <a data-to="play-sec" onclick="navGo('play-sec')">Playlist</a>
+    <a data-to="news-sec" onclick="navGo('news-sec')">Intel</a>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">☀</span><span id="themeLabel">LIGHT</span></button>
+    <button class="nav-burger" onclick="toggleNav()" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="container hero-grid">
+    <div class="reveal in">
+      <span class="eyebrow"><span class="dot"></span>AI Gym &amp; Nutrition Intelligence</span>
+      <h1>PHYSIQUE<br>ENGINEER <span class="grad-text">AHAIDAH</span></h1>
+      <p class="hero-lead">Scan muscle kalian biar kalian tau ap b yg harus dilatih & kriteriany ap be</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="navGo('muscle-sec')">⚡ Scan muscle ak daddy</button>
+        <button class="btn btn-ghost" onclick="navGo('meta-sec')">Open Meta Lab</button>
+      </div>
+      <div class="hero-chips">
+        <span class="hero-chip"><b>12</b> Muscle groups</span>
+        <span class="hero-chip"><b>2×</b> Failure meta</span>
+        <span class="hero-chip"><b>AI</b> Macro engine</span>
+        <span class="hero-chip"><b>Form</b>-first cues</span>
+      </div>
+    </div>
+    <div class="hero-visual reveal in d1">
+      <div class="hud">
+        <svg viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="120" fill="url(#hudGlow)"/>
+          <g class="ring-rot">
+            <circle cx="200" cy="200" r="160" class="frame-line" stroke-dasharray="3 12"/>
+            <circle cx="200" cy="200" r="160" fill="none" stroke="rgba(0,229,212,.5)" stroke-width="2" stroke-dasharray="40 280"/>
+          </g>
+          <g class="ring-rot rev">
+            <circle cx="200" cy="200" r="132" class="frame-line" stroke-dasharray="2 8" opacity=".6"/>
+            <circle cx="200" cy="200" r="132" fill="none" stroke="rgba(47,123,255,.55)" stroke-width="2" stroke-dasharray="24 220"/>
+          </g>
+          <circle cx="200" cy="200" r="100" fill="none" stroke="rgba(0,229,212,.18)" stroke-width="1"/>
+          <circle cx="200" cy="40" r="3" fill="#00e5d4"/>
+          <circle cx="360" cy="200" r="3" fill="#2f7bff"/>
+          <circle cx="200" cy="360" r="2.4" fill="#00e5d4" opacity=".7"/>
+        </svg>
+        <div class="hud-core">
+          <div class="big">2×</div>
+          <div class="sub">FAILURE PROTOCOL</div>
+        </div>
+        <div class="hud-tick" style="top:8%;left:46%;">N</div>
+        <div class="hud-tick" style="top:48%;right:4%;">E</div>
+        <div class="hud-tick" style="bottom:8%;left:48%;">S</div>
+        <div class="hud-tick" style="top:48%;left:4%;">W</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<!-- ============ MUSCLE SCAN ============ -->
+<section class="section muscle-section" id="muscle-sec">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Interactive Muscle Scan</span>
+      <h2>Cyber <span class="grad-text">Muscle Avatar</span></h2>
+      <p>Select any muscle group to light up the avatar and pull an AI training protocol — function, best lifts, sets, reps, rest, failure target, and form cues.</p>
+    </div>
+
+    <div class="muscle-wrap">
+      <!-- MUSCLE LIST -->
+      <div class="reveal">
+        <div class="m-group">
+          <div class="m-group-label">Upper Body</div>
+          <div class="m-chips">
+            <button class="m-chip" data-m="chest" onclick="selectMuscle('chest')">Chest <span class="tag">PUSH</span></button>
+            <button class="m-chip" data-m="back" onclick="selectMuscle('back')">Back / Lats <span class="tag">PULL</span></button>
+            <button class="m-chip" data-m="shoulder" onclick="selectMuscle('shoulder')">Shoulders <span class="tag">DELTS</span></button>
+            <button class="m-chip" data-m="bicep" onclick="selectMuscle('bicep')">Biceps <span class="tag">PULL</span></button>
+            <button class="m-chip" data-m="tricep" onclick="selectMuscle('tricep')">Triceps <span class="tag">PUSH</span></button>
+            <button class="m-chip" data-m="forearm" onclick="selectMuscle('forearm')">Forearms <span class="tag">GRIP</span></button>
+            <button class="m-chip" data-m="trap" onclick="selectMuscle('trap')">Traps <span class="tag">YOKE</span></button>
+          </div>
+        </div>
+        <div class="m-group">
+          <div class="m-group-label">Lower &amp; Core</div>
+          <div class="m-chips">
+            <button class="m-chip" data-m="quad" onclick="selectMuscle('quad')">Quads <span class="tag">POWER</span></button>
+            <button class="m-chip" data-m="hamstring" onclick="selectMuscle('hamstring')">Hamstrings <span class="tag">HINGE</span></button>
+            <button class="m-chip" data-m="glute" onclick="selectMuscle('glute')">Glutes <span class="tag">DRIVE</span></button>
+            <button class="m-chip" data-m="calf" onclick="selectMuscle('calf')">Calves <span class="tag">PUMP</span></button>
+            <button class="m-chip" data-m="abs" onclick="selectMuscle('abs')">Abs / Core <span class="tag">BRACE</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVATAR -->
+      <div class="avatar-stage reveal d1">
+        <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div><div class="hud-corner br"></div>
+        <div class="scanline"></div>
+        <div class="view-toggle">
+          <button data-view="front" class="active" onclick="setView('front')">FRONT</button>
+          <button data-view="back" onclick="setView('back')">BACK</button>
+        </div>
+        <div class="figure-zone">
+          <!-- FRONT FIGURE -->
+          <div class="figure" id="figFront">
+            <svg viewBox="0 0 240 540" xmlns="http://www.w3.org/2000/svg">
+              <!-- frame: head, neck, joints, hands, feet -->
+              <ellipse cx="120" cy="46" rx="23" ry="27" class="frame-fill"/>
+              <path d="M108 70 h24 v16 h-24 z" class="frame-fill"/>
+              <ellipse cx="56" cy="232" rx="11" ry="13" class="frame-fill"/>
+              <ellipse cx="184" cy="232" rx="11" ry="13" class="frame-fill"/>
+              <path d="M88 196 q32 8 64 0 l5 22 q-37 9 -74 0 z" class="frame-fill"/>
+              <ellipse cx="101" cy="346" rx="13" ry="9" class="frame-fill"/>
+              <ellipse cx="139" cy="346" rx="13" ry="9" class="frame-fill"/>
+              <ellipse cx="101" cy="446" rx="14" ry="9" class="frame-fill"/>
+              <ellipse cx="139" cy="446" rx="14" ry="9" class="frame-fill"/>
+              <!-- TRAP -->
+              <g class="ms" data-m="trap" onclick="selectMuscle('trap')">
+                <path class="seg" d="M104 84 Q120 77 136 84 L150 100 Q120 92 90 100 Z"/>
+                <circle class="node" cx="120" cy="91" r="2.4"/>
+              </g>
+              <!-- DELTS (front) -->
+              <g class="ms" data-m="shoulder" onclick="selectMuscle('shoulder')">
+                <path class="seg" d="M84 98 Q70 100 66 116 Q64 129 77 131 Q90 127 92 110 Q92 100 84 98 Z"/>
+                <path class="seg" d="M156 98 Q170 100 174 116 Q176 129 163 131 Q150 127 148 110 Q148 100 156 98 Z"/>
+                <circle class="node" cx="78" cy="114" r="2.4"/><circle class="node" cx="162" cy="114" r="2.4"/>
+              </g>
+              <!-- CHEST -->
+              <g class="ms" data-m="chest" onclick="selectMuscle('chest')">
+                <path class="seg" d="M92 102 Q108 100 118 107 L118 134 Q104 141 94 132 Q86 119 92 102 Z"/>
+                <path class="seg" d="M148 102 Q132 100 122 107 L122 134 Q136 141 146 132 Q154 119 148 102 Z"/>
+                <circle class="node" cx="105" cy="119" r="2.4"/><circle class="node" cx="135" cy="119" r="2.4"/>
+              </g>
+              <!-- BICEPS -->
+              <g class="ms" data-m="bicep" onclick="selectMuscle('bicep')">
+                <path class="seg" d="M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z"/>
+                <path class="seg" d="M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"/>
+                <circle class="node" cx="65" cy="144" r="2.4"/><circle class="node" cx="175" cy="144" r="2.4"/>
+              </g>
+              <!-- FOREARMS -->
+              <g class="ms" data-m="forearm" onclick="selectMuscle('forearm')">
+                <path class="seg" d="M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z"/>
+                <path class="seg" d="M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"/>
+                <circle class="node" cx="62" cy="196" r="2.4"/><circle class="node" cx="178" cy="196" r="2.4"/>
+              </g>
+              <!-- ABS -->
+              <g class="ms" data-m="abs" onclick="selectMuscle('abs')">
+                <path class="seg" d="M104 138 Q120 136 136 138 L138 206 Q120 214 102 206 Z"/>
+                <circle class="node" cx="120" cy="172" r="2.4"/>
+              </g>
+              <!-- QUADS -->
+              <g class="ms" data-m="quad" onclick="selectMuscle('quad')">
+                <path class="seg" d="M100 215 Q88 219 88 245 L94 322 Q106 330 112 320 L116 245 Q116 219 108 215 Q104 214 100 215 Z"/>
+                <path class="seg" d="M140 215 Q152 219 152 245 L146 322 Q134 330 128 320 L124 245 Q124 219 132 215 Q136 214 140 215 Z"/>
+                <circle class="node" cx="102" cy="268" r="2.4"/><circle class="node" cx="138" cy="268" r="2.4"/>
+              </g>
+              <!-- CALVES (front/shin) -->
+              <g class="ms" data-m="calf" onclick="selectMuscle('calf')">
+                <path class="seg" d="M98 360 Q92 362 92 384 L96 438 Q106 444 110 436 L112 384 Q112 362 106 360 Z"/>
+                <path class="seg" d="M142 360 Q148 362 148 384 L144 438 Q134 444 130 436 L128 384 Q128 362 134 360 Z"/>
+                <circle class="node" cx="101" cy="400" r="2.4"/><circle class="node" cx="139" cy="400" r="2.4"/>
+              </g>
+            </svg>
+          </div>
+
+          <!-- BACK FIGURE -->
+          <div class="figure" id="figBack" hidden>
+            <svg viewBox="0 0 240 540" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="120" cy="46" rx="23" ry="27" class="frame-fill"/>
+              <path d="M108 70 h24 v14 h-24 z" class="frame-fill"/>
+              <ellipse cx="56" cy="232" rx="11" ry="13" class="frame-fill"/>
+              <ellipse cx="184" cy="232" rx="11" ry="13" class="frame-fill"/>
+              <ellipse cx="101" cy="346" rx="13" ry="9" class="frame-fill"/>
+              <ellipse cx="139" cy="346" rx="13" ry="9" class="frame-fill"/>
+              <ellipse cx="101" cy="446" rx="14" ry="9" class="frame-fill"/>
+              <ellipse cx="139" cy="446" rx="14" ry="9" class="frame-fill"/>
+              <!-- TRAP (diamond) -->
+              <g class="ms" data-m="trap" onclick="selectMuscle('trap')">
+                <path class="seg" d="M120 80 L150 102 Q140 120 124 126 L116 126 Q100 120 90 102 Z"/>
+                <circle class="node" cx="120" cy="104" r="2.4"/>
+              </g>
+              <!-- REAR DELTS -->
+              <g class="ms" data-m="shoulder" onclick="selectMuscle('shoulder')">
+                <path class="seg" d="M84 100 Q70 102 66 118 Q64 131 77 133 Q90 129 92 112 Q92 102 84 100 Z"/>
+                <path class="seg" d="M156 100 Q170 102 174 118 Q176 131 163 133 Q150 129 148 112 Q148 102 156 100 Z"/>
+                <circle class="node" cx="78" cy="116" r="2.4"/><circle class="node" cx="162" cy="116" r="2.4"/>
+              </g>
+              <!-- LATS / BACK -->
+              <g class="ms" data-m="back" onclick="selectMuscle('back')">
+                <path class="seg" d="M92 122 Q78 128 80 162 L113 186 L117 132 Q105 124 92 122 Z"/>
+                <path class="seg" d="M148 122 Q162 128 160 162 L127 186 L123 132 Q135 124 148 122 Z"/>
+                <path class="seg" d="M108 150 L132 150 L129 198 Q120 202 111 198 Z"/>
+                <circle class="node" cx="98" cy="152" r="2.4"/><circle class="node" cx="142" cy="152" r="2.4"/>
+              </g>
+              <!-- TRICEPS -->
+              <g class="ms" data-m="tricep" onclick="selectMuscle('tricep')">
+                <path class="seg" d="M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z"/>
+                <path class="seg" d="M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"/>
+                <circle class="node" cx="65" cy="144" r="2.4"/><circle class="node" cx="175" cy="144" r="2.4"/>
+              </g>
+              <!-- FOREARMS -->
+              <g class="ms" data-m="forearm" onclick="selectMuscle('forearm')">
+                <path class="seg" d="M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z"/>
+                <path class="seg" d="M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"/>
+                <circle class="node" cx="62" cy="196" r="2.4"/><circle class="node" cx="178" cy="196" r="2.4"/>
+              </g>
+              <!-- GLUTES -->
+              <g class="ms" data-m="glute" onclick="selectMuscle('glute')">
+                <path class="seg" d="M100 200 Q88 202 88 220 Q90 238 106 238 Q118 236 118 218 L116 204 Q108 200 100 200 Z"/>
+                <path class="seg" d="M140 200 Q152 202 152 220 Q150 238 134 238 Q122 236 122 218 L124 204 Q132 200 140 200 Z"/>
+                <circle class="node" cx="104" cy="220" r="2.4"/><circle class="node" cx="136" cy="220" r="2.4"/>
+              </g>
+              <!-- HAMSTRINGS -->
+              <g class="ms" data-m="hamstring" onclick="selectMuscle('hamstring')">
+                <path class="seg" d="M100 242 Q90 244 90 266 L96 330 Q108 338 112 328 L114 266 Q114 244 106 242 Z"/>
+                <path class="seg" d="M140 242 Q150 244 150 266 L144 330 Q132 338 128 328 L126 266 Q126 244 134 242 Z"/>
+                <circle class="node" cx="102" cy="288" r="2.4"/><circle class="node" cx="138" cy="288" r="2.4"/>
+              </g>
+              <!-- CALVES (gastroc) -->
+              <g class="ms" data-m="calf" onclick="selectMuscle('calf')">
+                <path class="seg" d="M98 360 Q90 362 90 388 Q92 414 102 420 Q108 422 110 414 L112 388 Q112 362 106 360 Z"/>
+                <path class="seg" d="M142 360 Q150 362 150 388 Q148 414 138 420 Q132 422 130 414 L128 388 Q128 362 134 360 Z"/>
+                <circle class="node" cx="101" cy="392" r="2.4"/><circle class="node" cx="139" cy="392" r="2.4"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="avatar-readout"><span class="live"></span><span id="readout">Awaiting target — select a muscle</span></div>
+      </div>
+
+      <!-- AI REC PANEL -->
+      <div class="glass rec-panel reveal d2" id="recPanel">
+        <div class="rec-empty">
+          <div class="scan-icon">◎</div>
+          <p>Select a muscle to generate its AI training protocol.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ META LAB ============ -->
+<section class="section meta-section" id="meta-sec">
+  <div class="container">
+    <div class="section-head meta-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Hypertrophy Meta 2026 · Training Lab</span>
+      <h2 class="grad-text-warm">stop lakui 4x12 nga badan kw dk bs ngitung.<br>Train Closer to Failure.</h2>
+      <p class="meta-sub">4x12 it utk orng baru be, kalo mau progress overload & speed recovery dgn kualitas yg lebih bagus yo maen pake 2x-failure meta</p>
+    </div>
+
+    <!-- 3 PRINCIPLES -->
+    <div class="principle-grid">
+      <div class="glass principle c1 reveal">
+        <div class="p-num">01</div>
+        <div class="p-ico">🔥</div>
+        <h3>Intensity <span class="p-key">0–1 RIR</span></h3>
+        <p>Working sets land within 0–1 reps in reserve. That proximity to failure is what recruits high-threshold motor units and actually drives growth — not the rep count on paper.</p>
+      </div>
+      <div class="glass principle c2 reveal d1">
+        <div class="p-num">02</div>
+        <div class="p-ico">⚡</div>
+        <h3>Efficiency <span class="p-key">2 HARD SETS</span></h3>
+        <p>Two genuinely hard sets per exercise beat four half-effort ones. Better stimulus-to-fatigue ratio means more growth, less wasted volume, and faster recovery between sessions.</p>
+      </div>
+      <div class="glass principle c3 reveal d2">
+        <div class="p-num">03</div>
+        <div class="p-ico">📈</div>
+        <h3>Progression <span class="p-key">EVERY WEEK</span></h3>
+        <p>Beat last week on something: one more rep, a little more load, or cleaner form through a fuller range. Tracked, repeatable overload is the engine of long-term hypertrophy.</p>
+      </div>
+    </div>
+
+    <!-- COMPARISON -->
+    <div class="reveal d1">
+      <div class="versus">
+        <div class="vs-badge">VS</div>
+        <div class="vs-col vs-old">
+          <span class="vs-tag">Old School</span>
+          <h3>4×12 Method</h3>
+          <div class="vs-meta">Fixed reps · high volume</div>
+          <ul class="vs-list">
+            <li><span class="mk">✕</span><span>Fixed reps regardless of how hard the set actually was</span></li>
+            <li><span class="mk">✕</span><span>Often stops 4–6 reps short of failure — too easy to grow</span></li>
+            <li><span class="mk">✕</span><span>High volume, but low effective intensity per set</span></li>
+            <li><span class="mk">✕</span><span>Harder to track real progress — reps stay the same on paper</span></li>
+            <li><span class="mk">✕</span><span>Burns time and recovery if the intensity is low</span></li>
+          </ul>
+        </div>
+        <div class="vs-col vs-new">
+          <span class="vs-tag">Modern Meta</span>
+          <h3>2× Failure Method</h3>
+          <div class="vs-meta">2 quality sets · near failure</div>
+          <ul class="vs-list">
+            <li><span class="mk">✓</span><span>2 hard working sets taken to 0–1 RIR or true failure</span></li>
+            <li><span class="mk">✓</span><span>Close to failure every set — maximum growth signal</span></li>
+            <li><span class="mk">✓</span><span>Better stimulus-to-fatigue ratio, less junk volume</span></li>
+            <li><span class="mk">✓</span><span>Easier progressive overload — clear targets to beat</span></li>
+            <li><span class="mk">✓</span><span>Focused on intensity, form, and recovery that compounds</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div class="warn-banner reveal">
+      <div class="w-ico">⚠️</div>
+      <div class="w-txt">
+        <b>Form check</b>
+        <p>Failure is useful, but only when form is controlled. Stop the set the moment technique breaks — a clean near-failure rep beats an ugly grinder every time.</p>
+      </div>
+    </div>
+
+    <!-- HOW-TO -->
+    <div class="glass howto reveal d1">
+      <div class="howto-title"><span class="tg">PROTOCOL</span> How to run the 2× failure method</div>
+      <div class="howto-grid">
+        <div class="howto-item"><div class="n">1</div><div><h4>Warm-ups don't count</h4><p>Ramp up with light feeder sets to prep the joint and movement — they prime you, they're not working sets.</p></div></div>
+        <div class="howto-item"><div class="n">2</div><div><h4>Only 2 working sets</h4><p>Per exercise, just two real sets. That's the whole point — quality over quantity, no padding the log.</p></div></div>
+        <div class="howto-item"><div class="n">3</div><div><h4>Push to 0–1 RIR</h4><p>End each working set 0–1 reps from failure, or at failure when form holds. That's where growth lives.</p></div></div>
+        <div class="howto-item"><div class="n">4</div><div><h4>Own the full range</h4><p>Full range of motion and controlled tempo. A deep stretch under load beats half-reps with ego weight.</p></div></div>
+        <div class="howto-item"><div class="n">5</div><div><h4>Progress, then recover</h4><p>Beat reps, load, or form weekly — then eat and sleep. Recovery is when the muscle is actually built.</p></div></div>
+        <div class="howto-item"><div class="n">6</div><div><h4>Never force broken reps</h4><p>If technique collapses, the set is done. Grinding through with bad form is how injuries happen, not gains.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ NUTRITION ============ -->
+<section class="section nutri-section" id="nutri-sec">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>AI Macro Engine</span>
+      <h2>Nutrition <span class="grad-text">Intelligence</span></h2>
+      <p>Enter your stats and goal — get evidence-based calories, macros, and a daily food log to track it all.</p>
+    </div>
+
+    <div class="glass nutri-card reveal d1">
+      <div class="nutri-form">
+        <div class="field"><label>Gender</label><select id="gender"><option value="male">Laki-laki</option><option value="female">Perempuan</option></select></div>
+        <div class="field"><label>Berat (kg)</label><input type="number" id="weight" placeholder="70" min="30" max="250"></div>
+        <div class="field"><label>Tinggi (cm)</label><input type="number" id="height" placeholder="170" min="100" max="250"></div>
+        <div class="field"><label>Usia (thn)</label><input type="number" id="age" placeholder="25" min="10" max="99"></div>
+        <div class="field"><label>Aktivitas</label><select id="activity">
+          <option value="1.2">Sedentary (jarang)</option>
+          <option value="1.375">Light (1-3x/mgg)</option>
+          <option value="1.55" selected>Moderate (3-5x/mgg)</option>
+          <option value="1.725">Active (6-7x/mgg)</option>
+          <option value="1.9">Very Active (2x/hari)</option>
+        </select></div>
+        <div class="field"><label>Tujuan</label><select id="goal">
+          <option value="bulking">Lean Bulking</option>
+          <option value="dirty_bulking">Dirty Bulking</option>
+          <option value="cutting">Cutting</option>
+          <option value="diet">Diet / Maintain</option>
+        </select></div>
+      </div>
+      <button class="btn btn-primary calc-btn" onclick="calculateNutrition()">⚡ Generate my macros</button>
+
+      <div id="nutriResults" style="display:none;">
+        <div class="results-grid" id="resultsGrid"></div>
+        <div class="macro-zone">
+          <div class="donut-wrap">
+            <div class="donut" id="macroDonut"><div class="donut-center"><div class="dc-v" id="donutCal">0</div><div class="dc-l">KCAL / DAY</div></div></div>
+          </div>
+          <div class="macro-legend" id="macroLegend"></div>
+        </div>
+        <div class="goal-info" id="goalInfo"></div>
+      </div>
+
+      <!-- FOOD LOG -->
+      <div class="food-log">
+        <h4>📋 Daily food log</h4>
+        <div style="overflow-x:auto;">
+          <div class="food-input-row">
+            <div><div class="col-label">Makanan</div><input type="text" id="food-name" placeholder="biji Leon 100g"></div>
+            <div><div class="col-label">Kal</div><input type="number" id="food-cal" placeholder="130"></div>
+            <div><div class="col-label">Protein</div><input type="number" id="food-prot" placeholder="2.7"></div>
+            <div><div class="col-label">Carbs</div><input type="number" id="food-carb" placeholder="28"></div>
+            <div><div class="col-label">Lemak</div><input type="number" id="food-fat" placeholder="0.3"></div>
+            <div><div class="col-label">Serat</div><input type="number" id="food-fiber" placeholder="0.4"></div>
+            <div style="display:flex;align-items:flex-end;"><button class="add-food-btn" onclick="addFood()">+</button></div>
+          </div>
+        </div>
+        <table class="food-table">
+          <thead><tr><th>Makanan</th><th>Kal</th><th>Protein</th><th>Carbs</th><th>Lemak</th><th>Serat</th><th></th></tr></thead>
+          <tbody id="food-tbody"></tbody>
+          <tfoot><tr class="total-row" id="food-totals"><td>TOTAL</td><td>0</td><td>0g</td><td>0g</td><td>0g</td><td>0g</td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ SUPPLEMENTS ============ -->
+<section class="section supl-section" id="supl-sec">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Supplement Lab</span>
+      <h2>My Supplement <span class="grad-text">Experience</span></h2>
+      <p>Honest, first-hand reviews of the whey protein &amp; creatine in Varenpril's stack — taste, value, and real impact.</p>
+    </div>
+    <div class="tabs reveal">
+      <button class="tab active" onclick="filterSupl('all',this)">All</button>
+      <button class="tab" onclick="filterSupl('whey',this)">🥛 Whey Protein</button>
+      <button class="tab" onclick="filterSupl('creatine',this)">⚡ Creatine</button>
+    </div>
+    <div class="supl-grid reveal d1" id="suplGrid"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ PLAYLIST ============ -->
+<section class="section play-section" id="play-sec">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Gym Playlist</span>
+      <h2>Training <span class="grad-text">Soundtrack</span></h2>
+      <p>ini playlist gym ak, semuany metal. Kalo-kalo kalian tertarik ahaidah.</p>
+    </div>
+    <div class="glass spotify-wrap reveal d1">
+      <div class="spotify-head">
+        <div class="spotify-ico">🎧</div>
+        <div><h3>gym plyalist ak</h3><p>tracked melalui Spotify</p></div>
+      </div>
+      <div class="spotify-embed">
+        <iframe src="https://open.spotify.com/embed/playlist/3krm0TrVQTXIf5ICzKSsC9?utm_source=generator&theme=0" width="100%" height="380" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="display:block;"></iframe>
+      </div>
+      <a href="https://open.spotify.com/playlist/3krm0TrVQTXIf5ICzKSsC9" target="_blank" rel="noopener" class="spotify-btn">▶ Open in Spotify</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ NEWS / INTEL ============ -->
+<section class="section news-section" id="news-sec">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Gym News &amp; Meta</span>
+      <div style="margin:1rem 0;"><span class="news-live"><span class="dot"></span>AUTO-UPDATE · AI POWERED</span></div>
+      <h2>Latest <span class="grad-text">Intel</span></h2>
+      <p>research utk suplemens, training program dri mano be yg ak dpt dri google, promo suplemen, dll. Pencet be ikonny, nnti kau ke-direct ke google.</p>
+    </div>
+    <div class="news-filters reveal">
+      <button class="filter-btn active" onclick="filterNews('all',this)">All</button>
+      <button class="filter-btn" onclick="filterNews('promo',this)">🛒 Promo</button>
+      <button class="filter-btn" onclick="filterNews('suplemen',this)">💊 Supplemen</button>
+      <button class="filter-btn" onclick="filterNews('meta',this)">🔥 Meta</button>
+      <button class="filter-btn" onclick="filterNews('berita',this)">📰 Berita</button>
+    </div>
+    <div class="news-grid reveal d1" id="newsGrid"></div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="foot-brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="36" height="36" rx="10" stroke="url(#msOn)" stroke-width="2"/>
+        <path d="M11 27V13l5 7 4-5 4 5 5-7v14" stroke="url(#msOn)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="brand-txt">VARENPRIL LABS<span>AI GYM &amp; NUTRITION INTELLIGENCE</span></div>
+    </div>
+    <p class="foot-tag">absoukte bullshit — train smart, eat smarter niga.</p>
+    <div class="foot-line"></div>
+    <p class="foot-ref">Training &amp; sumber referensi (biar dk kn takedown): ISSN Position Stands, NSCA Essentials of Strength &amp; Conditioning, WHO Dietary Guidelines, Precision Nutrition. All values are estimates — consult a qualified coach or dietitian for a personalized program.</p>
+  </div>
+</footer>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay" id="exModal" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-header"><h3 id="modalTitle">Exercise</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ============ APP SCRIPT ============ -->
+<script>
+/* ============================================================
+   VARENPRIL LABS — application logic
+   ============================================================ */
+const r1 = x => Math.round(x * 10) / 10;
+
+/* ---------- NAV / SCROLL / THEME ---------- */
+function goTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+function navGo(id){
+  const el = document.getElementById(id);
+  if(el){
+    const y = el.getBoundingClientRect().top + window.pageYOffset - 64;
+    window.scrollTo({top:y, behavior:'smooth'});
+  }
+  closeNav();
+}
+function toggleNav(){ document.getElementById('navLinks').classList.toggle('open'); }
+function closeNav(){ document.getElementById('navLinks').classList.remove('open'); }
+function toggleTheme(){
+  const html = document.documentElement;
+  const toLight = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', toLight ? 'light' : 'dark');
+  document.getElementById('themeIcon').textContent  = toLight ? '🌙' : '☀';
+  document.getElementById('themeLabel').textContent = toLight ? 'DARK' : 'LIGHT';
+  try { localStorage.setItem('vl-theme', toLight ? 'light' : 'dark'); } catch(e){}
+}
+
+/* ===================== MUSCLE DATA ===================== */
+const muscleData = {
+  chest:{
+    name:'Dada — Pectoralis Major & Minor',
+    func:'Otot dada berfungsi untuk fleksi, adduksi, dan rotasi internal lengan. Salah satu otot terbesar di tubuh bagian atas dan kunci kekuatan mendorong (pressing).',
+    exercises:[
+      {name:'Bench Press (Barbell)',img:'🏋️',yt:'https://www.youtube.com/embed/rT7DgCr-3pg',desc:'Compound utama dada. Berbaring di bench, turunkan barbell ke dada lalu dorong ke atas. Mengaktifkan pec major, deltoid anterior, dan trisep.',sets:'2 working set × 5-8 rep',rest:'2-3 menit',alat:'Barbell, Bench'},
+      {name:'Incline Dumbbell Press',img:'🔵',yt:'https://www.youtube.com/embed/8iPEnn-ltC8',desc:'Menekankan upper chest. Bench miring 30°, dorong dumbbell ke atas dan sedikit ke dalam dengan stretch penuh di bawah.',sets:'2 working set × 8-12 rep',rest:'2 menit',alat:'Dumbbell, Incline Bench'},
+      {name:'Cable Crossover',img:'⚡',yt:'https://www.youtube.com/embed/taI4XduLpTk',desc:'Isolasi dada dengan tension konstan. Pertemukan handle di depan dada, squeeze di puncak kontraksi. Finisher sempurna.',sets:'2 working set × 12-15 rep',rest:'60-90 detik',alat:'Cable Machine'},
+      {name:'Push-Up',img:'💪',yt:'https://www.youtube.com/embed/IODxDxX7oi4',desc:'Bodyweight klasik untuk dada, bahu, dan trisep. Bisa divariasikan wide/narrow/incline. Bagus untuk finisher to-failure.',sets:'2 working set × max rep',rest:'60 detik',alat:'Bodyweight'},
+    ]
+  },
+  bicep:{
+    name:'Bisep — Biceps Brachii',
+    func:'Bisep punya dua kepala (long & short head), berfungsi untuk fleksi siku dan supinasi lengan bawah. Paling terlihat saat lengan ditekuk.',
+    exercises:[
+      {name:'Barbell Curl',img:'🏋️',yt:'https://www.youtube.com/embed/kwG2ipFRgfo',desc:'Latihan utama bisep. Berdiri tegak, angkat barbell dengan fleksi siku, elbow tetap pinned. Salah satu yang paling efektif.',sets:'2 working set × 6-10 rep',rest:'90 detik',alat:'Barbell / EZ Bar'},
+      {name:'Incline Dumbbell Curl',img:'🔵',yt:'https://www.youtube.com/embed/soxrZlIl35U',desc:'Lengan menggantung ke belakang memberi stretch maksimal pada long head. Supinasi kuat di tiap rep.',sets:'2 working set × 8-12 rep',rest:'90 detik',alat:'Dumbbell, Incline Bench'},
+      {name:'Cable Curl',img:'⚡',yt:'https://www.youtube.com/embed/cyb_1-zB9PU',desc:'Tension konstan sepanjang gerakan. Squeeze peak, negative lambat. Cocok sebagai finisher pump.',sets:'2 working set × 12-15 rep',rest:'45-60 detik',alat:'Cable Machine'},
+      {name:'Hammer Curl',img:'🔨',yt:'https://www.youtube.com/embed/zC3nLlEvin4',desc:'Grip netral mengaktifkan brachialis & brachioradialis. Menambah ketebalan lengan secara keseluruhan.',sets:'2 working set × 10-12 rep',rest:'60 detik',alat:'Dumbbell'},
+    ]
+  },
+  tricep:{
+    name:'Trisep — Triceps Brachii',
+    func:'Trisep punya tiga kepala dan menyusun ~2/3 massa lengan atas. Berfungsi untuk ekstensi siku — krusial untuk semua gerakan pressing.',
+    exercises:[
+      {name:'Close-Grip Bench / Dip',img:'🏋️',yt:'https://www.youtube.com/embed/2z8JmcrW-As',desc:'Compound terberat untuk trisep. Tuck siku, turunkan terkontrol, lockout penuh. Dip berbeban juga sangat efektif.',sets:'2 working set × 6-10 rep',rest:'2-3 menit',alat:'Barbell / Parallel Bars'},
+      {name:'Overhead Extension',img:'🙆',yt:'https://www.youtube.com/embed/YbX7Wd8jQ-Q',desc:'Stretch dalam pada long head di atas kepala. Jaga siku menghadap depan, turunkan perlahan.',sets:'2 working set × 8-12 rep',rest:'90 detik',alat:'Dumbbell / Cable / EZ Bar'},
+      {name:'Tricep Pushdown (Rope)',img:'⬇️',yt:'https://www.youtube.com/embed/vB5OHsJ3EME',desc:'Kunci siku di sisi tubuh, dorong ke bawah, buka rope di akhir gerakan untuk kontraksi maksimal. Finisher klasik.',sets:'2 working set × 12-20 rep',rest:'45-60 detik',alat:'Cable Machine, Rope'},
+      {name:'Skull Crusher',img:'💀',yt:'https://www.youtube.com/embed/d_KZxkY_0cM',desc:'Berbaring, turunkan EZ bar ke dahi lalu ekstensi. Isolasi trisep yang sangat kuat untuk semua kepala.',sets:'2 working set × 10-12 rep',rest:'75 detik',alat:'EZ Bar, Bench'},
+    ]
+  },
+  shoulder:{
+    name:'Bahu — Deltoid (Anterior, Medial, Posterior)',
+    func:'Deltoid terdiri dari tiga bagian: depan, samping, dan belakang. Berfungsi untuk abduksi, fleksi, dan ekstensi lengan. Bahu lebar membentuk V-taper.',
+    exercises:[
+      {name:'Overhead Press',img:'🏋️',yt:'https://www.youtube.com/embed/2yjwXTZQDDI',desc:'Compound utama bahu. Dorong barbell/dumbbell dari bahu ke atas kepala. Brace core, jangan flare tulang rusuk.',sets:'2 working set × 6-10 rep',rest:'2-3 menit',alat:'Barbell / Dumbbell'},
+      {name:'Seated Dumbbell Press',img:'💪',yt:'https://www.youtube.com/embed/qEwKCR5JCog',desc:'Press dengan ROM lebih besar. Dorong dalam busur sedikit, berhenti tepat sebelum lockout untuk tension konstan.',sets:'2 working set × 8-12 rep',rest:'2 menit',alat:'Dumbbell'},
+      {name:'Lateral Raise',img:'↔️',yt:'https://www.youtube.com/embed/3VcKaXpzqRo',desc:'Isolasi deltoid medial — memberi lebar bahu. Lead with elbows, tanpa ayunan, lower terkontrol.',sets:'2 working set × 12-20 rep',rest:'45-60 detik',alat:'Dumbbell / Cable'},
+      {name:'Face Pull',img:'🎯',yt:'https://www.youtube.com/embed/rep-qVOkqgk',desc:'Tarik cable ke wajah dengan siku tinggi. Melatih rear delt & rotator cuff. Penting untuk kesehatan bahu.',sets:'2 working set × 15-20 rep',rest:'60 detik',alat:'Cable Machine, Rope'},
+    ]
+  },
+  back:{
+    name:'Punggung — Latissimus Dorsi & Rhomboids',
+    func:'Lats adalah otot terlebar di tubuh, membentuk V-taper. Berfungsi untuk menarik (pulling), ekstensi bahu, dan stabilisasi tulang belakang.',
+    exercises:[
+      {name:'Pull-Up / Lat Pulldown',img:'⬆️',yt:'https://www.youtube.com/embed/eGo4IYlbE5g',desc:'Raja latihan punggung. Drive siku ke bawah, lead with chest, full hang di bawah. Tambah beban jika >12 rep mudah.',sets:'2 working set × 6-10 rep',rest:'2-3 menit',alat:'Pull-Up Bar / Cable'},
+      {name:'Barbell Row',img:'🏋️',yt:'https://www.youtube.com/embed/FWJR5Ve8bnQ',desc:'Compound terbaik untuk ketebalan punggung. Tarik ke lower ribs, squeeze scapula, tanpa ayunan torso.',sets:'2 working set × 8-12 rep',rest:'2 menit',alat:'Barbell'},
+      {name:'Seated Cable Row',img:'🚣',yt:'https://www.youtube.com/embed/GZbfZ033f74',desc:'Tarik cable ke perut. Melatih rhomboid, mid-back, dan lats. Jaga dada tegak, tarik dengan siku.',sets:'2 working set × 10-12 rep',rest:'90 detik',alat:'Cable Machine'},
+      {name:'Straight-Arm Pulldown',img:'⚡',yt:'https://www.youtube.com/embed/G9uNaXGTJ4w',desc:'Isolasi lats murni. Lengan hampir lurus, tarik ke paha, rasakan stretch & kontraksi. Finisher pump.',sets:'2 working set × 12-15 rep',rest:'60-90 detik',alat:'Cable Machine'},
+    ]
+  },
+  abs:{
+    name:'Perut — Rectus Abdominis & Core',
+    func:'Rectus abdominis memberi tampilan six-pack. Berfungsi untuk fleksi tulang belakang dan stabilisasi core. Core kuat meningkatkan semua angkatan compound.',
+    exercises:[
+      {name:'Cable Crunch',img:'⚡',yt:'https://www.youtube.com/embed/2fbujeH3F0E',desc:'Berlutut di depan cable, tarik rope ke bawah dengan kontraksi abs. Round the spine — beban progresif memungkinkan.',sets:'2 working set × 10-15 rep',rest:'60-90 detik',alat:'Cable Machine, Rope'},
+      {name:'Hanging Leg Raise',img:'🦵',yt:'https://www.youtube.com/embed/hdng3Nm1x_E',desc:'Gantung di bar, curl panggul ke atas (bukan sekadar angkat kaki). Tanpa ayunan, lower terkontrol. Target lower abs.',sets:'2 working set × 8-15 rep',rest:'60 detik',alat:'Pull-Up Bar'},
+      {name:'Plank',img:'🪨',yt:'https://www.youtube.com/embed/ASdvN_XEl_c',desc:'Tahan posisi push-up statis. Brace seperti akan dipukul, spine netral, jangan turun pinggul. Anti-extension core.',sets:'2 working set × 30-60 detik',rest:'45-60 detik',alat:'Bodyweight / Mat'},
+      {name:'Crunches',img:'🔄',yt:'https://www.youtube.com/embed/Xyd_fa5zoEU',desc:'Klasik abs. Angkat bahu dari lantai dengan kontraksi, fokus squeeze bukan momentum. Bagus untuk finisher.',sets:'2 working set × 15-25 rep',rest:'45 detik',alat:'Bodyweight / Mat'},
+    ]
+  },
+  forearm:{
+    name:'Lengan Bawah — Forearm Flexors & Extensors',
+    func:'Otot lengan bawah mengontrol gerakan pergelangan tangan dan grip strength. Grip kuat penting untuk semua pulling dan pressing berat.',
+    exercises:[
+      {name:'Barbell Wrist Curl',img:'🔄',yt:'https://www.youtube.com/embed/dO2tRvD12-g',desc:'Lengan bawah di paha, curl pergelangan ke atas — biarkan bar menggelinding ke ujung jari untuk ROM penuh.',sets:'2 working set × 12-20 rep',rest:'60-90 detik',alat:'Barbell / Dumbbell'},
+      {name:'Reverse Curl',img:'↩️',yt:'https://www.youtube.com/embed/nRgxYX2Ve9w',desc:'Grip overhand. Melatih brachioradialis & ekstensor. Tanpa ayunan, terkontrol di kedua arah.',sets:'2 working set × 10-15 rep',rest:'60 detik',alat:'Barbell / EZ Bar'},
+      {name:"Farmer's Walk",img:'🧺',yt:'https://www.youtube.com/embed/Fkzk_RqlYig',desc:'Bawa beban berat sambil berjalan. Crush the grip, brace core, jalan tegak. Grip & kondisi sekaligus.',sets:'2 working set × 30-45 detik',rest:'60 detik',alat:'Dumbbell / Trap Bar'},
+    ]
+  },
+  quad:{
+    name:'Paha Depan — Quadriceps',
+    func:'Quadriceps terdiri dari 4 kepala dan termasuk otot terbesar di tubuh. Berfungsi untuk ekstensi lutut. Kunci untuk squat, lompat, dan lari.',
+    exercises:[
+      {name:'Barbell Squat',img:'🏋️',yt:'https://www.youtube.com/embed/ultWZbUMPL8',desc:'Compound terbaik untuk kaki. Brace kuat, lutut track over toes, capai depth terkontrol lalu drive naik.',sets:'2 working set × 5-8 rep',rest:'3 menit',alat:'Barbell, Squat Rack'},
+      {name:'Leg Press / Hack Squat',img:'⬆️',yt:'https://www.youtube.com/embed/IZxyjW7MPJQ',desc:'Depth penuh, jangan lock keras, dorong lewat mid-foot. Lebih aman untuk lower back, mudah ditambah beban.',sets:'2 working set × 8-12 rep',rest:'2 menit',alat:'Leg Press / Hack Machine'},
+      {name:'Leg Extension',img:'🦵',yt:'https://www.youtube.com/embed/YyvSfVjQeL0',desc:'Isolasi murni quadriceps. Pause & squeeze di atas, negative lambat. Finisher to-failure yang aman.',sets:'2 working set × 12-20 rep',rest:'60 detik',alat:'Leg Extension Machine'},
+      {name:'Walking Lunges',img:'🚶',yt:'https://www.youtube.com/embed/QOVaHwm-Q6U',desc:'Unilateral untuk keseimbangan & memperbaiki imbalance. Langkah ke depan, lutut mendekati lantai terkontrol.',sets:'2 working set × 10-12 / kaki',rest:'90 detik',alat:'Dumbbell / Barbell'},
+    ]
+  },
+  hamstring:{
+    name:'Paha Belakang — Hamstrings',
+    func:'Hamstrings terdiri dari 3 otot (biceps femoris, semitendinosus, semimembranosus). Berfungsi untuk fleksi lutut & ekstensi pinggul. Sering kurang dilatih.',
+    exercises:[
+      {name:'Romanian Deadlift',img:'🏋️',yt:'https://www.youtube.com/embed/JCXUYuzwNrM',desc:'Hinge di pinggul dengan soft knees, rasakan stretch hamstring, spine netral, lalu kembali tegak. Latihan utama.',sets:'2 working set × 6-10 rep',rest:'2-3 menit',alat:'Barbell / Dumbbell'},
+      {name:'Lying / Seated Leg Curl',img:'🔄',yt:'https://www.youtube.com/embed/1Tq3QdYUuHs',desc:'Isolasi hamstring. Curl terkontrol, squeeze penuh, jangan angkat pinggul dari pad.',sets:'2 working set × 8-12 rep',rest:'90 detik',alat:'Leg Curl Machine'},
+      {name:'Good Morning / Nordic',img:'🌅',yt:'https://www.youtube.com/embed/YA-h3n9L4YU',desc:'Lower sangat lambat untuk tekanan eksentrik besar. Jaga pinggul ekstensi. Stimulus hamstring tinggi.',sets:'2 working set × 8-12 rep',rest:'90 detik',alat:'Barbell / Bodyweight'},
+    ]
+  },
+  glute:{
+    name:'Bokong — Gluteus Maximus, Medius & Minimus',
+    func:'Glutes adalah otot terbesar di tubuh. Berfungsi untuk ekstensi pinggul, abduksi, dan rotasi. Glutes kuat = postur baik, power tinggi, lutut lebih aman.',
+    exercises:[
+      {name:'Hip Thrust',img:'🍑',yt:'https://www.youtube.com/embed/xDmFkJxPzeM',desc:'Latihan terbaik untuk glutes (EMG). Posterior tilt, drive lewat tumit, lockout pinggul, pause di atas.',sets:'2 working set × 8-12 rep',rest:'2 menit',alat:'Barbell, Bench'},
+      {name:'Bulgarian Split Squat',img:'🦵',yt:'https://www.youtube.com/embed/2C-uNgKwPLE',desc:'Condong sedikit ke depan, turun lurus ke bawah, dorong lewat tumit depan. Unilateral, sangat menantang.',sets:'2 working set × 8-12 / kaki',rest:'90 detik',alat:'Dumbbell / Bodyweight'},
+      {name:'Cable Kickback / Abduction',img:'⬅️',yt:'https://www.youtube.com/embed/RMFCOSi5nAk',desc:'Squeeze glute di puncak, tanpa arch lower-back, return lambat. Finisher isolasi yang efektif.',sets:'2 working set × 15-20 rep',rest:'45-60 detik',alat:'Cable Machine'},
+    ]
+  },
+  calf:{
+    name:'Betis — Gastrocnemius & Soleus',
+    func:'Betis terdiri dari gastrocnemius (luar) & soleus (dalam). Berfungsi untuk plantarfleksi. Dikenal keras dilatih dan butuh ROM penuh + pause.',
+    exercises:[
+      {name:'Standing Calf Raise',img:'⬆️',yt:'https://www.youtube.com/embed/gwLzBJYoWlI',desc:'Stretch penuh di bawah, explode naik, pause keras di atas. Menargetkan gastrocnemius maksimal.',sets:'2 working set × 8-12 rep',rest:'90 detik',alat:'Calf Machine / Step'},
+      {name:'Seated Calf Raise',img:'🪑',yt:'https://www.youtube.com/embed/JbyjNymZOt0',desc:'Lutut bengkok menargetkan soleus. Tempo lambat, jangan memantul, kontraksi penuh tiap rep.',sets:'2 working set × 12-15 rep',rest:'60-90 detik',alat:'Seated Calf Machine'},
+      {name:'Leg-Press Calf Raise',img:'⚡',yt:'https://www.youtube.com/embed/YObPOcXZ-YA',desc:'ROM maksimal di leg press. Pause 1 detik tiap rep, dorong lewat ujung kaki. Finisher to-failure.',sets:'2 working set × 15-20 rep',rest:'60 detik',alat:'Leg Press Machine'},
+    ]
+  },
+  trap:{
+    name:'Trapezius — Upper, Middle & Lower Traps',
+    func:'Trapezius adalah otot berlian besar di punggung atas. Berfungsi untuk elevasi (upper), retraksi (middle), dan depresi (lower) scapula. Traps besar = tampilan "yoked".',
+    exercises:[
+      {name:'Barbell / Dumbbell Shrug',img:'🤷',yt:'https://www.youtube.com/embed/g6qbq4Lf1FI',desc:'Angkat bahu lurus ke arah telinga, pause di atas, tanpa rolling. Latihan utama upper traps.',sets:'2 working set × 8-12 rep',rest:'90 detik',alat:'Barbell / Dumbbell'},
+      {name:'Rack Pull / Deadlift',img:'🏋️',yt:'https://www.youtube.com/embed/op9kVnSso6Q',desc:'Spine netral, drive pinggul, squeeze traps keras di lockout. Beban berat membangun ketebalan punggung atas.',sets:'2 working set × 5-8 rep',rest:'2-3 menit',alat:'Barbell'},
+      {name:'Face Pull / Y-Raise',img:'🎯',yt:'https://www.youtube.com/embed/rep-qVOkqgk',desc:'Siku tinggi, tarik ke dahi. Menargetkan mid & lower traps serta rear delt. Penting untuk postur & bahu sehat.',sets:'2 working set × 15-20 rep',rest:'60 detik',alat:'Cable Machine, Rope'},
+    ]
+  }
+};
+
+/* ===================== 2x-FAILURE PROTOCOL ===================== */
+const protocol = {
+  chest:{
+    main:     {role:'Main',      name:'Barbell Bench Press',  scheme:'2 × 5–8',   rest:'2–3 min', rir:'0–1 RIR', type:'Compound',  cue:'Retract scapula, elbows ~45°, control the descent.'},
+    secondary:{role:'Secondary', name:'Incline DB Press',     scheme:'2 × 8–12',  rest:'2 min',   rir:'0–1 RIR', type:'Compound',  cue:'Press up & slightly in, full stretch at the bottom.'},
+    finisher: {role:'Finisher',  name:'Cable Crossover',      scheme:'2 × 12–15', rest:'60–90 s', rir:'0 RIR',   type:'Isolation', cue:'Squeeze hard at peak, keep constant tension.'}
+  },
+  back:{
+    main:     {role:'Main',      name:'Weighted Pull-Up',     scheme:'2 × 6–10',  rest:'2–3 min', rir:'0–1 RIR', type:'Compound',  cue:'Drive elbows down, lead with the chest, full hang.'},
+    secondary:{role:'Secondary', name:'Barbell Row',          scheme:'2 × 8–12',  rest:'2 min',   rir:'0–1 RIR', type:'Compound',  cue:'Pull to lower ribs, squeeze blades, no torso swing.'},
+    finisher: {role:'Finisher',  name:'Straight-Arm Pulldown',scheme:'2 × 12–15', rest:'60–90 s', rir:'0 RIR',   type:'Isolation', cue:'Feel the lats, soft elbows, control the stretch.'}
+  },
+  shoulder:{
+    main:     {role:'Main',      name:'Overhead Press',       scheme:'2 × 6–10',  rest:'2–3 min', rir:'0–1 RIR', type:'Compound',  cue:'Brace core, bar over mid-foot, don\'t flare the ribs.'},
+    secondary:{role:'Secondary', name:'Seated DB Press',      scheme:'2 × 8–12',  rest:'2 min',   rir:'0–1 RIR', type:'Compound',  cue:'Press in a slight arc, stop just short of lockout.'},
+    finisher: {role:'Finisher',  name:'Lateral Raise',        scheme:'2 × 12–20', rest:'45–60 s', rir:'0 RIR',   type:'Isolation', cue:'Lead with elbows, no swing, controlled lower.'}
+  },
+  bicep:{
+    main:     {role:'Main',      name:'Barbell / EZ Curl',    scheme:'2 × 6–10',  rest:'90 s',    rir:'0–1 RIR', type:'Isolation', cue:'Elbows pinned, no hip swing, full top-to-bottom ROM.'},
+    secondary:{role:'Secondary', name:'Incline DB Curl',      scheme:'2 × 8–12',  rest:'90 s',    rir:'0–1 RIR', type:'Isolation', cue:'Let arms hang back for max stretch, supinate hard.'},
+    finisher: {role:'Finisher',  name:'Cable Curl',           scheme:'2 × 12–15', rest:'45–60 s', rir:'0 RIR',   type:'Isolation', cue:'Constant tension, squeeze the peak, slow negative.'}
+  },
+  tricep:{
+    main:     {role:'Main',      name:'Close-Grip Bench / Dip',scheme:'2 × 6–10', rest:'2–3 min', rir:'0–1 RIR', type:'Compound',  cue:'Tuck elbows, control descent, full lockout.'},
+    secondary:{role:'Secondary', name:'Overhead Extension',   scheme:'2 × 8–12',  rest:'90 s',    rir:'0–1 RIR', type:'Isolation', cue:'Deep stretch overhead, keep elbows pointed forward.'},
+    finisher: {role:'Finisher',  name:'Rope Pushdown',        scheme:'2 × 12–20', rest:'45–60 s', rir:'0 RIR',   type:'Isolation', cue:'Lock elbows in place, spread the rope at the bottom.'}
+  },
+  quad:{
+    main:     {role:'Main',      name:'Barbell Squat',        scheme:'2 × 5–8',   rest:'3 min',   rir:'1–2 RIR', type:'Compound',  cue:'Brace hard, knees track over toes, hit depth controlled.'},
+    secondary:{role:'Secondary', name:'Leg Press / Hack',     scheme:'2 × 8–12',  rest:'2 min',   rir:'0–1 RIR', type:'Compound',  cue:'Full depth, don\'t lock hard, push through mid-foot.'},
+    finisher: {role:'Finisher',  name:'Leg Extension',        scheme:'2 × 12–20', rest:'60 s',    rir:'0 RIR',   type:'Isolation', cue:'Pause & squeeze at the top, slow the negative.'}
+  },
+  hamstring:{
+    main:     {role:'Main',      name:'Romanian Deadlift',    scheme:'2 × 6–10',  rest:'2–3 min', rir:'1 RIR',   type:'Compound',  cue:'Hinge at hips, soft knees, feel stretch, neutral spine.'},
+    secondary:{role:'Secondary', name:'Lying Leg Curl',       scheme:'2 × 8–12',  rest:'90 s',    rir:'0–1 RIR', type:'Isolation', cue:'Curl with control, full squeeze, no hip lift.'},
+    finisher: {role:'Finisher',  name:'Nordic / Good Morning',scheme:'2 × 8–12',  rest:'60–90 s', rir:'0–1 RIR', type:'Compound',  cue:'Lower as slow as possible, keep hips extended.'}
+  },
+  glute:{
+    main:     {role:'Main',      name:'Hip Thrust',           scheme:'2 × 8–12',  rest:'2 min',   rir:'0–1 RIR', type:'Compound',  cue:'Posterior tilt, drive heels, lock out, pause at top.'},
+    secondary:{role:'Secondary', name:'Bulgarian Split Squat',scheme:'2 × 8–12',  rest:'90 s',    rir:'0–1 RIR', type:'Compound',  cue:'Slight forward lean, sink straight down, push front heel.'},
+    finisher: {role:'Finisher',  name:'Cable Kickback',       scheme:'2 × 15–20', rest:'45–60 s', rir:'0 RIR',   type:'Isolation', cue:'Squeeze the glute, no lower-back arch, slow return.'}
+  },
+  calf:{
+    main:     {role:'Main',      name:'Standing Calf Raise',  scheme:'2 × 8–12',  rest:'90 s',    rir:'0–1 RIR', type:'Isolation', cue:'Full stretch at bottom, explode up, pause hard on top.'},
+    secondary:{role:'Secondary', name:'Seated Calf Raise',    scheme:'2 × 12–15', rest:'60–90 s', rir:'0–1 RIR', type:'Isolation', cue:'Targets soleus — slow tempo, don\'t bounce.'},
+    finisher: {role:'Finisher',  name:'Leg-Press Calf Raise', scheme:'2 × 15–20', rest:'60 s',    rir:'0 RIR',   type:'Isolation', cue:'Max range, 1-sec pause each rep, burn through it.'}
+  },
+  abs:{
+    main:     {role:'Main',      name:'Weighted Cable Crunch',scheme:'2 × 10–15', rest:'60–90 s', rir:'0–1 RIR', type:'Isolation', cue:'Round the spine, crunch with abs not hips, squeeze.'},
+    secondary:{role:'Secondary', name:'Hanging Leg Raise',    scheme:'2 × 8–15',  rest:'60 s',    rir:'0–1 RIR', type:'Compound',  cue:'No swing, curl the pelvis up, lower with control.'},
+    finisher: {role:'Finisher',  name:'Plank / Ab Wheel',     scheme:'2 × 30–60s',rest:'45–60 s', rir:'0–1 RIR', type:'Isometric', cue:'Brace like taking a punch, neutral spine, don\'t sag.'}
+  },
+  forearm:{
+    main:     {role:'Main',      name:'Barbell Wrist Curl',   scheme:'2 × 12–20', rest:'60–90 s', rir:'0–1 RIR', type:'Isolation', cue:'Full flex & extension, let the bar roll to fingertips.'},
+    secondary:{role:'Secondary', name:'Reverse Curl',         scheme:'2 × 10–15', rest:'60 s',    rir:'0–1 RIR', type:'Isolation', cue:'Overhand grip, no swinging, controlled both ways.'},
+    finisher: {role:'Finisher',  name:"Farmer's Carry",       scheme:'2 × 30–45s',rest:'60 s',    rir:'0–1 RIR', type:'Loaded',    cue:'Crush the grip, brace the core, walk tall.'}
+  },
+  trap:{
+    main:     {role:'Main',      name:'Barbell Shrug',        scheme:'2 × 8–12',  rest:'90 s',    rir:'0–1 RIR', type:'Isolation', cue:'Straight up to the ears, pause at top, no rolling.'},
+    secondary:{role:'Secondary', name:'Rack Pull',            scheme:'2 × 5–8',   rest:'2–3 min', rir:'1 RIR',   type:'Compound',  cue:'Neutral spine, drive hips, squeeze traps at lockout.'},
+    finisher: {role:'Finisher',  name:'Face Pull / Y-Raise',  scheme:'2 × 15–20', rest:'60 s',    rir:'0 RIR',   type:'Isolation', cue:'High elbows, pull to forehead, hit mid & lower traps.'}
+  }
+};
+
+/* ===================== MUSCLE SCAN ===================== */
+const viewMap = {
+  chest:'front', bicep:'front', abs:'front', quad:'front', shoulder:'front', forearm:'front',
+  back:'back', tricep:'back', glute:'back', hamstring:'back', calf:'back', trap:'back'
+};
+let activeMuscle = null;
+
+function setView(view){
+  document.querySelectorAll('.view-toggle button').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  document.getElementById('figFront').hidden = (view !== 'front');
+  document.getElementById('figBack').hidden  = (view !== 'back');
+  applyHighlight();
+}
+
+function applyHighlight(){
+  document.querySelectorAll('.figure').forEach(fig => {
+    fig.classList.toggle('has-sel', activeMuscle != null);
+    fig.querySelectorAll('.ms').forEach(g => g.classList.toggle('on', g.dataset.m === activeMuscle));
+  });
+}
+
+function selectMuscle(id){
+  if(!muscleData[id]) return;
+  activeMuscle = id;
+  document.querySelectorAll('.m-chip').forEach(c => c.classList.toggle('active', c.dataset.m === id));
+  setView(viewMap[id] || 'front');
+  document.getElementById('readout').textContent = 'Target locked — ' + muscleData[id].name.split('—')[0].trim();
+  renderRec(id);
+}
+
+function renderRec(id){
+  const md = muscleData[id], p = protocol[id];
+  const roleClass = {Main:'main', Secondary:'sec', Finisher:'fin'};
+  const protoHtml = [p.main, p.secondary, p.finisher].map(ex => `
+      <div class="proto-card">
+        <div class="proto-head">
+          <span class="proto-role ${roleClass[ex.role]}">${ex.role}</span>
+          <span class="proto-name">${ex.name}</span>
+        </div>
+        <div class="proto-meta">
+          <div class="proto-stat"><div class="k">Sets</div><div class="v">${ex.scheme}</div></div>
+          <div class="proto-stat"><div class="k">Rest</div><div class="v">${ex.rest}</div></div>
+          <div class="proto-stat"><div class="k">Failure</div><div class="v">${ex.rir}</div></div>
+          <div class="proto-stat"><div class="k">Type</div><div class="v">${ex.type}</div></div>
+        </div>
+        <div class="proto-cue"><b>CUE</b><span>${ex.cue}</span></div>
+      </div>`).join('');
+  const vids = md.exercises.map((e, i) => `
+      <div class="video-row" onclick="openExercise('${id}',${i})"><span>${e.img}&nbsp; ${e.name}</span><span class="play">▶ watch</span></div>`).join('');
+  document.getElementById('recPanel').innerHTML = `
+    <div class="rec-inner">
+      <div class="rec-tag">⚡ AI Protocol · 2× Failure Meta</div>
+      <div class="rec-title">${md.name}</div>
+      <div class="rec-func">${md.func}</div>
+      <div class="proto-label">Recommended protocol</div>
+      ${protoHtml}
+      <div class="rec-videos-label">Exercise library — tap to watch form</div>
+      ${vids}
+    </div>`;
+}
+
+/* ===================== EXERCISE MODAL ===================== */
+function openExercise(id, idx){
+  const e = muscleData[id].exercises[idx];
+  document.getElementById('modalTitle').textContent = e.name;
+  document.getElementById('modalBody').innerHTML = `
+    <iframe src="${e.yt}" title="${e.name}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border:1px solid var(--line-2);border-radius:14px;margin-bottom:1.3rem;display:block;"></iframe>
+    <div class="modal-block"><h4>How to perform</h4><p>${e.desc}</p></div>
+    <div class="modal-stats">
+      <div class="modal-stat"><h4>Volume</h4><p>${e.sets}</p></div>
+      <div class="modal-stat"><h4>Rest</h4><p>${e.rest}</p></div>
+      <div class="modal-stat"><h4>Equipment</h4><p>${e.alat}</p></div>
+    </div>`;
+  document.getElementById('exModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  document.getElementById('exModal').classList.remove('open');
+  document.getElementById('modalBody').innerHTML = '';
+  document.body.style.overflow = '';
+}
+function closeModalBg(e){ if(e.target.id === 'exModal') closeModal(); }
+
+/* ===================== NUTRITION ENGINE ===================== */
+function animateCount(el, target, dur){
+  dur = dur || 900;
+  const start = performance.now();
+  function step(t){
+    const prog = Math.min((t - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - prog, 3);
+    el.textContent = Math.round(target * eased).toLocaleString('en-US');
+    if(prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function calculateNutrition(){
+  const gender = document.getElementById('gender').value;
+  const weight = parseFloat(document.getElementById('weight').value) || 70;
+  const height = parseFloat(document.getElementById('height').value) || 170;
+  const age    = parseFloat(document.getElementById('age').value) || 25;
+  const activity = parseFloat(document.getElementById('activity').value);
+  const goal   = document.getElementById('goal').value;
+
+  // Mifflin-St Jeor BMR
+  const bmr = gender === 'male'
+    ? 10*weight + 6.25*height - 5*age + 5
+    : 10*weight + 6.25*height - 5*age - 161;
+  const tdee = bmr * activity;
+
+  let calTarget, protMult, fatPct, goalLabel, goalDesc;
+  switch(goal){
+    case 'bulking':
+      calTarget = tdee + 300; protMult = 1.8; fatPct = 0.25; goalLabel = 'LEAN BULK';
+      goalDesc = '<b>Lean Bulking:</b> Surplus +300 kcal untuk memaksimalkan muscle gain dengan fat gain minimal. Protein tinggi untuk sintesis otot, karbohidrat kompleks (oats, nasi merah, ubi) sebagai bahan bakar latihan. 🎯 Target: +0.25–0.5 kg / minggu.';
+      break;
+    case 'dirty_bulking':
+      calTarget = tdee + 700; protMult = 2.0; fatPct = 0.20; goalLabel = 'DIRTY BULK';
+      goalDesc = '<b>Dirty Bulking:</b> Surplus besar +700 kcal untuk mass gain cepat. Otot tumbuh lebih cepat tapi disertai kenaikan lemak. Cocok untuk ektomorf / hardgainer. ⚠️ Rencanakan cutting setelah 12–16 minggu.';
+      break;
+    case 'cutting':
+      calTarget = tdee - 400; protMult = 2.3; fatPct = 0.25; goalLabel = 'CUTTING';
+      goalDesc = '<b>Cutting:</b> Defisit -400 kcal untuk membakar lemak sambil mempertahankan otot. Protein sangat tinggi (2.3 g/kg) bersifat anti-katabolik. Latihan beban tetap dijalankan untuk preserve mass. 🎯 Target: -0.5–1 kg / minggu.';
+      break;
+    default: // diet
+      calTarget = tdee - 200; protMult = 1.6; fatPct = 0.30; goalLabel = 'DIET / MAINTAIN';
+      goalDesc = '<b>Diet / Maintain:</b> Defisit ringan -200 kcal untuk penurunan bertahap & sustainable. Seimbang antar makronutrien. Cocok untuk pemula atau gaya hidup sehat jangka panjang. 🎯 Target: -0.2–0.4 kg / minggu.';
+  }
+
+  const protein = Math.round(weight * protMult);
+  const fat  = Math.round((calTarget * fatPct) / 9);
+  const carb = Math.round((calTarget - (protein*4) - (fat*9)) / 4);
+  const fiber = Math.round(calTarget / 1000 * 14);   // WHO 14g/1000kcal
+  const sugar = Math.round(calTarget * 0.05 / 4);    // WHO <5%
+  const water = Math.round(weight * 0.033 * 10) / 10; // 33ml/kg
+  const bmi   = Math.round((weight / ((height/100)**2)) * 10) / 10;
+
+  document.getElementById('resultsGrid').innerHTML = `
+    <div class="result-card"><div class="val" id="rcCal">0</div><div class="unit">kcal/hari</div><div class="label">Kalori Target</div></div>
+    <div class="result-card"><div class="val">${protein}g</div><div class="unit">${r1(protMult)} g/kg BW</div><div class="label">Protein</div></div>
+    <div class="result-card"><div class="val">${carb}g</div><div class="unit">karbohidrat</div><div class="label">Carbs</div></div>
+    <div class="result-card"><div class="val">${fat}g</div><div class="unit">lemak</div><div class="label">Fat</div></div>
+    <div class="result-card"><div class="val">${fiber}g</div><div class="unit">serat</div><div class="label">Fiber</div></div>
+    <div class="result-card"><div class="val">&lt;${sugar}g</div><div class="unit">gula tambahan</div><div class="label">Sugar Max</div></div>
+    <div class="result-card"><div class="val">${water}L</div><div class="unit">per hari</div><div class="label">Air Putih</div></div>
+    <div class="result-card"><div class="val">${Math.round(tdee)}</div><div class="unit">kcal/hari</div><div class="label">TDEE</div></div>
+    <div class="result-card"><div class="val">${bmi}</div><div class="unit">kg/m²</div><div class="label">BMI</div></div>`;
+
+  // macro donut (by kcal share)
+  const pCal = protein*4, cCal = carb*4, fCal = fat*9, tot = pCal + cCal + fCal;
+  const pPct = Math.round(pCal/tot*100), cPct = Math.round(cCal/tot*100), fPct = 100 - pPct - cPct;
+  const pEnd = (pPct/100)*360, cEnd = ((pPct+cPct)/100)*360;
+  document.getElementById('macroDonut').style.background =
+    `conic-gradient(var(--teal) 0deg ${pEnd}deg, var(--blue) ${pEnd}deg ${cEnd}deg, var(--orange) ${cEnd}deg 360deg)`;
+
+  document.getElementById('macroLegend').innerHTML = `
+    <div class="prog-row"><div class="prog-label"><span class="sw" style="background:var(--teal)"></span>Protein</div><div class="prog-bg"><div class="prog-fill" data-w="${pPct}%" style="width:0;background:var(--teal)"></div></div><div class="prog-val">${protein}g · ${pPct}%</div></div>
+    <div class="prog-row"><div class="prog-label"><span class="sw" style="background:var(--blue)"></span>Carbs</div><div class="prog-bg"><div class="prog-fill" data-w="${cPct}%" style="width:0;background:var(--blue)"></div></div><div class="prog-val">${carb}g · ${cPct}%</div></div>
+    <div class="prog-row"><div class="prog-label"><span class="sw" style="background:var(--orange)"></span>Fat</div><div class="prog-bg"><div class="prog-fill" data-w="${fPct}%" style="width:0;background:var(--orange)"></div></div><div class="prog-val">${fat}g · ${fPct}%</div></div>`;
+
+  document.getElementById('goalInfo').innerHTML = `
+    <h4>📊 ${goalLabel} — Target Guide</h4>
+    <p>${goalDesc}</p>
+    <p style="margin-top:.75rem;color:var(--ink-3);font-size:.8rem;">⚠️ Referensi: ISSN Position Stand on Protein (2017), WHO Dietary Guidelines, NSCA Essentials of Strength &amp; Conditioning. Nilai ini estimasi — konsultasikan dengan ahli gizi untuk program personal.</p>`;
+
+  document.getElementById('nutriResults').style.display = 'block';
+  animateCount(document.getElementById('donutCal'), Math.round(calTarget));
+  animateCount(document.getElementById('rcCal'), Math.round(calTarget));
+  requestAnimationFrame(() => {
+    document.querySelectorAll('#macroLegend .prog-fill').forEach(el => el.style.width = el.dataset.w);
+  });
+}
+
+/* ===================== FOOD LOG ===================== */
+let foods = [];
+let foodSeq = 1;
+function addFood(){
+  const name = document.getElementById('food-name').value.trim() || 'Makanan';
+  const cal  = parseFloat(document.getElementById('food-cal').value)  || 0;
+  const prot = parseFloat(document.getElementById('food-prot').value) || 0;
+  const carb = parseFloat(document.getElementById('food-carb').value) || 0;
+  const fat  = parseFloat(document.getElementById('food-fat').value)  || 0;
+  const fiber= parseFloat(document.getElementById('food-fiber').value)|| 0;
+  foods.push({id:foodSeq++, name, cal, prot, carb, fat, fiber});
+  ['food-name','food-cal','food-prot','food-carb','food-fat','food-fiber'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('food-name').focus();
+  renderFoodTable();
+}
+function deleteFood(id){ foods = foods.filter(f => f.id !== id); renderFoodTable(); }
+function renderFoodTable(){
+  const tb = document.getElementById('food-tbody');
+  if(!foods.length){
+    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--ink-3);padding:1.4rem;">Belum ada makanan — tambahkan item untuk mulai tracking harianmu.</td></tr>`;
+  } else {
+    tb.innerHTML = foods.map(f => `
+      <tr><td>${f.name}</td><td>${Math.round(f.cal)}</td><td>${r1(f.prot)}g</td><td>${r1(f.carb)}g</td><td>${r1(f.fat)}g</td><td>${r1(f.fiber)}g</td><td><button class="del-btn" onclick="deleteFood(${f.id})">🗑</button></td></tr>`).join('');
+  }
+  const t = {cal:0,prot:0,carb:0,fat:0,fiber:0};
+  foods.forEach(f => { t.cal+=f.cal; t.prot+=f.prot; t.carb+=f.carb; t.fat+=f.fat; t.fiber+=f.fiber; });
+  document.getElementById('food-totals').innerHTML =
+    `<td>TOTAL</td><td>${Math.round(t.cal)}</td><td>${r1(t.prot)}g</td><td>${r1(t.carb)}g</td><td>${r1(t.fat)}g</td><td>${r1(t.fiber)}g</td><td></td>`;
+}
+
+/* ===================== SUPPLEMENTS ===================== */
+const suplemenData = [
+  {id:'cbum', brand:'CBUM × Raw Nutrition', name:'CBUM Itholate Whey Protein', emoji:'🏆', price:'Rp 900K – 1.4jt', serving:'60 Serving', rating:8.5,
+   review:'rasany manis, ad pahit sedikit di awal-awal. Dk ak sarani utk orng yang rawan alergi kek ak + orng g mudah beruntusan soalny whey ini asem, mgkn CBUM fetish asem-asem but we dont know.',
+   pros:['kualitasny premium','unik la ad manis asem pahit','endorse-an CBUM'],
+   cons:['Harga relatif mahal','Rasa agak terlalu "dark"','Sedikit sour aftertaste'],
+   flavors:['🍫 Chocolate'], category:'whey'},
+  {id:'evolene', brand:'evolene lah ap lg', name:'Evolene Whey Protein', emoji:'🇮🇩', price:'Rp 500K – 650K', serving:'60 Serving (Sachet)', rating:8.7,
+   review:'mnrt ak lebih cocok utk lidah orng Indonesia, soalny yg negbuat jg mamang dri Indoneia. rasa coklatny smooth (ak cmn cb rasa coklat). Minesny cmn agak terlalu manis untuk kelas whey.',
+   pros:['Rasa enak, mainstream-friendly','Harga sangat terjangkau','Branding & packaging keren','Format sachet praktis','Kualitas baik untuk harga'],
+   cons:['Rasa agak terlalu manis','Kadang berbuih saat di-shake','Belum sekelas premium internasional'],
+   flavors:['🍫 Chocolate'], category:'whey'},
+  {id:'crevolene', brand:'Evolene Indonesia', name:'Crevolene Creatine', emoji:'🍇', price:'Rp 210K', serving:'60 Serving', rating:8.3,
+   review:'Sangat unik — creatine rasa buah jarang ada di level internasional. Mangga & anggurnya pas, tidak berlebihan. Impressive: zero kalori tambahan, hanya 2–3gr gula natural. Evolene sangat kreatif di sini.',
+   pros:['Rasa buah unik di pasaran','Zero kalori tambahan','Harga sangat terjangkau','3 pilihan rasa','Brand lokal inovatif'],
+   cons:['Efek terasa sedikit lebih lambat','Rasa buah kurang intens','Absorpsi kalah dari ON'],
+   flavors:['🥭 Mangga','🍇 Anggur','⚪ Unflavored'], category:'creatine'},
+  {id:'on-creatine', brand:'Optimum Nutrition', name:'ON Micronized Creatine', emoji:'💎', price:'Rp 290K', serving:'60 Serving', rating:8.8,
+   review:'Rasa enak banget — seperti Mizone raspberry, refreshing & enjoyable. Impact ke tubuh terasa lebih cepat dari Crevolene, mungkin karena micronized. Packaging premium & cantik. Minor: tidak include scoop, pakai sendok ukur 5gr manual.',
+   pros:['Rasa seperti Mizone raspberry','Impact cepat terasa','Packaging premium','Brand internasional terpercaya','Micronized = absorpsi lebih baik'],
+   cons:['Tidak include scoop','Lebih mahal dari Crevolene','Hanya 1 varian rasa'],
+   flavors:['🍓 Raspberry'], category:'creatine'}
+];
+
+let activeSuplFilter = 'all';
+function filterSupl(cat, btn){
+  activeSuplFilter = cat;
+  document.querySelectorAll('.supl-section .tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSupl();
+}
+function getRatingStars(r){
+  const filled = Math.round(r/2);
+  return '★'.repeat(filled) + '☆'.repeat(5 - filled);
+}
+function renderSupl(){
+  const grid = document.getElementById('suplGrid');
+  const list = activeSuplFilter === 'all' ? suplemenData : suplemenData.filter(s => s.category === activeSuplFilter);
+  grid.innerHTML = list.map(s => `
+    <div class="glass supl-card">
+      <div class="supl-top">
+        <div class="supl-brand">${s.brand}</div>
+        <div class="supl-name">${s.name}</div>
+        <span class="supl-badge">${s.category.toUpperCase()}</span>
+        <div class="supl-emoji">${s.emoji}</div>
+      </div>
+      <div class="supl-body">
+        <div class="supl-stats">
+          <div class="supl-stat"><div class="sk">Price</div><div class="sv">${s.price}</div></div>
+          <div class="supl-stat"><div class="sk">Serving</div><div class="sv">${s.serving}</div></div>
+        </div>
+        <div class="supl-flavors">${s.flavors.map(f => `<span class="flavor-tag">${f}</span>`).join('')}</div>
+        <p class="supl-review">"${s.review}"</p>
+        <div class="pros-cons">
+          <div class="pc pros"><h5>Pros</h5><ul>${s.pros.map(p => `<li>${p}</li>`).join('')}</ul></div>
+          <div class="pc cons"><h5>Cons</h5><ul>${s.cons.map(c => `<li>${c}</li>`).join('')}</ul></div>
+        </div>
+        <div class="supl-rating">
+          <div><div class="rate-num">${s.rating}</div><div class="rate-l">Rating</div></div>
+          <div class="rate-stars">${getRatingStars(s.rating)}</div>
+          <div class="rate-bar"><div class="rate-fill" data-w="${s.rating*10}%" style="width:0"></div></div>
+        </div>
+      </div>
+    </div>`).join('');
+  requestAnimationFrame(() => grid.querySelectorAll('.rate-fill').forEach(el => el.style.width = el.dataset.w));
+}
+
+/* ===================== NEWS / INTEL ===================== */
+const newsData = [
+  {cat:'meta', icon:'🔥', title:'2× FAILURE META: Mengapa Proximity-to-Failure Menggeser 4×12', body:'Riset hipertrofi terbaru menekankan kualitas working set yang dekat failure dibanding volume tinggi yang asal-asalan. 2 set keras per latihan jadi sorotan.', date:'May 2026', tag:'TRENDING', query:'proximity to failure hypertrophy training 2 sets research 2025'},
+  {cat:'meta', icon:'⚡', title:'Drop Set & Giant Set: Teknik Intensity Terpanas 2026', body:'Drop set terbukti efektif untuk hypertrophy intensitas tinggi, giant set untuk efisiensi waktu. Keduanya kembali dominan di komunitas gym global.', date:'Apr 2026', tag:'TIPS', query:'drop set giant set hypertrophy technique gym 2026'},
+  {cat:'suplemen', icon:'🧪', title:'Creatine Monohydrate: Riset Terbaru ISSN', body:'ISSN menegaskan creatine monohydrate adalah suplemen paling evidence-based — meningkatkan kekuatan hingga 15% dan lean mass tanpa efek samping signifikan.', date:'Apr 2026', tag:'RISET', query:'creatine monohydrate ISSN position stand 2025 strength'},
+  {cat:'suplemen', icon:'💊', title:'Whey vs Casein: Timing Optimal Protein Intake', body:'Whey paling efektif ~30 menit post-workout karena absorpsi cepat. Casein sebelum tidur untuk muscle protein synthesis sepanjang malam.', date:'Apr 2026', tag:'EDUKASI', query:'whey casein protein timing post workout research 2025'},
+  {cat:'suplemen', icon:'🔬', title:'Beta-Alanine & Pre-Workout: Manfaat Nyata atau Hype?', body:'Beta-alanine terbukti meningkatkan endurance anaerob 8–12%. Dosis efektif 3.2g/hari. Tingling adalah paresthesia normal dan tidak berbahaya.', date:'Mar 2026', tag:'RISET', query:'beta alanine pre workout benefits research evidence 2025'},
+  {cat:'berita', icon:'🏆', title:'Arnold Classic Asia 2026: Hasil & Highlight', body:'Kompetisi bodybuilding terbesar di Asia kembali digelar. Atlet Indonesia meraih podium di kategori Classic Physique.', date:'Mar 2026', tag:'EVENT', query:'Arnold Classic Asia 2026 bodybuilding results Indonesia'},
+  {cat:'berita', icon:'🌏', title:'Gym Chain Premium Ekspansi Besar di Indonesia', body:'Beberapa jaringan gym premium memperluas jangkauan ke lebih banyak kota dengan peralatan modern dan konsep boutique gym.', date:'Mar 2026', tag:'NEWS', query:'premium gym expansion Indonesia 2026 new branches'},
+  {cat:'promo', icon:'💥', title:'Harbolnas & Sale Suplemen: Promo Terbaik Bulan Ini', body:'Berbagai platform e-commerce mengadakan flash sale suplemen gym. Pantau Tokopedia, Shopee, dan toko resmi brand untuk promo terkini.', date:'May 2026', tag:'PROMO', query:'promo suplemen gym Indonesia Tokopedia Shopee 2026 diskon'},
+];
+
+let newsFilter = 'all';
+function filterNews(cat, btn){
+  newsFilter = cat;
+  document.querySelectorAll('.news-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNews();
+}
+function buildGoogleUrl(query){
+  return 'https://www.google.com/search?q=' + encodeURIComponent(query) + '&hl=id';
+}
+function renderNews(){
+  const grid = document.getElementById('newsGrid');
+  const list = newsFilter === 'all' ? newsData : newsData.filter(n => n.cat === newsFilter);
+  grid.innerHTML = list.map(n => {
+    const url = buildGoogleUrl(n.query).replace(/'/g, '%27');
+    return `
+    <div class="glass news-card" onclick="window.open('${url}','_blank')">
+      <div class="news-img">${n.icon}</div>
+      <div class="news-body">
+        <div class="news-cat">${n.cat}</div>
+        <h3>${n.title}</h3>
+        <p>${n.body}</p>
+      </div>
+      <div class="news-meta"><span class="news-date">📅 ${n.date}</span><span class="news-tag">${n.tag}</span></div>
+      <div class="news-go">🔍 Verifikasi di Google →</div>
+    </div>`;
+  }).join('');
+}
+
+/* ===================== SCROLLSPY + REVEAL ===================== */
+function initObservers(){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    const revObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); revObs.unobserve(e.target); } });
+    }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  }
+
+  const sections = ['muscle-sec','meta-sec','nutri-sec','supl-sec','play-sec','news-sec'];
+  const spyObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-links a').forEach(a =>
+          a.classList.toggle('active', a.dataset.to === e.target.id));
+      }
+    });
+  }, {threshold:0.4});
+  sections.forEach(id => { const el = document.getElementById(id); if(el) spyObs.observe(el); });
+}
+
+function onScroll(){
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 30);
+}
+
+/* ===================== INIT ===================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // restore theme
+  try {
+    const saved = localStorage.getItem('vl-theme');
+    if(saved === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+      document.getElementById('themeIcon').textContent = '🌙';
+      document.getElementById('themeLabel').textContent = 'DARK';
+    }
+  } catch(e){}
+
+  // seed food log with neutral examples (user can delete)
+  foods = [
+    {id:foodSeq++, name:'Nasi putih 100g', cal:130, prot:2.7, carb:28, fat:0.3, fiber:0.4},
+    {id:foodSeq++, name:'Ayam dada 150g', cal:248, prot:46.5, carb:0, fat:5.4, fiber:0},
+    {id:foodSeq++, name:'Telur 2 butir', cal:143, prot:12.6, carb:0.7, fat:9.9, fiber:0},
+  ];
+
+  renderSupl();
+  renderNews();
+  renderFoodTable();
+  initObservers();
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  // populate the AI panel with a default target for an immediate "live" feel
+  selectMuscle('chest');
+});
+
+// close modal on Escape
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>
