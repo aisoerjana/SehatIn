@@ -6,39 +6,39 @@ export default function BottomNavbar() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <div className="bg-white border-t border-gray-100 flex items-center justify-around py-3 px-2 pb-5">
+    <div className="bg-white dark:bg-[#0b0f17] border-t border-gray-100 dark:border-white/10 flex items-center justify-around py-3 px-2 pb-5 transition-colors">
       <Link to="/dashboard" className="flex flex-col items-center gap-1">
-        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/dashboard') ? 'bg-green-300/40' : ''}`}>
-          <Home className={`w-5 h-5 ${isActive('/dashboard') ? 'text-green-800' : 'text-gray-700'}`} />
+        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/dashboard') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
+          <Home className={`w-5 h-5 ${isActive('/dashboard') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
         </div>
-        <span className={`text-[10px] font-bold ${isActive('/dashboard') ? 'text-green-800' : 'text-gray-700'}`}>Home</span>
+        <span className={`text-[10px] font-bold ${isActive('/dashboard') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Home</span>
       </Link>
 
       <Link to="/muscle-scan" className="flex flex-col items-center gap-1">
-        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/muscle-scan') ? 'bg-green-300/40' : ''}`}>
-          <Dumbbell className={`w-5 h-5 ${isActive('/muscle-scan') ? 'text-green-800' : 'text-gray-700'}`} />
+        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/muscle-scan') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
+          <Dumbbell className={`w-5 h-5 ${isActive('/muscle-scan') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
         </div>
-        <span className={`text-[10px] font-bold ${isActive('/muscle-scan') ? 'text-green-800' : 'text-gray-700'}`}>Muscle</span>
+        <span className={`text-[10px] font-bold ${isActive('/muscle-scan') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Muscle</span>
       </Link>
 
       <Link to="/asesmen" className="flex flex-col items-center -mt-7">
-        <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg bg-green-600 text-white border-2 border-green-600">
+        <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg bg-blue-600 dark:bg-gradient-to-br dark:from-cyan-400 dark:to-blue-500 text-white border-2 border-blue-600 dark:border-cyan-400">
           <Plus className="w-7 h-7" />
         </div>
       </Link>
 
       <Link to="/history" className="flex flex-col items-center gap-1">
-        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/history') ? 'bg-green-300/40' : ''}`}>
-          <Clock className={`w-5 h-5 ${isActive('/history') ? 'text-green-800' : 'text-gray-700'}`} />
+        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/history') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
+          <Clock className={`w-5 h-5 ${isActive('/history') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
         </div>
-        <span className={`text-[10px] font-bold ${isActive('/history') ? 'text-green-800' : 'text-gray-700'}`}>History</span>
+        <span className={`text-[10px] font-bold ${isActive('/history') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>History</span>
       </Link>
 
       <Link to="/food-list" className="flex flex-col items-center gap-1">
-        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/food-list') ? 'bg-green-300/40' : ''}`}>
-          <List className={`w-5 h-5 ${isActive('/food-list') ? 'text-green-800' : 'text-gray-700'}`} />
+        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/food-list') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
+          <List className={`w-5 h-5 ${isActive('/food-list') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
         </div>
-        <span className={`text-[10px] font-bold ${isActive('/food-list') ? 'text-green-800' : 'text-gray-700'}`}>Food </span>
+        <span className={`text-[10px] font-bold ${isActive('/food-list') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Food </span>
       </Link>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import UpperNavbar from './UpperNavbar'
 import BottomNavbar from './BottomNavbar'
+import { useTheme } from '../context/ThemeContext'
 
 /* ============================================================
    VARENPRIL LABS — Muscle Scan (React + Tailwind port)
@@ -10,21 +11,47 @@ import BottomNavbar from './BottomNavbar'
    ============================================================ */
 
 /* ---------- design tokens ---------- */
-const C = {
+const LIGHT_C = {
   bg: "#FFFFFF",
   bgSoft: "#F8FAFC",
   panel: "#FFFFFF",
   panel2: "#F4F8FB",
-  line: "rgba(15,123,74,0.16)",
-  line2: "rgba(15,123,74,0.10)",
-  teal: "#0F7B4A",
-  blue: "#0A5C37",
+  line: "rgba(37,99,235,0.16)",
+  line2: "rgba(37,99,235,0.10)",
+  teal: "#2563EB",
+  blue: "#1E40AF",
   orange: "#F5A97F",
   ink: "#1F2937",
   ink2: "#4B5563",
   ink3: "#9CA3AF",
-  glowTeal: "0 0 24px rgba(15,123,74,.25)",
+  glowTeal: "0 0 24px rgba(37,99,235,.25)",
+  page: "#eff6ff",
+  stageBg: `radial-gradient(ellipse at 50% 28%, rgba(37,99,235,.06), transparent 62%), #FFFFFF`,
+  panelSoft: "rgba(248,250,252,0.85)",
 };
+
+const DARK_C = {
+  bg: "#0b0f17",
+  bgSoft: "#0f1420",
+  panel: "#0e131d",
+  panel2: "#121826",
+  line: "rgba(34,211,238,0.25)",
+  line2: "rgba(34,211,238,0.14)",
+  teal: "#22d3ee",
+  blue: "#3b82f6",
+  orange: "#F5A97F",
+  ink: "#e5e7eb",
+  ink2: "#9aa4b2",
+  ink3: "#64748b",
+  glowTeal: "0 0 24px rgba(34,211,238,.35)",
+  page: "#05070d",
+  stageBg: `radial-gradient(ellipse at 50% 28%, rgba(34,211,238,.08), transparent 62%), #0b0f17`,
+  panelSoft: "rgba(15,20,32,0.85)",
+};
+
+/* mutated per-render by MuscleScan based on the active theme; ProtoCard/VideoModal
+   read this same module binding when React calls them during the same render pass */
+let C = LIGHT_C;
 
 /* ===================== DATA ===================== */
 const MUSCLE_DATA = {
@@ -247,9 +274,9 @@ const FRONT_PARTS = [
   { m: "chest", paths: ["M92 102 Q108 100 118 107 L118 134 Q104 141 94 132 Q86 119 92 102 Z", "M148 102 Q132 100 122 107 L122 134 Q136 141 146 132 Q154 119 148 102 Z"], nodes: [[105, 119], [135, 119]] },
   { m: "bicep", paths: ["M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z", "M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"], nodes: [[65, 144], [175, 144]] },
   { m: "forearm", paths: ["M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z", "M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"], nodes: [[62, 196], [178, 196]] },
-  { m: "abs", paths: ["M104 138 Q120 136 136 138 L138 206 Q120 214 102 206 Z"], nodes: [[120, 172]] },
-  { m: "quad", paths: ["M100 215 Q88 219 88 245 L94 322 Q106 330 112 320 L116 245 Q116 219 108 215 Q104 214 100 215 Z", "M140 215 Q152 219 152 245 L146 322 Q134 330 128 320 L124 245 Q124 219 132 215 Q136 214 140 215 Z"], nodes: [[102, 268], [138, 268]] },
-  { m: "calf", paths: ["M98 360 Q92 362 92 384 L96 438 Q106 444 110 436 L112 384 Q112 362 106 360 Z", "M142 360 Q148 362 148 384 L144 438 Q134 444 130 436 L128 384 Q128 362 134 360 Z"], nodes: [[101, 400], [139, 400]] },
+  { m: "abs", paths: ["M104 138 Q120 136 136 138 L138 206 Q120 214 102 206 Z"], lines: ["M120 140 L120 210", "M104 162 Q120 160 136 162", "M103 186 Q120 184 137 186"], nodes: [[120, 172]] },
+  { m: "quad", paths: ["M100 215 Q88 219 88 245 L94 332 Q106 338 112 328 L116 245 Q116 219 108 215 Q104 214 100 215 Z", "M140 215 Q152 219 152 245 L146 332 Q134 338 128 328 L124 245 Q124 219 132 215 Q136 214 140 215 Z"], nodes: [[102, 268], [138, 268]] },
+  { m: "calf", paths: ["M98 350 Q92 352 92 384 L96 438 Q106 444 110 436 L112 384 Q112 352 106 350 Z", "M142 350 Q148 352 148 384 L144 438 Q134 444 130 436 L128 384 Q128 352 134 350 Z"], nodes: [[101, 400], [139, 400]] },
 ];
 
 const BACK_PARTS = [
@@ -259,22 +286,58 @@ const BACK_PARTS = [
   { m: "tricep", paths: ["M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z", "M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"], nodes: [[65, 144], [175, 144]] },
   { m: "forearm", paths: ["M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z", "M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"], nodes: [[62, 196], [178, 196]] },
   { m: "glute", paths: ["M100 200 Q88 202 88 220 Q90 238 106 238 Q118 236 118 218 L116 204 Q108 200 100 200 Z", "M140 200 Q152 202 152 220 Q150 238 134 238 Q122 236 122 218 L124 204 Q132 200 140 200 Z"], nodes: [[104, 220], [136, 220]] },
-  { m: "hamstring", paths: ["M100 242 Q90 244 90 266 L96 330 Q108 338 112 328 L114 266 Q114 244 106 242 Z", "M140 242 Q150 244 150 266 L144 330 Q132 338 128 328 L126 266 Q126 244 134 242 Z"], nodes: [[102, 288], [138, 288]] },
-  { m: "calf", paths: ["M98 360 Q90 362 90 388 Q92 414 102 420 Q108 422 110 414 L112 388 Q112 362 106 360 Z", "M142 360 Q150 362 150 388 Q148 414 138 420 Q132 422 130 414 L128 388 Q128 362 134 360 Z"], nodes: [[101, 392], [139, 392]] },
+  { m: "hamstring", paths: ["M100 242 Q90 244 90 266 L96 340 Q108 346 112 336 L114 266 Q114 244 106 242 Z", "M140 242 Q150 244 150 266 L144 340 Q132 346 128 336 L126 266 Q126 244 134 242 Z"], nodes: [[102, 288], [138, 288]] },
+  { m: "calf", paths: ["M98 350 Q90 352 90 388 Q92 414 102 420 Q108 422 110 414 L112 388 Q112 352 106 350 Z", "M142 350 Q150 352 150 388 Q148 414 138 420 Q132 422 130 414 L128 388 Q128 352 134 350 Z"], nodes: [[101, 392], [139, 392]] },
 ];
 
 /* frame (head, neck, joints, hands, feet) */
+const HandLeft = () => (
+  <>
+    <path d="M48 206 Q44 210 44 220 Q44 232 54 236 L68 236 Q76 232 76 220 Q76 210 72 206 Q60 202 48 206 Z" className="frame-fill" />
+    <path d="M36 214 Q30 216 30 224 Q30 231 38 232 Q47 230 46 222 Q46 215 36 214 Z" className="frame-fill" />
+    <path d="M47 234 L52 234 L52 247.5 A2.5 2.5 0 0 1 47 247.5 Z" className="frame-fill" />
+    <path d="M53 235 L59 235 L59 255 A3 3 0 0 1 53 255 Z" className="frame-fill" />
+    <path d="M60 235 L66 235 L66 259 A3 3 0 0 1 60 259 Z" className="frame-fill" />
+    <path d="M67 235 L73 235 L73 255 A3 3 0 0 1 67 255 Z" className="frame-fill" />
+  </>
+);
+const HandRight = () => (
+  <>
+    <path d="M192 206 Q196 210 196 220 Q196 232 186 236 L172 236 Q164 232 164 220 Q164 210 168 206 Q180 202 192 206 Z" className="frame-fill" />
+    <path d="M204 214 Q210 216 210 224 Q210 231 202 232 Q193 230 194 222 Q194 215 204 214 Z" className="frame-fill" />
+    <path d="M193 234 L188 234 L188 247.5 A2.5 2.5 0 0 1 193 247.5 Z" className="frame-fill" />
+    <path d="M187 235 L181 235 L181 255 A3 3 0 0 1 187 255 Z" className="frame-fill" />
+    <path d="M180 235 L174 235 L174 259 A3 3 0 0 1 180 259 Z" className="frame-fill" />
+    <path d="M173 235 L167 235 L167 255 A3 3 0 0 1 173 255 Z" className="frame-fill" />
+  </>
+);
+const FootLeft = () => (
+  <>
+    <path d="M88 430 Q84 434 84 444 Q84 456 100 460 Q116 458 118 446 Q120 434 112 430 Q100 426 88 430 Z" className="frame-fill" />
+    <path d="M92 452 Q92 456 91 459" className="detail-line" />
+    <path d="M102 454 Q102 458 101 461" className="detail-line" />
+    <path d="M112 452 Q112 456 111 459" className="detail-line" />
+  </>
+);
+const FootRight = () => (
+  <>
+    <path d="M152 430 Q156 434 156 444 Q156 456 140 460 Q124 458 122 446 Q120 434 128 430 Q140 426 152 430 Z" className="frame-fill" />
+    <path d="M148 452 Q148 456 149 459" className="detail-line" />
+    <path d="M138 454 Q138 458 139 461" className="detail-line" />
+    <path d="M128 452 Q128 456 129 459" className="detail-line" />
+  </>
+);
+
 const FrameFront = () => (
   <>
     <ellipse cx="120" cy="46" rx="23" ry="27" className="frame-fill" />
     <path d="M108 70 h24 v16 h-24 z" className="frame-fill" />
-    <ellipse cx="56" cy="232" rx="11" ry="13" className="frame-fill" />
-    <ellipse cx="184" cy="232" rx="11" ry="13" className="frame-fill" />
-    <path d="M88 196 q32 8 64 0 l5 22 q-37 9 -74 0 z" className="frame-fill" />
-    <ellipse cx="101" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="101" cy="446" rx="14" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="446" rx="14" ry="9" className="frame-fill" />
+    <HandLeft />
+    <HandRight />
+    <ellipse cx="101" cy="341" rx="15" ry="15" className="frame-fill" />
+    <ellipse cx="139" cy="341" rx="15" ry="15" className="frame-fill" />
+    <FootLeft />
+    <FootRight />
   </>
 );
 
@@ -282,12 +345,12 @@ const FrameBack = () => (
   <>
     <ellipse cx="120" cy="46" rx="23" ry="27" className="frame-fill" />
     <path d="M108 70 h24 v14 h-24 z" className="frame-fill" />
-    <ellipse cx="56" cy="232" rx="11" ry="13" className="frame-fill" />
-    <ellipse cx="184" cy="232" rx="11" ry="13" className="frame-fill" />
-    <ellipse cx="101" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="346" rx="13" ry="9" className="frame-fill" />
-    <ellipse cx="101" cy="446" rx="14" ry="9" className="frame-fill" />
-    <ellipse cx="139" cy="446" rx="14" ry="9" className="frame-fill" />
+    <HandLeft />
+    <HandRight />
+    <ellipse cx="101" cy="341" rx="15" ry="15" className="frame-fill" />
+    <ellipse cx="139" cy="341" rx="15" ry="15" className="frame-fill" />
+    <FootLeft />
+    <FootRight />
   </>
 );
 
@@ -297,19 +360,20 @@ function Figure({ parts, Frame, active, onSelect }) {
     <svg viewBox="0 0 240 540" xmlns="http://www.w3.org/2000/svg" className={`w-full h-auto block ${active ? "has-sel" : ""}`}>
       <defs>
         <linearGradient id="msIdle" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E3F4EB" /><stop offset="1" stopColor="#C8E6D9" />
+          <stop offset="0" stopColor="#DBEAFE" /><stop offset="1" stopColor="#BFDBFE" />
         </linearGradient>
         <linearGradient id="msHover" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#A8D5BA" /><stop offset="1" stopColor="#7BC49A" />
+          <stop offset="0" stopColor="#93C5FD" /><stop offset="1" stopColor="#60A5FA" />
         </linearGradient>
         <linearGradient id="msOn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#4ADE80" /><stop offset="0.5" stopColor="#16A34A" /><stop offset="1" stopColor="#0F7B4A" />
+          <stop offset="0" stopColor="#38BDF8" /><stop offset="0.5" stopColor="#2563EB" /><stop offset="1" stopColor="#1E40AF" />
         </linearGradient>
       </defs>
       <Frame />
       {parts.map((p) => (
         <g key={p.m} className={`ms ${active === p.m ? "on" : ""}`} onClick={() => onSelect(p.m)}>
           {p.paths.map((d, i) => <path key={i} className="seg" d={d} />)}
+          {p.lines && p.lines.map((d, i) => <path key={`l${i}`} className="detail-line" d={d} />)}
           {p.nodes.map(([cx, cy], i) => <circle key={i} className="node" cx={cx} cy={cy} r="2.4" />)}
         </g>
       ))}
@@ -318,11 +382,13 @@ function Figure({ parts, Frame, active, onSelect }) {
 }
 
 /* ===================== SMALL UI PIECES ===================== */
-const ROLE_STYLE = {
-  Main: { background: "rgba(15,123,74,.12)", color: C.teal },
-  Secondary: { background: "rgba(10,92,55,.12)", color: C.blue },
-  Finisher: { background: "rgba(245,169,127,.18)", color: "#d4784b" },
-};
+function getRoleStyle(role) {
+  return {
+    Main: { background: "rgba(15,123,74,.12)", color: C.teal },
+    Secondary: { background: "rgba(10,92,55,.12)", color: C.blue },
+    Finisher: { background: "rgba(245,169,127,.18)", color: "#d4784b" },
+  }[role];
+}
 
 function ProtoCard({ ex }) {
   return (
@@ -331,7 +397,7 @@ function ProtoCard({ ex }) {
       style={{ background: C.panel, border: `1px solid ${C.line2}` }}
     >
       <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="font-display text-white uppercase rounded-md px-2 py-1" style={{ ...ROLE_STYLE[ex.role], fontSize: "0.52rem", letterSpacing: "1.5px" }}>
+        <span className="font-display text-white uppercase rounded-md px-2 py-1" style={{ ...getRoleStyle(ex.role), fontSize: "0.52rem", letterSpacing: "1.5px" }}>
           {ex.role}
         </span>
         <span className="font-bold" style={{ color: C.ink, fontSize: "0.96rem" }}>{ex.name}</span>
@@ -405,6 +471,9 @@ function VideoModal({ muscleId, idx, onClose }) {
 
 /* ===================== MAIN COMPONENT ===================== */
 export default function MuscleScan() {
+  const { theme } = useTheme();
+  C = theme === "dark" ? DARK_C : LIGHT_C;
+
   const [muscle, setMuscle] = useState(null);
   const [view, setView] = useState("front");
   const [modal, setModal] = useState(null); // { muscleId, idx } | null
@@ -418,23 +487,24 @@ export default function MuscleScan() {
   const proto = muscle ? PROTOCOL[muscle] : null;
 
   return (
-    <div className="flex flex-col h-screen w-full" style={{ background: C.bgSoft, fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col h-screen w-full transition-colors" style={{ background: C.page, fontFamily: "'Inter', sans-serif" }}>
       <UpperNavbar />
       <div className="flex-1 overflow-y-auto py-10 px-4">
       {/* fonts + SVG interaction styles (things Tailwind can't express) */}
       <style>{`
         .font-display{font-family:'Inter',sans-serif;letter-spacing:1.2px;}
-        .frame-fill{fill:rgba(227,244,235,.45);stroke:rgba(15,123,74,.18);stroke-width:.8;}
+        .frame-fill{fill:rgba(219,234,254,.45);stroke:rgba(37,99,235,.18);stroke-width:.8;}
+        .detail-line{fill:none;stroke:rgba(37,99,235,.35);stroke-width:1;stroke-linecap:round;pointer-events:none;}
         .ms{cursor:pointer;transition:opacity .3s,filter .3s;}
-        .ms .seg{fill:url(#msIdle);stroke:rgba(15,123,74,.25);stroke-width:1;transition:fill .3s,stroke .3s;}
-        .ms .node{fill:rgba(15,123,74,.45);transition:.3s;}
-        .ms:hover .seg{fill:url(#msHover);stroke:rgba(22,163,74,.6);}
+        .ms .seg{fill:url(#msIdle);stroke:rgba(37,99,235,.25);stroke-width:1;transition:fill .3s,stroke .3s;}
+        .ms .node{fill:rgba(37,99,235,.45);transition:.3s;}
+        .ms:hover .seg{fill:url(#msHover);stroke:rgba(37,99,235,.6);}
         svg.has-sel .ms{opacity:.3;}
         svg.has-sel .ms:hover{opacity:.55;}
         svg.has-sel .ms.on{opacity:1;}
-        .ms.on .seg{fill:url(#msOn);stroke:#86EFAC;stroke-width:1.4;}
-        .ms.on{filter:drop-shadow(0 0 5px rgba(22,163,74,.6)) drop-shadow(0 0 16px rgba(22,163,74,.3));}
-        .ms.on .node{fill:#DCFCE7;animation:nodePulse 1.4s ease-in-out infinite;}
+        .ms.on .seg{fill:url(#msOn);stroke:#93C5FD;stroke-width:1.4;}
+        .ms.on{filter:drop-shadow(0 0 5px rgba(37,99,235,.6)) drop-shadow(0 0 16px rgba(37,99,235,.3));}
+        .ms.on .node{fill:#DBEAFE;animation:nodePulse 1.4s ease-in-out infinite;}
         @keyframes nodePulse{0%,100%{r:2.4;opacity:1;}50%{r:3.6;opacity:.6;}}
         .scanline-anim{animation:scan 4.5s ease-in-out infinite;}
         @keyframes scan{0%{top:6%;}50%{top:78%;}100%{top:6%;}}
@@ -457,7 +527,7 @@ export default function MuscleScan() {
           </div>
           <h2 className="font-display font-extrabold text-3xl md:text-4xl mb-3" style={{ color: C.ink }}>
             Select a target.{" "}
-            <span style={{ background: `linear-gradient(120deg, ${C.teal}, ${C.blue})`, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span className="gradient-clip-text" style={{ '--grad-from': C.teal, '--grad-to': C.blue }}>
               Get the protocol.
             </span>
           </h2>
@@ -483,7 +553,7 @@ export default function MuscleScan() {
                       <button
                         key={item.id}
                         onClick={() => selectMuscle(item.id)}
-                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                         style={{
                           fontSize: "0.94rem",
                           letterSpacing: ".5px",
@@ -511,7 +581,7 @@ export default function MuscleScan() {
             style={{
               minHeight: 560,
               border: `1px solid ${C.line}`,
-              background: `radial-gradient(ellipse at 50% 28%, rgba(15,123,74,.06), transparent 62%), #FFFFFF`,
+              background: C.stageBg,
               backdropFilter: "blur(14px)",
             }}
           >
@@ -570,7 +640,7 @@ export default function MuscleScan() {
           {/* ---- AI REC PANEL ---- */}
           <div
             className="lg:col-span-4 rounded-3xl overflow-hidden"
-            style={{ minHeight: 560, background: "rgba(248,250,252,0.85)", border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
+            style={{ minHeight: 560, background: C.panelSoft, border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
           >
             {!muscle ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 gap-4" style={{ minHeight: 480, color: C.ink3 }}>
@@ -600,7 +670,7 @@ export default function MuscleScan() {
                   <button
                     key={e.name}
                     onClick={() => setModal({ muscleId: muscle, idx: i })}
-                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                     style={{ background: C.panel, border: `1px solid ${C.line2}`, color: C.ink2, fontSize: "0.9rem" }}
                     onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = C.teal; ev.currentTarget.style.color = C.teal; }}
                     onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = C.line2; ev.currentTarget.style.color = C.ink2; }}

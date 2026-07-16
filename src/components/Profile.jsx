@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import UpperNavbar from './UpperNavbar'
 import BottomNavbar from './BottomNavbar'
+import { useTheme } from '../context/ThemeContext'
 
-const C = {
-  primary: "#0F7B4A",
-  primaryDark: "#0A5C37",
-  primarySoft: "#E3F4EB",
+const LIGHT_C = {
+  primary: "#2563EB",
+  primaryDark: "#1E40AF",
+  primarySoft: "#DBEAFE",
   accent: "#F5A97F",
   danger: "#C0392B",
   dangerSoft: "#FBEAEA",
@@ -17,7 +18,28 @@ const C = {
   border: "#D7E0EC",
   text: "#1F2937",
   textMuted: "#6B7280",
+  page: "#eff6ff",
 };
+
+const DARK_C = {
+  primary: "#22d3ee",
+  primaryDark: "#67e8f9",
+  primarySoft: "rgba(34,211,238,0.12)",
+  accent: "#F5A97F",
+  danger: "#f87171",
+  dangerSoft: "rgba(248,113,113,0.12)",
+  bg: "#05070d",
+  surface: "#0e131d",
+  field: "rgba(255,255,255,0.05)",
+  border: "rgba(255,255,255,0.1)",
+  text: "#e5e7eb",
+  textMuted: "#94a3b8",
+  page: "#05070d",
+};
+
+/* mutated per-render by Profile based on the active theme; Card/MenuRow read this
+   same module binding when React calls them during the same render pass */
+let C = LIGHT_C;
 
 const Icon = {
   leaf: (p) => (
@@ -118,6 +140,8 @@ function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
 
 export default function Profile() {
   const navigate = useNavigate()
+  const { theme } = useTheme()
+  C = theme === "dark" ? DARK_C : LIGHT_C;
   const [profile, setProfile] = useState({
     name: 'Pengguna',
     email: '',
@@ -155,12 +179,13 @@ export default function Profile() {
         maxWidth: 400,
         margin: "0 auto",
         height: "100vh",
-        background: C.bg,
+        background: C.page,
         fontFamily: "'Inter', -apple-system, 'Segoe UI', sans-serif",
         color: C.text,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        transition: "background-color 0.2s ease, color 0.2s ease",
       }}
     >
       <UpperNavbar />

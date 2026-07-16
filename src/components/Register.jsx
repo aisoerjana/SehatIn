@@ -71,21 +71,21 @@ export default function Register() {
     !confirmError;
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 px-4 py-8 overflow-y-auto">
+    <div className="flex flex-col min-h-screen bg-[#eff6ff] dark:bg-[#05070d] px-4 py-8 overflow-y-auto transition-colors">
       {/* Card Container */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex flex-col flex-grow">
-        
+      <div className="bg-white dark:bg-[#0b0f17] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 p-6 flex flex-col flex-grow transition-colors">
+
         {/* Header Section */}
         <div className="flex flex-col items-center mb-6 mt-2">
           <img src={SehatIn} alt="SehatIn" className="w-32 h-auto mb-4" />
-          
-          <h1 className="text-2xl font-bold text-green-800 mb-2">Buat Akun Baru</h1>
-          
+
+          <h1 className="text-2xl font-bold text-blue-800 dark:text-cyan-300 mb-2">Buat Akun Baru</h1>
+
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-            <p className="text-red-600 text-sm">{error}</p>
+          <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-lg p-3 mb-4">
+            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
           </div>
         )}
 
@@ -93,29 +93,29 @@ export default function Register() {
         <form className="flex flex-col gap-4 flex-grow">
           {/* Input Nama Lengkap */}
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+            <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Nama Lengkap
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="block w-full px-4 py-3 bg-[#F4F7F9] border border-gray-200 rounded-xl focus:ring-green-500 focus:border-green-500 text-sm transition-colors"
+              className="block w-full px-4 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors"
               placeholder="Masukkan nama Anda"
             />
           </div>
 
           {/* Input Email */}
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+            <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Email
             </label>
             <input
               type="text"
               value={email}
               onChange={handleEmailChange}
-              className={`block w-full px-4 py-3 bg-[#F4F7F9] border rounded-xl focus:ring-green-500 focus:border-green-500 text-sm transition-colors ${
-                emailError ? 'border-red-500' : 'border-gray-200'
+              className={`block w-full px-4 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
+                emailError ? 'border-red-500' : 'border-gray-200 dark:border-white/10'
               }`}
               placeholder="Email"
             />
@@ -126,7 +126,7 @@ export default function Register() {
 
           {/* Input Kata Sandi */}
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+            <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Kata Sandi
             </label>
             <div className="relative">
@@ -134,8 +134,8 @@ export default function Register() {
                 type="password"
                 value={password}
                 onChange={handlePasswordChange}
-                className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] border rounded-xl focus:ring-green-500 focus:border-green-500 text-sm transition-colors ${
-                  passwordError ? 'border-red-500' : 'border-gray-200'
+                className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
+                  passwordError ? 'border-red-500' : 'border-gray-200 dark:border-white/10'
                 }`}
                 placeholder="Minimal 8 karakter"
               />
@@ -150,7 +150,7 @@ export default function Register() {
 
           {/* Input Konfirmasi Kata Sandi */}
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+            <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Konfirmasi Kata Sandi
             </label>
             <div className="relative">
@@ -158,8 +158,8 @@ export default function Register() {
                 type="password"
                 value={confirmPassword}
                 onChange={handleConfirmChange}
-                className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] border rounded-xl focus:ring-green-500 focus:border-green-500 text-sm transition-colors ${
-                  confirmError ? 'border-red-500' : 'border-gray-200'
+                className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
+                  confirmError ? 'border-red-500' : 'border-gray-200 dark:border-white/10'
                 }`}
                 placeholder="Ulangi kata sandi"
               />
@@ -179,8 +179,8 @@ export default function Register() {
             onClick={handleRegister}
             className={`w-full text-white font-semibold py-3.5 rounded-xl transition-colors mt-auto flex items-center justify-center gap-2 shadow-sm ${
               isFormValid && !loading
-                ? 'bg-[#FF9A70] hover:bg-[#ff8554] cursor-pointer'
-                : 'bg-gray-300 cursor-not-allowed'
+                ? 'bg-[#FF9A70] hover:bg-[#ff8554] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 cursor-pointer'
+                : 'bg-gray-300 dark:bg-white/10 cursor-not-allowed'
             }`}
           >
             {loading ? 'Memproses...' : 'Daftar'}
@@ -191,9 +191,9 @@ export default function Register() {
 
       {/* Footer / Login Link */}
       <div className="pt-6 pb-2 text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Sudah punya akun?{' '}
-          <Link to="/login" className="text-green-700 font-bold hover:underline">
+          <Link to="/login" className="text-blue-700 dark:text-cyan-300 font-bold hover:underline">
             Masuk di sini
           </Link>
         </p>
