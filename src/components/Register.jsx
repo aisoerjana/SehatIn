@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { EyeOff, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import logo1 from '../assets/logo1.png';
+import SehatIn from '../assets/SehatIn.png';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -77,12 +77,10 @@ export default function Register() {
         
         {/* Header Section */}
         <div className="flex flex-col items-center mb-6 mt-2">
-          <img src={logo1} alt="SehatIn" className="w-32 h-auto mb-4" />
+          <img src={SehatIn} alt="SehatIn" className="w-32 h-auto mb-4" />
           
           <h1 className="text-2xl font-bold text-green-800 mb-2">Buat Akun Baru</h1>
-          <p className="text-gray-600 text-center text-sm px-4">
-            Bergabung bersama komunitas sehat kami.
-          </p>
+          
         </div>
 
         {error && (

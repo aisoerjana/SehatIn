@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo1 from '../assets/logo1.png';
+import SehatIn from '../assets/SehatIn.png';
 
 export default function Splash() {
   return (
@@ -16,7 +16,7 @@ export default function Splash() {
       {/* Konten Tengah (Logo & Teks) */}
       <div className="flex flex-col items-center z-10 px-8 text-center mt-10">
         <div className="flex items-center gap-3 mb-6">
-          <img src={logo1} alt="SehatIn" className="w-36 h-auto" />
+          <img src={SehatIn} alt="SehatIn" className="w-36 h-auto" />
         </div>
         <p className="text-gray-600 text-[15px] font-medium max-w-[240px] leading-relaxed">
           Panduan gizi preventif berbasis pangan lokal

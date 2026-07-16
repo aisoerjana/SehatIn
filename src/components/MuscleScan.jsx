@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import Navbar from './Navbar'
+import UpperNavbar from './UpperNavbar'
+import BottomNavbar from './BottomNavbar'
 
 /* ============================================================
    VARENPRIL LABS — Muscle Scan (React + Tailwind port)
@@ -8,22 +9,21 @@ import Navbar from './Navbar'
    → exercise video modal.
    ============================================================ */
 
-/* ---------- design tokens (custom colors live here since
-   Tailwind in this preview has no compiler for arbitrary values) ---------- */
+/* ---------- design tokens ---------- */
 const C = {
-  bg: "#04070d",
-  bgSoft: "#070c15",
-  panel: "#0b1320",
-  panel2: "#0f1a28",
-  line: "rgba(0,229,212,0.16)",
-  line2: "rgba(130,170,210,0.10)",
-  teal: "#00e5d4",
-  blue: "#2f7bff",
-  orange: "#ff8a3d",
-  ink: "#eaf4ff",
-  ink2: "#9bb7d4",
-  ink3: "#5d7c9c",
-  glowTeal: "0 0 24px rgba(0,229,212,.35)",
+  bg: "#FFFFFF",
+  bgSoft: "#F8FAFC",
+  panel: "#FFFFFF",
+  panel2: "#F4F8FB",
+  line: "rgba(15,123,74,0.16)",
+  line2: "rgba(15,123,74,0.10)",
+  teal: "#0F7B4A",
+  blue: "#0A5C37",
+  orange: "#F5A97F",
+  ink: "#1F2937",
+  ink2: "#4B5563",
+  ink3: "#9CA3AF",
+  glowTeal: "0 0 24px rgba(15,123,74,.25)",
 };
 
 /* ===================== DATA ===================== */
@@ -297,13 +297,13 @@ function Figure({ parts, Frame, active, onSelect }) {
     <svg viewBox="0 0 240 540" xmlns="http://www.w3.org/2000/svg" className={`w-full h-auto block ${active ? "has-sel" : ""}`}>
       <defs>
         <linearGradient id="msIdle" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#143047" /><stop offset="1" stopColor="#091a29" />
+          <stop offset="0" stopColor="#E3F4EB" /><stop offset="1" stopColor="#C8E6D9" />
         </linearGradient>
         <linearGradient id="msHover" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#1d5a6e" /><stop offset="1" stopColor="#0f3346" />
+          <stop offset="0" stopColor="#A8D5BA" /><stop offset="1" stopColor="#7BC49A" />
         </linearGradient>
         <linearGradient id="msOn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#5dfff2" /><stop offset="0.5" stopColor="#00e5d4" /><stop offset="1" stopColor="#2f7bff" />
+          <stop offset="0" stopColor="#4ADE80" /><stop offset="0.5" stopColor="#16A34A" /><stop offset="1" stopColor="#0F7B4A" />
         </linearGradient>
       </defs>
       <Frame />
@@ -319,9 +319,9 @@ function Figure({ parts, Frame, active, onSelect }) {
 
 /* ===================== SMALL UI PIECES ===================== */
 const ROLE_STYLE = {
-  Main: { background: "rgba(0,229,212,.14)", color: C.teal },
-  Secondary: { background: "rgba(47,123,255,.14)", color: "#6fa0ff" },
-  Finisher: { background: "rgba(255,138,61,.14)", color: C.orange },
+  Main: { background: "rgba(15,123,74,.12)", color: C.teal },
+  Secondary: { background: "rgba(10,92,55,.12)", color: C.blue },
+  Finisher: { background: "rgba(245,169,127,.18)", color: "#d4784b" },
 };
 
 function ProtoCard({ ex }) {
@@ -365,12 +365,12 @@ function VideoModal({ muscleId, idx, onClose }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(2,5,10,.82)", backdropFilter: "blur(12px)" }}
+      style={{ background: "rgba(0,0,0,.55)", backdropFilter: "blur(8px)" }}
       onClick={(ev) => ev.target === ev.currentTarget && onClose()}
     >
       <div
         className="w-full max-w-2xl max-h-full overflow-y-auto rounded-3xl"
-        style={{ background: C.panel, border: `1px solid ${C.line}`, boxShadow: "0 30px 80px rgba(0,0,0,.6)" }}
+        style={{ background: C.panel, border: `1px solid ${C.line}`, boxShadow: "0 4px 24px rgba(0,0,0,.12)" }}
       >
         <div className="flex justify-between items-center px-6 pt-6">
           <h3 className="font-display" style={{ color: C.teal, fontSize: "1.15rem" }}>{e.name}</h3>
@@ -418,23 +418,23 @@ export default function MuscleScan() {
   const proto = muscle ? PROTOCOL[muscle] : null;
 
   return (
-    <div className="flex flex-col h-screen w-full" style={{ background: C.bgSoft, fontFamily: "'Rajdhani', sans-serif" }}>
+    <div className="flex flex-col h-screen w-full" style={{ background: C.bgSoft, fontFamily: "'Inter', sans-serif" }}>
+      <UpperNavbar />
       <div className="flex-1 overflow-y-auto py-10 px-4">
       {/* fonts + SVG interaction styles (things Tailwind can't express) */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
-        .font-display{font-family:'Orbitron',sans-serif;}
-        .frame-fill{fill:rgba(13,30,46,.55);stroke:rgba(0,229,212,.14);stroke-width:.8;}
+        .font-display{font-family:'Inter',sans-serif;letter-spacing:1.2px;}
+        .frame-fill{fill:rgba(227,244,235,.45);stroke:rgba(15,123,74,.18);stroke-width:.8;}
         .ms{cursor:pointer;transition:opacity .3s,filter .3s;}
-        .ms .seg{fill:url(#msIdle);stroke:rgba(0,229,212,.30);stroke-width:1;transition:fill .3s,stroke .3s;}
-        .ms .node{fill:rgba(0,229,212,.55);transition:.3s;}
-        .ms:hover .seg{fill:url(#msHover);stroke:rgba(120,255,245,.7);}
-        svg.has-sel .ms{opacity:.26;}
-        svg.has-sel .ms:hover{opacity:.6;}
+        .ms .seg{fill:url(#msIdle);stroke:rgba(15,123,74,.25);stroke-width:1;transition:fill .3s,stroke .3s;}
+        .ms .node{fill:rgba(15,123,74,.45);transition:.3s;}
+        .ms:hover .seg{fill:url(#msHover);stroke:rgba(22,163,74,.6);}
+        svg.has-sel .ms{opacity:.3;}
+        svg.has-sel .ms:hover{opacity:.55;}
         svg.has-sel .ms.on{opacity:1;}
-        .ms.on .seg{fill:url(#msOn);stroke:#cffff9;stroke-width:1.4;}
-        .ms.on{filter:drop-shadow(0 0 5px rgba(0,229,212,.95)) drop-shadow(0 0 16px rgba(0,229,212,.55));}
-        .ms.on .node{fill:#eafffd;animation:nodePulse 1.4s ease-in-out infinite;}
+        .ms.on .seg{fill:url(#msOn);stroke:#86EFAC;stroke-width:1.4;}
+        .ms.on{filter:drop-shadow(0 0 5px rgba(22,163,74,.6)) drop-shadow(0 0 16px rgba(22,163,74,.3));}
+        .ms.on .node{fill:#DCFCE7;animation:nodePulse 1.4s ease-in-out infinite;}
         @keyframes nodePulse{0%,100%{r:2.4;opacity:1;}50%{r:3.6;opacity:.6;}}
         .scanline-anim{animation:scan 4.5s ease-in-out infinite;}
         @keyframes scan{0%{top:6%;}50%{top:78%;}100%{top:6%;}}
@@ -451,7 +451,7 @@ export default function MuscleScan() {
         {/* section head */}
         <div className="text-center mb-10">
           <div className="font-display inline-flex items-center gap-2 uppercase mb-3 rounded-full px-4 py-1.5"
-            style={{ color: C.teal, fontSize: "0.6rem", letterSpacing: "3px", background: "rgba(0,229,212,.07)", border: `1px solid ${C.line}` }}>
+            style={{ color: C.teal, fontSize: "0.6rem", letterSpacing: "3px", background: "rgba(15,123,74,.07)", border: `1px solid ${C.line}` }}>
             <span className="w-1.5 h-1.5 rounded-full blink-anim" style={{ background: C.teal, boxShadow: `0 0 10px ${C.teal}` }} />
             Cyber Muscle Scan
           </div>
@@ -483,11 +483,11 @@ export default function MuscleScan() {
                       <button
                         key={item.id}
                         onClick={() => selectMuscle(item.id)}
-                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
                         style={{
                           fontSize: "0.94rem",
                           letterSpacing: ".5px",
-                          background: isActive ? "linear-gradient(100deg, rgba(0,229,212,.16), rgba(47,123,255,.10))" : C.panel,
+                          background: isActive ? "linear-gradient(100deg, rgba(15,123,74,.12), rgba(10,92,55,.08))" : C.panel,
                           border: `1px solid ${isActive ? C.teal : C.line2}`,
                           color: isActive ? C.teal : C.ink2,
                           boxShadow: isActive ? C.glowTeal : "none",
@@ -511,7 +511,7 @@ export default function MuscleScan() {
             style={{
               minHeight: 560,
               border: `1px solid ${C.line}`,
-              background: `radial-gradient(ellipse at 50% 28%, rgba(0,229,212,.07), transparent 62%), rgba(13,22,34,0.78)`,
+              background: `radial-gradient(ellipse at 50% 28%, rgba(15,123,74,.06), transparent 62%), #FFFFFF`,
               backdropFilter: "blur(14px)",
             }}
           >
@@ -527,7 +527,7 @@ export default function MuscleScan() {
             {/* scanline */}
             <div
               className="absolute left-3.5 right-3.5 h-16 z-0 pointer-events-none scanline-anim"
-              style={{ background: "linear-gradient(180deg, transparent, rgba(0,229,212,.16), transparent)" }}
+              style={{ background: "linear-gradient(180deg, transparent, rgba(15,123,74,.12), transparent)" }}
             />
 
             {/* view toggle */}
@@ -541,7 +541,7 @@ export default function MuscleScan() {
                     fontSize: "0.6rem",
                     letterSpacing: "1.5px",
                     background: view === v ? `linear-gradient(120deg, ${C.teal}, ${C.blue})` : "transparent",
-                    color: view === v ? "#04101a" : C.ink3,
+                    color: view === v ? "#FFFFFF" : C.ink3,
                   }}
                 >
                   {v}
@@ -570,7 +570,7 @@ export default function MuscleScan() {
           {/* ---- AI REC PANEL ---- */}
           <div
             className="lg:col-span-4 rounded-3xl overflow-hidden"
-            style={{ minHeight: 560, background: "rgba(15,26,40,0.62)", border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
+            style={{ minHeight: 560, background: "rgba(248,250,252,0.85)", border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
           >
             {!muscle ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 gap-4" style={{ minHeight: 480, color: C.ink3 }}>
@@ -600,7 +600,7 @@ export default function MuscleScan() {
                   <button
                     key={e.name}
                     onClick={() => setModal({ muscleId: muscle, idx: i })}
-                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
                     style={{ background: C.panel, border: `1px solid ${C.line2}`, color: C.ink2, fontSize: "0.9rem" }}
                     onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = C.teal; ev.currentTarget.style.color = C.teal; }}
                     onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = C.line2; ev.currentTarget.style.color = C.ink2; }}
@@ -616,7 +616,7 @@ export default function MuscleScan() {
       </div>
       </div>
 
-      <Navbar />
+      <BottomNavbar />
 
       {/* modal */}
       {modal && <VideoModal muscleId={modal.muscleId} idx={modal.idx} onClose={() => setModal(null)} />}

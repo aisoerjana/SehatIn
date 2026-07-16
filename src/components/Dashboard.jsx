@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
-import { User, ArrowRight, LogOut } from 'lucide-react'
-import Navbar from './Navbar'
-import logo1 from '../assets/logo1.png'
+import { User, ArrowRight } from 'lucide-react'
+import UpperNavbar from './UpperNavbar'
+import BottomNavbar from './BottomNavbar'
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -16,11 +16,6 @@ export default function Dashboard() {
     })
   }, [navigate])
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/login')
-  }
-
   const greetingTime = () => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Selamat pagi'
@@ -32,14 +27,9 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col h-screen bg-[#F8FAFC]">
 
-      <div className="flex-1 overflow-y-auto pb-6">
+      <UpperNavbar />
 
-        <div className="bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-          <img src={logo1} alt="SehatIn" className="w-28 h-auto" />
-          <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 transition-colors">
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
+      <div className="flex-1 overflow-y-auto pb-6">
 
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
@@ -73,7 +63,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <Navbar />
+      <BottomNavbar />
 
     </div>
   )

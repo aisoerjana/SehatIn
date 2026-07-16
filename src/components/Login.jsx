@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User, Lock, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import logo2 from '../assets/logo2.png';
+import SehatIn from '../assets/SehatIn.png';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -38,11 +38,8 @@ export default function Login() {
     <div className="flex flex-col min-h-screen px-6 py-12">
       {/* Logo & Header Section */}
       <div className="flex flex-col items-center mt-10 mb-12">
-        <img src={logo2} alt="SehatIn" className="w-16 h-16 mb-4" />
+        <img src={SehatIn} alt="SehatIn" className="w-16 h-16 mb-4" />
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang</h1>
-        <p className="text-gray-500 text-center text-sm px-4">
-          Masuk untuk melanjutkan perjalanan sehatmu
-        </p>
       </div>
 
       {/* Form Section */}
