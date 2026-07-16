@@ -1,78 +1,54 @@
-import { supabase } from './supabaseClient';
+import { supabase } from '../supabaseClient';
 
-async function prosesAsesmen(formData) {
-  // formData contoh: { tinggi_cm, berat_kg, usia, gender, gejala, riwayat_keturunan, alergi, preferensi_diet, consent_diterima }
-
-  // 1. Hitung BMI (rumus: berat(kg) / (tinggi(m) * tinggi(m)))
-  const tinggiMeter = formData.tinggi_cm / 100;
-  const bmi = formData.berat_kg / (tinggiMeter * tinggiMeter);
-
-  // 2. Panggil Edge Function rule-engine
+export async function prosesAsesmen(formData) {
   const { data: hasilRule, error: errorRule } = await supabase.functions.invoke('rule-engine', {
     body: {
-      bmi,
-      gejala: formData.gejala,
-      usia: formData.usia,
       gender: formData.gender,
-      alergi: formData.alergi,
-      preferensi_diet: formData.preferensi_diet,
+      weight_kg: formData.weight_kg,
+      height_cm: formData.height_cm,
+      age: formData.age,
+      goal: formData.goal,
     },
   });
 
-  if (errorRule) {
-    console.error('Error rule engine:', errorRule);
+  if (errorRule || hasilRule?.error) {
+    console.error('Error rule engine:', errorRule || hasilRule?.error);
     return;
   }
 
-  // 3. Kalau darurat, LANGSUNG tampilkan peringatan, JANGAN lanjut ke Gemini
-  if (hasilRule.is_darurat) {
-    // Tampilkan hasilRule.pesan ke user di UI, dan simpan ke riwayat sebagai darurat
-    await supabase.from('riwayat_asesmen').insert({
-      user_id: (await supabase.auth.getUser()).data.user.id,
-      tinggi_cm: formData.tinggi_cm,
-      berat_kg: formData.berat_kg,
-      bmi,
-      usia: formData.usia,
-      gender: formData.gender,
-      gejala: formData.gejala,
-      riwayat_keturunan: formData.riwayat_keturunan,
-      alergi: formData.alergi,
-      preferensi_diet: formData.preferensi_diet,
-      is_darurat: true,
-      consent_diterima: formData.consent_diterima,
-    });
-    return { is_darurat: true, pesan: hasilRule.pesan };
-  }
-
-  // 4. Kalau tidak darurat, lanjut panggil gemini-proxy
   const { data: hasilGemini, error: errorGemini } = await supabase.functions.invoke('gemini-proxy', {
     body: {
-      kebutuhan_nutrisi: hasilRule.kebutuhan_nutrisi,
-      kandidat_bahan: hasilRule.kandidat_bahan,
+      macro_target: hasilRule.macro_target,
+      food_catalog: hasilRule.food_catalog,
     },
   });
 
-  if (errorGemini) {
-    console.error('Error gemini proxy:', errorGemini);
+  if (errorGemini || hasilGemini?.error) {
+    console.error('Error gemini proxy:', errorGemini || hasilGemini?.error);
     return;
   }
 
-  // 5. Simpan hasil akhir ke riwayat_asesmen
-  await supabase.from('riwayat_asesmen').insert({
-    user_id: (await supabase.auth.getUser()).data.user.id,
-    tinggi_cm: formData.tinggi_cm,
-    berat_kg: formData.berat_kg,
-    bmi,
-    usia: formData.usia,
-    gender: formData.gender,
-    gejala: formData.gejala,
-    riwayat_keturunan: formData.riwayat_keturunan,
-    alergi: formData.alergi,
-    preferensi_diet: formData.preferensi_diet,
-    is_darurat: false,
-    hasil_rekomendasi: hasilGemini,
-    consent_diterima: formData.consent_diterima,
-  });
+  const rekomendasi = hasilGemini.rekomendasi || [];
+  if (rekomendasi.length > 0) {
+    const { data: { user } } = await supabase.auth.getUser();
+    const recsToInsert = rekomendasi.map((r) => ({
+      profile_id: user.id,
+      macro_target_id: hasilRule.macro_target.id,
+      food_name: r.food_name,
+      portion: r.portion,
+      kalori: r.kalori,
+      protein_g: r.protein_g,
+      carbs_g: r.carbs_g,
+      lemak_g: r.lemak_g,
+      serat_g: r.serat_g,
+      meal_type: r.meal_type,
+      notes: r.notes,
+    }));
+    await supabase.from('food_recommendations').insert(recsToInsert);
+  }
 
-  return { is_darurat: false, hasil: hasilGemini };
+  return {
+    macro_target: hasilRule.macro_target,
+    rekomendasi,
+  };
 }

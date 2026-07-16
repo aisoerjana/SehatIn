@@ -1,13 +1,14 @@
-async function ambilRiwayatUntukGrafik() {
+import { supabase } from '../supabaseClient';
+
+export async function ambilRiwayatUntukGrafik() {
   const { data, error } = await supabase
-    .from('riwayat_asesmen')
-    .select('bmi, created_at')
-    .order('created_at', { ascending: true });
-  // Karena RLS aktif, otomatis cuma dapat riwayat milik user yang sedang login
+    .from('daily_food_totals')
+    .select('*')
+    .order('rec_date', { ascending: true });
 
   if (error) {
     console.error(error);
     return [];
   }
-  return data; // bisa langsung dipakai sebagai data grafik, misal dengan library "recharts"
+  return data;
 }
