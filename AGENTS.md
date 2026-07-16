@@ -20,12 +20,20 @@
 
 Run **lint** before committing. No tests or typecheck commands exist.
 
+## Architecture
+
+**Routing-based UI with two auth systems:**
+- `src/App.jsx` — router (`react-router-dom`) with routes: `/` Splash, `/login` Login, `/register` Register, `/dashboard` Dashboard, `/asesmen` AsesmenPage
+- **Splash/Login/Register/Dashboard:** use Supabase Auth (`signInWithPassword`, `signUp` with `options.data.name` for display name)
+- **AsesmenPage (`/asesmen`):** uses Supabase Auth (`signInWithPassword`) + existing helpers (`asesmen.jsx`, `riwayat.jsx`, `exportPdf.jsx`)
+- `react-router-dom` and `lucide-react` installed; placeholder `logo1.png`/`logo2.png` in `src/assets/`
+
 ## Data flow
 1. User fills profile form (gender, berat, tinggi, usia, goal: bulking/cutting/maintain)
-2. `asesmen.jsx` calls `supabase.functions.invoke('rule-engine', ...)` with form data
-3. `rule-engine` calculates TDEE, BMI, macro targets (kalori, protein, carbs, fat, fiber, sugar max, air putih), saves to `macro_targets` with `is_active: true`, and matches food catalog items → returns structured data
-4. Frontend calls `gemini-proxy` with filtered data → **Groq Llama 3.3** (not Gemini — misleading name) returns natural-language food recommendations
-5. Recommendations saved to `food_recommendations` (food_name, portion, kalori, protein_g, carbs_g, lemak_g, serat_g, `is_cooked: false`, optional `meal_type`: sarapan/siang/malam/snack)
+2. `asesmen.jsx` calls `supabase.functions.invoke('rule-engine', ...)` with form data + auth header
+3. `rule-engine` calculates TDEE, BMI, macro targets (kalori, protein, carbs, fat, fiber, sugar max, air putih), saves to `macro_targets` with `is_active: true`, upserts `profiles`, and returns **all** `food_catalog` items (no filtering/matching — the LLM does that)
+4. Frontend calls `gemini-proxy` with `macro_target` + `food_catalog` → **Groq Llama 3.3** (not Gemini — misleading name) returns structured food recommendations grouped by meal_type
+5. Recommendations saved to `food_recommendations` (food_name, portion, kalori, protein_g, carbs_g, lemak_g, serat_g, meal_type, notes, links to macro_target & profile)
 6. `daily_food_totals` view auto-sums all recommendations per day
 
 ## Tables (created via Supabase Dashboard SQL Editor — no migration files)
@@ -38,10 +46,11 @@ Run **lint** before committing. No tests or typecheck commands exist.
 | `daily_food_totals` | View — auto-sums total_kalori, total_protein_g, total_carbs_g, total_lemak_g, total_serat_g, total_items, all_cooked per profile per day |
 
 ## Edge Functions (Deno/TS)
-- Both have `verify_jwt = false` — no auth required to invoke
+- Both have `verify_jwt = false` in `config.toml` — but `rule-engine` **does** verify auth manually via Bearer token + `supabase.auth.getUser()`
 - `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` auto-injected by Supabase runtime (do NOT set manually)
 - Only `GROQ_API_KEY` must be set as a secret
-- `rule-engine` uses `createClient` from `https://esm.sh/@supabase/supabase-js@2` directly (import map `deno.json` is not used for the supabase client)
+- `rule-engine` imports supabase client from `https://esm.sh/@supabase/supabase-js@2` (the `deno.json` import map is not used for the client)
+- `gemini-proxy` does NOT use supabase client at all — only calls Groq REST API directly
 - `.npmrc` files in function dirs are placeholders (ignored by Deno)
 - VSCode: Deno extension recommended (`denoland.vscode-deno`), settings in `backend/.vscode/`
 
@@ -59,4 +68,5 @@ Run **lint** before committing. No tests or typecheck commands exist.
 - Root `supabase/` contains only `.temp/` (CLI artifact); real project is `backend/supabase/`
 - `src/App.css` is unused Vite scaffold artifact (not imported)
 - Tailwind v4 via `@tailwindcss/vite` plugin — no PostCSS config or `tailwind.config.js`
-- `config.toml:71` references `seed.sql` — ignored, local Docker workflow not used
+- `config.toml:71` references `./seed.sql` — ignored, local Docker workflow not used
+- New routing-based pages (Splash, Login, Register, Dashboard) are **WIP and not wired** — `react-router-dom` and `lucide-react` not installed, logo assets don't exist
