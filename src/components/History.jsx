@@ -34,7 +34,7 @@ export default function History() {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-screen bg-[#F8FAFC]">
+      <div className="flex flex-col h-screen bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
         <UpperNavbar />
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-400">Memuat...</p>
@@ -45,15 +45,15 @@ export default function History() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#F8FAFC]">
+    <div className="flex flex-col h-screen bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
       <div className="flex-1 p-5 overflow-y-auto pb-8">
-        <h1 className="text-xl font-bold text-gray-900 mb-5">Riwayat Asesmen</h1>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-5">Riwayat Asesmen</h1>
         {results.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20 text-center">
-            <Clock className="w-16 h-16 text-gray-300 mb-4" />
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Riwayat Asesmen</h2>
-            <p className="text-sm text-gray-500 max-w-xs">Riwayat asesmen kesehatan akan muncul di sini.</p>
+            <Clock className="w-16 h-16 text-gray-300 dark:text-white/20 mb-4" />
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Riwayat Asesmen</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Riwayat asesmen kesehatan akan muncul di sini.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -74,15 +74,15 @@ export default function History() {
                     },
                   })
                 }
-                className="w-full text-left bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                className="w-full text-left bg-white dark:bg-[#0b0f17] rounded-2xl p-4 border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-green-600" />
-                  <span className="font-bold text-sm text-gray-900">
+                  <Calendar className="w-4 h-4 text-blue-600 dark:text-cyan-300" />
+                  <span className="font-bold text-sm text-gray-900 dark:text-white">
                     {formatDate(item.created_at)}
                   </span>
                 </div>
-                <div className="flex gap-4 text-xs text-gray-500">
+                <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
                   {item.profiles && (
                     <>
                       <span className="flex items-center gap-1">
