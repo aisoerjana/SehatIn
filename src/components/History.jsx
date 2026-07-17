@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import UpperNavbar from './UpperNavbar';
 import BottomNavbar from './BottomNavbar';
-import { Clock, Calendar, Ruler, User } from 'lucide-react';
+import { Clock, Calendar, Ruler, User, Weight, Trash2 } from 'lucide-react';
 
 export default function History() {
   const navigate = useNavigate();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     async function fetchHistory() {
@@ -17,7 +18,7 @@ export default function History() {
 
       const { data, error } = await supabase
         .from('macro_targets')
-        .select('id, calorie_target, protein_g, carbs_g, fat_g, fiber_g, sugar_max_g, created_at, profiles (height_cm, age)')
+        .select('id, calorie_target, protein_g, carbs_g, fat_g, fiber_g, sugar_max_g, created_at, profiles (height_cm, age, weight_kg)')
         .eq('profile_id', session.user.id)
         .order('created_at', { ascending: false });
 
@@ -30,6 +31,20 @@ export default function History() {
   const formatDate = (iso) => {
     const d = new Date(iso);
     return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
+  const formatTime = (iso) => {
+    const d = new Date(iso);
+    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
+    if (!confirm('Hapus riwayat ini?')) return;
+    setDeletingId(id);
+    await supabase.from('macro_targets').delete().eq('id', id);
+    setResults((prev) => prev.filter((r) => r.id !== id));
+    setDeletingId(null);
   };
 
   if (loading) {
@@ -58,46 +73,66 @@ export default function History() {
         ) : (
           <div className="space-y-3">
             {results.map((item) => (
-              <button
+              <div
                 key={item.id}
-                onClick={() =>
-                  navigate('/result', {
-                    state: {
-                      hasil: {
-                        kalori: item.calorie_target,
-                        protein: item.protein_g,
-                        karbo: item.carbs_g,
-                        lemak: item.fat_g,
-                        gula: item.sugar_max_g,
-                        serat: item.fiber_g,
-                      },
-                      macro_target_id: item.id,
-                    },
-                  })
-                }
-                className="w-full text-left bg-white dark:bg-[#0b0f17] rounded-2xl p-4 border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow"
+                className="relative bg-white dark:bg-[#0b0f17] rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-blue-600 dark:text-cyan-300" />
-                  <span className="font-bold text-sm text-gray-900 dark:text-white">
-                    {formatDate(item.created_at)}
-                  </span>
-                </div>
-                <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
-                  {item.profiles && (
-                    <>
-                      <span className="flex items-center gap-1">
-                        <Ruler className="w-3.5 h-3.5" />
-                        {item.profiles.height_cm} cm
+                <button
+                  onClick={() =>
+                    navigate('/result', {
+                      state: {
+                        hasil: {
+                          kalori: item.calorie_target,
+                          protein: item.protein_g,
+                          karbo: item.carbs_g,
+                          lemak: item.fat_g,
+                          gula: item.sugar_max_g,
+                          serat: item.fiber_g,
+                        },
+                        macro_target_id: item.id,
+                      },
+                    })
+                  }
+                  className="w-full text-left p-4"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-blue-600 dark:text-cyan-300" />
+                      <span className="font-bold text-sm text-gray-900 dark:text-white">
+                        {formatDate(item.created_at)}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <User className="w-3.5 h-3.5" />
-                        {item.profiles.age} tahun
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                        {formatTime(item.created_at)}
                       </span>
-                    </>
-                  )}
-                </div>
-              </button>
+                    </div>
+                  </div>
+                  <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    {item.profiles && (
+                      <>
+                        <span className="flex items-center gap-1">
+                          <Ruler className="w-3.5 h-3.5" />
+                          {item.profiles.height_cm} cm
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Weight className="w-3.5 h-3.5" />
+                          {item.profiles.weight_kg} kg
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <User className="w-3.5 h-3.5" />
+                          {item.profiles.age} tahun
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </button>
+                <button
+                  onClick={(e) => handleDelete(e, item.id)}
+                  disabled={deletingId === item.id}
+                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-40"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             ))}
           </div>
         )}
