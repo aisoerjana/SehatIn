@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Dumbbell, Plus, Clock, List } from 'lucide-react'
+import { Home, Dumbbell, Plus, Clock, Lightbulb } from 'lucide-react'
 
 export default function BottomNavbar() {
   const location = useLocation()
   const isActive = (path) => location.pathname === path
 
   return (
-    <div className="bg-white dark:bg-[#0b0f17] border-t border-gray-100 dark:border-white/10 flex items-center justify-around py-3 px-2 pb-5 transition-colors">
+    <div className="bg-white dark:bg-[#0b0f17] border-t border-gray-100 dark:border-white/10 flex items-center justify-around py-2 px-2 pb-2 transition-colors">
       <Link to="/dashboard" className="flex flex-col items-center gap-1">
         <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/dashboard') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
           <Home className={`w-5 h-5 ${isActive('/dashboard') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
@@ -36,7 +36,7 @@ export default function BottomNavbar() {
 
       <Link to="/ask" className="flex flex-col items-center gap-1">
         <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/ask') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
-          <List className={`w-5 h-5 ${isActive('/ask') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
+          <Lightbulb className={`w-5 h-5 ${isActive('/ask') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
         </div>
         <span className={`text-[10px] font-bold ${isActive('/ask') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Ask</span>
       </Link>
