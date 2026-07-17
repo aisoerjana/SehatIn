@@ -4,6 +4,13 @@ import { supabase } from '../supabaseClient';
 import UpperNavbar from './UpperNavbar';
 import BottomNavbar from './BottomNavbar';
 
+function renderBoldText(text) {
+  const parts = text.split(/\*\*(.*?)\*\*/g);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+  );
+}
+
 const suggestions = [
   'I have chicken breast, broccoli, and tofu. I want to bulk, what should I cook?',
   "I have tempeh, eggs, and water spinach at home. What's a good menu for cutting?",
@@ -15,7 +22,7 @@ export default function Ask() {
   const [messages, setMessages] = useState([
     {
       role: 'bot',
-      text: "Hi! I'm **Ask** — your virtual chef. Tell me what ingredients you have and your goal (bulking/cutting/maintain), and I'll help you create a recipe!",
+      text: "Hi! I'm **SehatIn** — your virtual chef. Tell me what ingredients you have and your goal (bulking/cutting/maintain), and I'll help you create a recipe!",
     },
   ]);
   const [input, setInput] = useState('');
@@ -80,7 +87,7 @@ export default function Ask() {
               <ChefHat className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900 dark:text-white">Ask</h1>
+              <h1 className="text-lg font-bold text-gray-900 dark:text-white">SehatIn</h1>
               <p className="text-[11px] text-gray-500 dark:text-gray-400">Ask for recipes from ingredients you have</p>
             </div>
           </div>
@@ -107,7 +114,7 @@ export default function Ask() {
                     </div>
                     <div className="bg-white dark:bg-[#0b0f17] border border-gray-100 dark:border-white/10 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%] shadow-sm">
                       <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                        {msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                        {renderBoldText(msg.text)}
                       </p>
                     </div>
                   </div>
