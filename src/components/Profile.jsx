@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient'
 import UpperNavbar from './UpperNavbar'
 import BottomNavbar from './BottomNavbar'
 import { useTheme } from '../context/ThemeContext'
+import { Sun, Moon } from 'lucide-react'
 
 const LIGHT_C = {
   primary: "#2563EB",
@@ -140,7 +141,7 @@ function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { theme } = useTheme()
+  const { theme, toggleTheme } = useTheme()
   C = theme === "dark" ? DARK_C : LIGHT_C;
   const [profile, setProfile] = useState({
     name: 'Pengguna',
@@ -343,6 +344,64 @@ export default function Profile() {
                 </div>
               ))}
             </div>
+          </Card>
+
+          <Card
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              marginTop: 20,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  display: "grid",
+                  placeItems: "center",
+                  background: C.primarySoft,
+                  color: C.primary,
+                  flexShrink: 0,
+                }}
+              >
+                {theme === 'dark' ? <Moon width={18} height={18} /> : <Sun width={18} height={18} />}
+              </span>
+              <span style={{ fontSize: 14.5, fontWeight: 600, color: C.text }}>
+                Mode Gelap
+              </span>
+            </div>
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle dark mode"
+              style={{
+                width: 48,
+                height: 26,
+                borderRadius: 13,
+                border: "none",
+                cursor: "pointer",
+                position: "relative",
+                background: theme === 'dark' ? C.primary : C.border,
+                transition: "background 0.2s",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  left: theme === 'dark' ? 24 : 3,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  transition: "left 0.2s",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                }}
+              />
+            </button>
           </Card>
 
           <p
