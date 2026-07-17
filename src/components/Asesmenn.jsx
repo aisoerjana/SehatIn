@@ -49,6 +49,7 @@ export default function Asesmen() {
           gula: mt.sugar_max_g,
           serat: mt.fiber_g,
         },
+        macro_target_id: mt.id,
       },
     });
   };

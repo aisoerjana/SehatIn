@@ -71,6 +71,7 @@ export default function History() {
                         gula: item.sugar_max_g,
                         serat: item.fiber_g,
                       },
+                      macro_target_id: item.id,
                     },
                   })
                 }
