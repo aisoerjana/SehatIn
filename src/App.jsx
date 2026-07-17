@@ -7,7 +7,7 @@ import Asesmen from './components/Asesmenn'
 import MuscleScan from './components/MuscleScan'
 import Profile from './components/Profile'
 import History from './components/History'
-import FoodList from './components/FoodList'
+import Ask from './components/Ask'
 import Result from './components/Result'
 
 export default function App() {
@@ -21,7 +21,7 @@ export default function App() {
       <Route path="/muscle-scan" element={<MuscleScan />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/history" element={<History />} />
-      <Route path="/food-list" element={<FoodList />} />
+      <Route path="/ask" element={<Ask />} />
       <Route path="/result" element={<Result />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
