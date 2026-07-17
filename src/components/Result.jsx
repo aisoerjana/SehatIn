@@ -10,8 +10,10 @@ export default function Hasil() {
   const navigate = useNavigate();
   const location = useLocation();
   const hasil = location.state?.hasil;
+  const macro_target_id = location.state?.macro_target_id;
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [rekomendasi, setRekomendasi] = useState(null);
 
@@ -20,7 +22,8 @@ export default function Hasil() {
       navigate('/asesmen', { replace: true });
       return;
     }
-    ;(async () => {
+
+    async function loadFromAi() {
       try {
         const { data: { session } } = await supabase.auth.getSession()
         const res = await fetch(
@@ -42,13 +45,45 @@ export default function Hasil() {
         const body = await res.json()
         if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`)
         setRekomendasi(body)
+        if (macro_target_id) {
+          setSaving(true)
+          await supabase.from('hasil_rekomendasi').upsert({
+            macro_target_id,
+            rekomendasi_bahan: body.rekomendasi_bahan || [],
+            inspirasi_menu: body.inspirasi_menu || null,
+          }, { onConflict: 'macro_target_id' })
+          setSaving(false)
+        }
       } catch (err) {
         setError(err.message)
       } finally {
         setLoading(false)
       }
-    })()
-  }, [hasil, navigate]);
+    }
+
+    if (!macro_target_id) {
+      loadFromAi();
+      return;
+    }
+
+    supabase
+      .from('hasil_rekomendasi')
+      .select('rekomendasi_bahan, inspirasi_menu')
+      .eq('macro_target_id', macro_target_id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setRekomendasi({
+            rekomendasi_bahan: data.rekomendasi_bahan,
+            inspirasi_menu: data.inspirasi_menu,
+          });
+          setLoading(false);
+        } else {
+          loadFromAi();
+        }
+      })
+      .catch(() => loadFromAi());
+  }, [hasil, navigate, macro_target_id]);
 
   if (!hasil) return null;
 
@@ -99,7 +134,16 @@ export default function Hasil() {
         {loading && (
           <div className="mt-8 flex flex-col items-center justify-center py-12">
             <Loader className="w-8 h-8 text-blue-600 dark:text-cyan-300 animate-spin mb-3" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">AI sedang merekomendasikan bahan untukmu...</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {macro_target_id ? 'Memuat rekomendasi...' : 'AI sedang merekomendasikan bahan untukmu...'}
+            </p>
+          </div>
+        )}
+
+        {saving && (
+          <div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+            <Loader className="w-3 h-3 animate-spin" />
+            Menyimpan hasil...
           </div>
         )}
 
