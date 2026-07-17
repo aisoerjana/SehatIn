@@ -4,7 +4,7 @@ import SehatIn from '../assets/SehatIn2.png'
 
 const UpperNavbar = () => {
   return (
-    <div className="bg-white dark:bg-[#0b0f17] border-b border-transparent dark:border-white/10 px-5 py-0 flex items-center justify-between sticky top-0 z-10 shadow-sm transition-colors">
+    <div className="navbar-enter-down bg-white dark:bg-[#0b0f17] border-b border-transparent dark:border-white/10 px-5 py-0 flex items-center justify-between sticky top-0 z-10 shadow-sm transition-colors">
       <Link to="/">
         <img src={SehatIn} alt="SehatIn" className="w-20 h-auto" />
       </Link>

@@ -38,12 +38,12 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-md mx-auto px-6 py-12 transition-colors relative">
+    <div className="page-enter flex flex-col min-h-screen w-full max-w-md mx-auto px-6 py-12 transition-colors relative">
       {/* Dark/Light Mode Toggle */}
       <button
         onClick={toggleTheme}
         aria-label={theme === 'dark' ? 'Aktifkan light mode' : 'Aktifkan dark mode'}
-        className="absolute top-4 right-6 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors
+        className="navbar-enter-down absolute top-4 right-6 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors
           bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100
           dark:bg-white/5 dark:border-white/10 dark:text-cyan-300 dark:hover:bg-white/10"
       >
@@ -61,14 +61,14 @@ export default function Login() {
       </button>
 
       {/* Logo & Header Section */}
-      <div className="flex flex-col items-center mt-10 mb-12">
+      <div className="page-enter-up flex flex-col items-center mt-10 mb-12">
         <img src={SehatIn} alt="SehatIn" className="w-16 h-16 mb-4" />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Selamat Datang</h1>
       </div>
 
       {/* Form Section */}
       <form className="flex flex-col gap-5 flex-grow">
-        <div>
+        <div className="page-enter-up" style={{ animationDelay: '80ms' }}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
             Email
           </label>
@@ -91,7 +91,7 @@ export default function Login() {
           )}
         </div>
 
-        <div>
+        <div className="page-enter-up" style={{ animationDelay: '150ms' }}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
             Kata Sandi
           </label>
@@ -120,20 +120,21 @@ export default function Login() {
         </div>
 
         {loginError && (
-          <p className="text-red-500 text-sm text-center">{loginError}</p>
+          <p className="page-enter text-red-500 text-sm text-center">{loginError}</p>
         )}
 
         <button
           type="button"
           onClick={handleLogin}
           disabled={loading}
-          className="w-full bg-blue-700 hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 text-white font-semibold py-3.5 rounded-full transition-colors mt-4 shadow-sm disabled:opacity-50"
+          className="page-enter-up w-full bg-blue-700 hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 text-white font-semibold py-3.5 rounded-full transition-colors mt-4 shadow-sm disabled:opacity-50"
+          style={{ animationDelay: '220ms' }}
         >
           {loading ? 'Memproses...' : 'Masuk'}
         </button>
       </form>
 
-      <div className="mt-auto pt-8 pb-4 text-center">
+      <div className="page-enter mt-auto pt-8 pb-4 text-center" style={{ animationDelay: '300ms' }}>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Belum punya akun?{' '}
           <Link to="/register" className="text-blue-600 dark:text-cyan-300 font-bold hover:underline">

@@ -73,9 +73,9 @@ export default function Register() {
     !confirmError;
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] px-4 py-8 overflow-y-auto transition-colors">
+    <div className="page-enter flex flex-col min-h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] px-4 py-8 overflow-y-auto transition-colors">
       {/* Card Container */}
-      <div className="bg-white dark:bg-[#0b0f17] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 p-6 flex flex-col flex-grow transition-colors">
+      <div className="page-enter-up bg-white dark:bg-[#0b0f17] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 p-6 flex flex-col flex-grow transition-colors">
 
         {/* Header Section */}
         <div className="flex flex-col items-center mb-6 mt-2">
@@ -86,7 +86,7 @@ export default function Register() {
         </div>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-lg p-3 mb-4">
+          <div className="page-enter bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-lg p-3 mb-4">
             <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
           </div>
         )}
@@ -94,7 +94,7 @@ export default function Register() {
         {/* Form Section */}
         <form className="flex flex-col gap-4 flex-grow">
           {/* Input Nama Lengkap */}
-          <div>
+          <div className="page-enter-up" style={{ animationDelay: '60ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Nama Lengkap
             </label>
@@ -108,7 +108,7 @@ export default function Register() {
           </div>
 
           {/* Input Email */}
-          <div>
+          <div className="page-enter-up" style={{ animationDelay: '120ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Email
             </label>
@@ -127,7 +127,7 @@ export default function Register() {
           </div>
 
           {/* Input Kata Sandi */}
-          <div>
+          <div className="page-enter-up" style={{ animationDelay: '180ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Kata Sandi
             </label>
@@ -158,7 +158,7 @@ export default function Register() {
           </div>
 
           {/* Input Konfirmasi Kata Sandi */}
-          <div>
+          <div className="page-enter-up" style={{ animationDelay: '240ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Konfirmasi Kata Sandi
             </label>
@@ -193,7 +193,8 @@ export default function Register() {
             type="button"
             disabled={!isFormValid || loading}
             onClick={handleRegister}
-            className={`w-full text-white font-semibold py-3.5 rounded-xl transition-colors mt-auto flex items-center justify-center gap-2 shadow-sm ${
+            style={{ animationDelay: '300ms' }}
+            className={`page-enter-up w-full text-white font-semibold py-3.5 rounded-xl transition-colors mt-auto flex items-center justify-center gap-2 shadow-sm ${
               isFormValid && !loading
                 ? 'bg-[#FF9A70] hover:bg-[#ff8554] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 cursor-pointer'
                 : 'bg-gray-300 dark:bg-white/10 cursor-not-allowed'
@@ -206,7 +207,7 @@ export default function Register() {
       </div>
 
       {/* Footer / Login Link */}
-      <div className="pt-6 pb-2 text-center">
+      <div className="page-enter pt-6 pb-2 text-center" style={{ animationDelay: '350ms' }}>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Sudah punya akun?{' '}
           <Link to="/login" className="text-blue-700 dark:text-cyan-300 font-bold hover:underline">
