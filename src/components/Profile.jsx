@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import UpperNavbar from './UpperNavbar'
@@ -149,13 +149,16 @@ export default function Profile() {
     berat: '-',
     umur: '-',
   })
+  const [avatarUrl, setAvatarUrl] = useState(null)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { navigate('/login'); return }
       const { data } = await supabase
         .from('profiles')
-        .select('name, weight_kg, height_cm, age')
+        .select('name, weight_kg, height_cm, age, avatar_url')
         .eq('id', session.user.id)
         .single()
       setProfile({
@@ -165,8 +168,48 @@ export default function Profile() {
         berat: data?.weight_kg ?? '-',
         umur: data?.age ?? '-',
       })
+      if (data?.avatar_url) setAvatarUrl(data.avatar_url)
     })
   }, [navigate])
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    setUploading(true)
+    const ext = file.name.split('.').pop()
+    const filePath = `${session.user.id}/avatar.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true })
+
+    if (uploadError) {
+      alert('Gagal upload foto: ' + uploadError.message)
+      setUploading(false)
+      return
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath)
+
+    setAvatarUrl(publicUrl)
+
+    await supabase
+      .from('profiles')
+      .update({ avatar_url: publicUrl })
+      .eq('id', session.user.id)
+
+    setUploading(false)
+  }
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -199,17 +242,28 @@ export default function Profile() {
                   width: 84,
                   height: 84,
                   borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${C.primarySoft}, #CFEBDD)`,
+                  background: avatarUrl ? 'none' : `linear-gradient(135deg, ${C.primarySoft}, #CFEBDD)`,
                   display: "grid",
                   placeItems: "center",
                   color: C.primary,
                   border: `2px solid ${C.primary}`,
+                  overflow: "hidden",
                 }}
               >
-                <Icon.user width={40} height={40} />
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt="Foto profil"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <Icon.user width={40} height={40} />
+                )}
               </div>
               <button
                 aria-label="Ubah foto profil"
+                onClick={handleFileSelect}
+                disabled={uploading}
                 style={{
                   position: "absolute",
                   bottom: -2,
@@ -223,10 +277,18 @@ export default function Profile() {
                   display: "grid",
                   placeItems: "center",
                   cursor: "pointer",
+                  opacity: uploading ? 0.6 : 1,
                 }}
               >
                 <Icon.camera width={15} height={15} />
               </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                style={{ display: "none" }}
+                onChange={handleFileUpload}
+              />
             </div>
 
             <h2 style={{ margin: "12px 0 2px", fontSize: 19, fontWeight: 800, color: C.primaryDark }}>

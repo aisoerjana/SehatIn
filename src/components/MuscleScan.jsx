@@ -274,9 +274,9 @@ const FRONT_PARTS = [
   { m: "chest", paths: ["M92 102 Q108 100 118 107 L118 134 Q104 141 94 132 Q86 119 92 102 Z", "M148 102 Q132 100 122 107 L122 134 Q136 141 146 132 Q154 119 148 102 Z"], nodes: [[105, 119], [135, 119]] },
   { m: "bicep", paths: ["M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z", "M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"], nodes: [[65, 144], [175, 144]] },
   { m: "forearm", paths: ["M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z", "M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"], nodes: [[62, 196], [178, 196]] },
-  { m: "abs", paths: ["M104 138 Q120 136 136 138 L138 206 Q120 214 102 206 Z"], lines: ["M120 140 L120 210", "M104 162 Q120 160 136 162", "M103 186 Q120 184 137 186"], nodes: [[120, 172]] },
-  { m: "quad", paths: ["M100 215 Q88 219 88 245 L94 332 Q106 338 112 328 L116 245 Q116 219 108 215 Q104 214 100 215 Z", "M140 215 Q152 219 152 245 L146 332 Q134 338 128 328 L124 245 Q124 219 132 215 Q136 214 140 215 Z"], nodes: [[102, 268], [138, 268]] },
-  { m: "calf", paths: ["M98 350 Q92 352 92 384 L96 438 Q106 444 110 436 L112 384 Q112 352 106 350 Z", "M142 350 Q148 352 148 384 L144 438 Q134 444 130 436 L128 384 Q128 352 134 350 Z"], nodes: [[101, 400], [139, 400]] },
+  { m: "abs", paths: ["M104 138 Q120 136 136 138 L138 206 Q120 214 102 206 Z"], nodes: [[120, 172]] },
+  { m: "quad", paths: ["M100 215 Q88 219 88 245 L94 322 Q106 330 112 320 L116 245 Q116 219 108 215 Q104 214 100 215 Z", "M140 215 Q152 219 152 245 L146 322 Q134 330 128 320 L124 245 Q124 219 132 215 Q136 214 140 215 Z"], nodes: [[102, 268], [138, 268]] },
+  { m: "calf", paths: ["M98 360 Q92 362 92 384 L96 438 Q106 444 110 436 L112 384 Q112 362 106 360 Z", "M142 360 Q148 362 148 384 L144 438 Q134 444 130 436 L128 384 Q128 362 134 360 Z"], nodes: [[101, 400], [139, 400]] },
 ];
 
 const BACK_PARTS = [
@@ -286,58 +286,22 @@ const BACK_PARTS = [
   { m: "tricep", paths: ["M64 120 Q56 122 56 140 L60 166 Q72 168 74 150 L74 126 Q72 120 64 120 Z", "M176 120 Q184 122 184 140 L180 166 Q168 168 166 150 L166 126 Q168 120 176 120 Z"], nodes: [[65, 144], [175, 144]] },
   { m: "forearm", paths: ["M58 169 Q52 171 52 189 L57 222 Q70 226 72 205 L70 173 Q68 169 58 169 Z", "M182 169 Q188 171 188 189 L183 222 Q170 226 168 205 L170 173 Q172 169 182 169 Z"], nodes: [[62, 196], [178, 196]] },
   { m: "glute", paths: ["M100 200 Q88 202 88 220 Q90 238 106 238 Q118 236 118 218 L116 204 Q108 200 100 200 Z", "M140 200 Q152 202 152 220 Q150 238 134 238 Q122 236 122 218 L124 204 Q132 200 140 200 Z"], nodes: [[104, 220], [136, 220]] },
-  { m: "hamstring", paths: ["M100 242 Q90 244 90 266 L96 340 Q108 346 112 336 L114 266 Q114 244 106 242 Z", "M140 242 Q150 244 150 266 L144 340 Q132 346 128 336 L126 266 Q126 244 134 242 Z"], nodes: [[102, 288], [138, 288]] },
-  { m: "calf", paths: ["M98 350 Q90 352 90 388 Q92 414 102 420 Q108 422 110 414 L112 388 Q112 352 106 350 Z", "M142 350 Q150 352 150 388 Q148 414 138 420 Q132 422 130 414 L128 388 Q128 352 134 350 Z"], nodes: [[101, 392], [139, 392]] },
+  { m: "hamstring", paths: ["M100 242 Q90 244 90 266 L96 330 Q108 338 112 328 L114 266 Q114 244 106 242 Z", "M140 242 Q150 244 150 266 L144 330 Q132 338 128 328 L126 266 Q126 244 134 242 Z"], nodes: [[102, 288], [138, 288]] },
+  { m: "calf", paths: ["M98 360 Q90 362 90 388 Q92 414 102 420 Q108 422 110 414 L112 388 Q112 362 106 360 Z", "M142 360 Q150 362 150 388 Q148 414 138 420 Q132 422 130 414 L128 388 Q128 362 134 360 Z"], nodes: [[101, 392], [139, 392]] },
 ];
 
-/* frame (head, neck, joints, hands, feet) */
-const HandLeft = () => (
-  <>
-    <path d="M48 206 Q44 210 44 220 Q44 232 54 236 L68 236 Q76 232 76 220 Q76 210 72 206 Q60 202 48 206 Z" className="frame-fill" />
-    <path d="M36 214 Q30 216 30 224 Q30 231 38 232 Q47 230 46 222 Q46 215 36 214 Z" className="frame-fill" />
-    <path d="M47 234 L52 234 L52 247.5 A2.5 2.5 0 0 1 47 247.5 Z" className="frame-fill" />
-    <path d="M53 235 L59 235 L59 255 A3 3 0 0 1 53 255 Z" className="frame-fill" />
-    <path d="M60 235 L66 235 L66 259 A3 3 0 0 1 60 259 Z" className="frame-fill" />
-    <path d="M67 235 L73 235 L73 255 A3 3 0 0 1 67 255 Z" className="frame-fill" />
-  </>
-);
-const HandRight = () => (
-  <>
-    <path d="M192 206 Q196 210 196 220 Q196 232 186 236 L172 236 Q164 232 164 220 Q164 210 168 206 Q180 202 192 206 Z" className="frame-fill" />
-    <path d="M204 214 Q210 216 210 224 Q210 231 202 232 Q193 230 194 222 Q194 215 204 214 Z" className="frame-fill" />
-    <path d="M193 234 L188 234 L188 247.5 A2.5 2.5 0 0 1 193 247.5 Z" className="frame-fill" />
-    <path d="M187 235 L181 235 L181 255 A3 3 0 0 1 187 255 Z" className="frame-fill" />
-    <path d="M180 235 L174 235 L174 259 A3 3 0 0 1 180 259 Z" className="frame-fill" />
-    <path d="M173 235 L167 235 L167 255 A3 3 0 0 1 173 255 Z" className="frame-fill" />
-  </>
-);
-const FootLeft = () => (
-  <>
-    <path d="M88 430 Q84 434 84 444 Q84 456 100 460 Q116 458 118 446 Q120 434 112 430 Q100 426 88 430 Z" className="frame-fill" />
-    <path d="M92 452 Q92 456 91 459" className="detail-line" />
-    <path d="M102 454 Q102 458 101 461" className="detail-line" />
-    <path d="M112 452 Q112 456 111 459" className="detail-line" />
-  </>
-);
-const FootRight = () => (
-  <>
-    <path d="M152 430 Q156 434 156 444 Q156 456 140 460 Q124 458 122 446 Q120 434 128 430 Q140 426 152 430 Z" className="frame-fill" />
-    <path d="M148 452 Q148 456 149 459" className="detail-line" />
-    <path d="M138 454 Q138 458 139 461" className="detail-line" />
-    <path d="M128 452 Q128 456 129 459" className="detail-line" />
-  </>
-);
-
+/* frame (head, neck, joints) */
 const FrameFront = () => (
   <>
     <ellipse cx="120" cy="46" rx="23" ry="27" className="frame-fill" />
     <path d="M108 70 h24 v16 h-24 z" className="frame-fill" />
-    <HandLeft />
-    <HandRight />
-    <ellipse cx="101" cy="341" rx="15" ry="15" className="frame-fill" />
-    <ellipse cx="139" cy="341" rx="15" ry="15" className="frame-fill" />
-    <FootLeft />
-    <FootRight />
+    <ellipse cx="56" cy="232" rx="11" ry="13" className="frame-fill" />
+    <ellipse cx="184" cy="232" rx="11" ry="13" className="frame-fill" />
+    <path d="M88 196 q32 8 64 0 l5 22 q-37 9 -74 0 z" className="frame-fill" />
+    <ellipse cx="101" cy="346" rx="13" ry="9" className="frame-fill" />
+    <ellipse cx="139" cy="346" rx="13" ry="9" className="frame-fill" />
+    <ellipse cx="101" cy="446" rx="14" ry="9" className="frame-fill" />
+    <ellipse cx="139" cy="446" rx="14" ry="9" className="frame-fill" />
   </>
 );
 
@@ -345,12 +309,12 @@ const FrameBack = () => (
   <>
     <ellipse cx="120" cy="46" rx="23" ry="27" className="frame-fill" />
     <path d="M108 70 h24 v14 h-24 z" className="frame-fill" />
-    <HandLeft />
-    <HandRight />
-    <ellipse cx="101" cy="341" rx="15" ry="15" className="frame-fill" />
-    <ellipse cx="139" cy="341" rx="15" ry="15" className="frame-fill" />
-    <FootLeft />
-    <FootRight />
+    <ellipse cx="56" cy="232" rx="11" ry="13" className="frame-fill" />
+    <ellipse cx="184" cy="232" rx="11" ry="13" className="frame-fill" />
+    <ellipse cx="101" cy="346" rx="13" ry="9" className="frame-fill" />
+    <ellipse cx="139" cy="346" rx="13" ry="9" className="frame-fill" />
+    <ellipse cx="101" cy="446" rx="14" ry="9" className="frame-fill" />
+    <ellipse cx="139" cy="446" rx="14" ry="9" className="frame-fill" />
   </>
 );
 
@@ -363,10 +327,10 @@ function Figure({ parts, Frame, active, onSelect }) {
           <stop offset="0" stopColor="#DBEAFE" /><stop offset="1" stopColor="#BFDBFE" />
         </linearGradient>
         <linearGradient id="msHover" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#93C5FD" /><stop offset="1" stopColor="#60A5FA" />
+          <stop offset="0" stopColor="#5dfff2" /><stop offset="1" stopColor="#00e5d4" />
         </linearGradient>
         <linearGradient id="msOn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#38BDF8" /><stop offset="0.5" stopColor="#2563EB" /><stop offset="1" stopColor="#1E40AF" />
+          <stop offset="0" stopColor="#5dfff2" /><stop offset="0.5" stopColor="#00e5d4" /><stop offset="1" stopColor="#2f7bff" />
         </linearGradient>
       </defs>
       <Frame />
@@ -494,17 +458,16 @@ export default function MuscleScan() {
       <style>{`
         .font-display{font-family:'Inter',sans-serif;letter-spacing:1.2px;}
         .frame-fill{fill:rgba(219,234,254,.45);stroke:rgba(37,99,235,.18);stroke-width:.8;}
-        .detail-line{fill:none;stroke:rgba(37,99,235,.35);stroke-width:1;stroke-linecap:round;pointer-events:none;}
         .ms{cursor:pointer;transition:opacity .3s,filter .3s;}
         .ms .seg{fill:url(#msIdle);stroke:rgba(37,99,235,.25);stroke-width:1;transition:fill .3s,stroke .3s;}
         .ms .node{fill:rgba(37,99,235,.45);transition:.3s;}
-        .ms:hover .seg{fill:url(#msHover);stroke:rgba(37,99,235,.6);}
-        svg.has-sel .ms{opacity:.3;}
-        svg.has-sel .ms:hover{opacity:.55;}
+        .ms:hover .seg{fill:url(#msHover);stroke:rgba(120,255,245,.7);}
+        svg.has-sel .ms{opacity:.26;}
+        svg.has-sel .ms:hover{opacity:.6;}
         svg.has-sel .ms.on{opacity:1;}
-        .ms.on .seg{fill:url(#msOn);stroke:#93C5FD;stroke-width:1.4;}
-        .ms.on{filter:drop-shadow(0 0 5px rgba(37,99,235,.6)) drop-shadow(0 0 16px rgba(37,99,235,.3));}
-        .ms.on .node{fill:#DBEAFE;animation:nodePulse 1.4s ease-in-out infinite;}
+        .ms.on .seg{fill:url(#msOn);stroke:#cffff9;stroke-width:1.4;}
+        .ms.on{filter:drop-shadow(0 0 5px rgba(0,229,212,.95)) drop-shadow(0 0 16px rgba(0,229,212,.55));}
+        .ms.on .node{fill:#eafffd;animation:nodePulse 1.4s ease-in-out infinite;}
         @keyframes nodePulse{0%,100%{r:2.4;opacity:1;}50%{r:3.6;opacity:.6;}}
         .scanline-anim{animation:scan 4.5s ease-in-out infinite;}
         @keyframes scan{0%{top:6%;}50%{top:78%;}100%{top:6%;}}
@@ -527,12 +490,9 @@ export default function MuscleScan() {
           </div>
           <h2 className="font-display font-extrabold text-3xl md:text-4xl mb-3" style={{ color: C.ink }}>
             Select a target.{" "}
-            <span className="gradient-clip-text" style={{ '--grad-from': C.teal, '--grad-to': C.blue }}>
-              Get the protocol.
-            </span>
           </h2>
           <p className="max-w-xl mx-auto" style={{ color: C.ink2, fontSize: "1.04rem" }}>
-            Tap otot di chip atau langsung di avatar — AI panel menampilkan protokol 2× failure lengkap dengan form cue dan video.
+            Tap otot di chip atau langsung di avatar — AI panel menampilkan protokol 2× failure lengkap dengan form cue.
           </p>
         </div>
 
@@ -579,7 +539,7 @@ export default function MuscleScan() {
           <div
             className="lg:col-span-5 relative flex flex-col items-center rounded-3xl p-4 overflow-hidden"
             style={{
-              minHeight: 560,
+              minHeight: 500,
               border: `1px solid ${C.line}`,
               background: C.stageBg,
               backdropFilter: "blur(14px)",
@@ -620,7 +580,7 @@ export default function MuscleScan() {
             </div>
 
             {/* figure */}
-            <div className="relative flex-1 flex items-center justify-center w-full z-10">
+            <div className="relative flex-none flex items-center justify-center w-full z-10 overflow-hidden" style={{ height: 700 }}>
               <div className="w-full max-w-xs">
                 {view === "front" ? (
                   <Figure parts={FRONT_PARTS} Frame={FrameFront} active={muscle} onSelect={selectMuscle} />
