@@ -38,7 +38,7 @@ export default function Login() {
   };
 
   return (
-    <div className="page-enter flex flex-col min-h-screen w-full max-w-md mx-auto px-6 py-12 transition-colors relative">
+    <div className="page-enter flex flex-col h-dvh w-full max-w-md mx-auto px-6 pt-6 pb-2 transition-colors relative overflow-hidden">
       {/* Dark/Light Mode Toggle */}
       <button
         onClick={toggleTheme}
@@ -60,81 +60,83 @@ export default function Login() {
         )}
       </button>
 
-      {/* Logo & Header Section */}
-      <div className="page-enter-up flex flex-col items-center mt-10 mb-12">
-        <img src={SehatIn} alt="SehatIn" className="w-16 h-16 mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome</h1>
+      <div className="flex-1 overflow-y-auto pt-8">
+        {/* Logo & Header Section */}
+        <div className="page-enter-up flex flex-col items-center mb-8">
+          <img src={SehatIn} alt="SehatIn" className="w-16 h-16 mb-4" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome</h1>
+        </div>
+
+        {/* Form Section */}
+        <form className="flex flex-col gap-5">
+          <div className="page-enter-up" style={{ animationDelay: '80ms' }}>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Email
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                value={email}
+                onChange={handleEmailChange}
+                className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white ${
+                  emailError ? 'border-red-500' : 'border-gray-300 dark:border-white/10'
+                }`}
+                placeholder="Enter your email"
+              />
+            </div>
+            {emailError && (
+              <p className="text-red-500 text-xs mt-1">{emailError}</p>
+            )}
+          </div>
+
+          <div className="page-enter-up" style={{ animationDelay: '150ms' }}>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Password
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-white/10 rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white"
+                placeholder="Enter your password"
+              />
+              <div
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                ) : (
+                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {loginError && (
+            <p className="page-enter text-red-500 text-sm text-center">{loginError}</p>
+          )}
+
+          <button
+            type="button"
+            onClick={handleLogin}
+            disabled={loading}
+            className="page-enter-up w-full bg-blue-700 hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 text-white font-semibold py-3.5 rounded-full transition-colors mt-4 shadow-sm disabled:opacity-50"
+            style={{ animationDelay: '220ms' }}
+          >
+            {loading ? 'Processing...' : 'Log In'}
+          </button>
+        </form>
       </div>
 
-      {/* Form Section */}
-      <form className="flex flex-col gap-5 flex-grow">
-        <div className="page-enter-up" style={{ animationDelay: '80ms' }}>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-            Email
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              value={email}
-              onChange={handleEmailChange}
-              className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white ${
-                emailError ? 'border-red-500' : 'border-gray-300 dark:border-white/10'
-              }`}
-              placeholder="Enter your email"
-            />
-          </div>
-          {emailError && (
-            <p className="text-red-500 text-xs mt-1">{emailError}</p>
-          )}
-        </div>
-
-        <div className="page-enter-up" style={{ animationDelay: '150ms' }}>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-            Password
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-white/10 rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white"
-              placeholder="Enter your password"
-            />
-            <div
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-              ) : (
-                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {loginError && (
-          <p className="page-enter text-red-500 text-sm text-center">{loginError}</p>
-        )}
-
-        <button
-          type="button"
-          onClick={handleLogin}
-          disabled={loading}
-          className="page-enter-up w-full bg-blue-700 hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 text-white font-semibold py-3.5 rounded-full transition-colors mt-4 shadow-sm disabled:opacity-50"
-          style={{ animationDelay: '220ms' }}
-        >
-          {loading ? 'Processing...' : 'Log In'}
-        </button>
-      </form>
-
-      <div className="page-enter mt-auto pt-8 pb-4 text-center" style={{ animationDelay: '300ms' }}>
+      <div className="page-enter pt-4 pb-4 text-center shrink-0" style={{ animationDelay: '300ms' }}>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Don't have an account?{' '}
           <Link to="/register" className="text-blue-600 dark:text-cyan-300 font-bold hover:underline">
