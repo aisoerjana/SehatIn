@@ -41,9 +41,9 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const mode = body.mode || "rekomendasi";
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY tidak ditemukan di secrets");
+    const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
+    if (!GROQ_API_KEY) {
+      throw new Error("GROQ_API_KEY tidak ditemukan di secrets");
     }
 
     let messages;
@@ -193,46 +193,26 @@ Berikan jawaban dalam format JSON PERSIS seperti ini, tanpa teks tambahan:
     const systemMessage = messages.find((m) => m.role === "system")?.content || "";
     const userMessage = messages.find((m) => m.role === "user")?.content || "";
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [
-              {
-                text: systemMessage,
-              },
-            ],
-          },
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: userMessage,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 2048,
-          },
-        }),
-      }
-    );
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages,
+        temperature: 0.7,
+      }),
+    });
 
-    const geminiData = await response.json();
+    const groqData = await response.json();
 
-    if (!response.ok || !geminiData.candidates?.[0]?.content?.parts?.[0]?.text) {
-      throw new Error("Gemini API error: " + JSON.stringify(geminiData));
+    if (!response.ok || !groqData.choices?.[0]?.message?.content) {
+      throw new Error("Groq API error: " + JSON.stringify(groqData));
     }
 
-    let teksJawaban = geminiData.candidates[0].content.parts[0].text;
+    let teksJawaban = groqData.choices[0].message.content;
     let teksBersih = teksJawaban.replace(/```json\n?|```/g, "").trim();
 
     let hasil;
@@ -243,7 +223,7 @@ Berikan jawaban dalam format JSON PERSIS seperti ini, tanpa teks tambahan:
       if (match) {
         hasil = JSON.parse(match[0]);
       } else {
-        throw new Error("Gagal parse response Gemini: " + teksJawaban);
+        throw new Error("Gagal parse response Groq: " + teksJawaban);
       }
     }
 
