@@ -55,9 +55,9 @@ export default function FoodList() {
   });
 
   return (
-    <div className="flex flex-col h-screen bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
+    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
-      <div className="flex-1 p-5 overflow-y-auto pb-8">
+      <div className="flex-1 p-5 overflow-y-auto pb-24">
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">Daftar Makanan</h1>
           <div className="relative">

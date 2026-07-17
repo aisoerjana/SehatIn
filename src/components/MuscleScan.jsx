@@ -455,9 +455,9 @@ export default function MuscleScan() {
   const proto = muscle ? PROTOCOL[muscle] : null;
 
   return (
-    <div className="flex flex-col h-screen w-full transition-colors" style={{ background: C.page, fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex flex-col h-screen w-full max-w-md mx-auto transition-colors" style={{ background: C.page, fontFamily: "'Inter', sans-serif" }}>
       <UpperNavbar />
-      <div className="flex-1 overflow-y-auto py-10 px-4">
+      <div className="flex-1 overflow-y-auto py-10 px-4 pb-24">
       {/* fonts + SVG interaction styles (things Tailwind can't express) */}
       <style>{`
         .font-display{font-family:'Inter',sans-serif;letter-spacing:1.2px;}

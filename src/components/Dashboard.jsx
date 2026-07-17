@@ -92,7 +92,7 @@ export default function Dashboard() {
   ] : []
 
   return (
-    <div className="flex flex-col h-screen bg-[#F6F9FF] dark:bg-[#05070d] transition-colors">
+    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#F6F9FF] dark:bg-[#05070d] transition-colors">
 
       <UpperNavbar />
 

@@ -73,7 +73,7 @@ export default function Register() {
     !confirmError;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#eff6ff] dark:bg-[#05070d] px-4 py-8 overflow-y-auto transition-colors">
+    <div className="flex flex-col min-h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] px-4 py-8 overflow-y-auto transition-colors">
       {/* Card Container */}
       <div className="bg-white dark:bg-[#0b0f17] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 p-6 flex flex-col flex-grow transition-colors">
 

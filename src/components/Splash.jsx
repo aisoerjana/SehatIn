@@ -4,7 +4,7 @@ import SehatIn from '../assets/SehatIn2.png';
 
 export default function Splash() {
   return (
-    <div className="relative flex flex-col items-center justify-between min-h-screen bg-[#eff6ff] dark:bg-[#05070d] overflow-hidden pb-10 transition-colors">
+    <div className="relative flex flex-col items-center justify-between min-h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] overflow-hidden pb-10 transition-colors">
 
       {/* Dekorasi Background Glow */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-blue-200/30 dark:bg-cyan-400/10 rounded-full blur-3xl -mr-20 -mt-20"></div>

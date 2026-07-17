@@ -49,7 +49,7 @@ export default function History() {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-screen bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
+      <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
         <UpperNavbar />
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-400">Memuat...</p>
@@ -60,9 +60,9 @@ export default function History() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
+    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
-      <div className="flex-1 p-5 overflow-y-auto pb-8">
+      <div className="flex-1 p-5 overflow-y-auto pb-24">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-5">Riwayat Asesmen</h1>
         {results.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20 text-center">

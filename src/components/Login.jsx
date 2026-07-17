@@ -38,7 +38,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen px-6 py-12 transition-colors relative">
+    <div className="flex flex-col min-h-screen w-full max-w-md mx-auto px-6 py-12 transition-colors relative">
       {/* Dark/Light Mode Toggle */}
       <button
         onClick={toggleTheme}

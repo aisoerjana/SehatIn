@@ -221,7 +221,7 @@ export default function Profile() {
       style={{
         maxWidth: 400,
         margin: "0 auto",
-        height: "100vh",
+        height: "100dvh",
         background: colors.page,
         fontFamily: "'Inter', -apple-system, 'Segoe UI', sans-serif",
         color: colors.text,
@@ -234,7 +234,7 @@ export default function Profile() {
       <UpperNavbar />
       <main style={{ flex: 1, overflowY: "auto" }}>
 
-        <div style={{ padding: "16px 16px 24px" }}>
+        <div style={{ padding: "16px 16px 96px" }}>
           <Card style={{ padding: 20, textAlign: "center" }} colors={colors}>
             <div style={{ position: "relative", width: 84, height: 84, margin: "0 auto" }}>
               <div

@@ -71,10 +71,10 @@ export default function Ask() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#F6F9FF] dark:bg-[#05070d] transition-colors">
+    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#F6F9FF] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div className="flex-1 overflow-y-auto px-4 pb-24">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-3 py-4 border-b border-gray-100 dark:border-white/10 mb-4">

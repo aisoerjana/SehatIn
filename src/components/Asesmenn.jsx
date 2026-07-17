@@ -61,10 +61,10 @@ export default function Asesmen() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
+    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
 
-      <div className="flex-1 p-5 overflow-y-auto pb-4">
+      <div className="flex-1 p-5 overflow-y-auto pb-24">
         <div className="flex items-center gap-2 mb-5">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
             <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-gray-300" />
