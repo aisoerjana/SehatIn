@@ -42,6 +42,36 @@ export default function Dashboard() {
     return num.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
   }
 
+  const tipsHarian = [
+    { judul: 'Minum Air yang Cukup', isi: 'Minumlah minimal 8 gelas air setiap hari agar tubuh tetap terhidrasi.' },
+    { judul: 'Jangan Lewatkan Sarapan', isi: 'Sarapan bergizi membantu memberikan energi untuk memulai aktivitas.' },
+    { judul: 'Tidur yang Berkualitas', isi: 'Usahakan tidur selama 7–9 jam setiap malam untuk menjaga kesehatan tubuh.' },
+    { judul: 'Perbanyak Konsumsi Buah', isi: 'Buah mengandung vitamin dan antioksidan yang baik untuk daya tahan tubuh.' },
+    { judul: 'Makan Sayur Setiap Hari', isi: 'Lengkapi setiap waktu makan dengan sayuran agar kebutuhan serat terpenuhi.' },
+    { judul: 'Kurangi Konsumsi Gula', isi: 'Batasi makanan dan minuman manis untuk membantu menjaga kadar gula darah.' },
+    { judul: 'Batasi Garam Berlebih', isi: 'Mengurangi asupan garam dapat membantu menjaga tekanan darah tetap normal.' },
+    { judul: 'Lakukan Aktivitas Fisik', isi: 'Bergerak atau berolahraga selama 30 menit setiap hari membantu menjaga kebugaran.' },
+    { judul: 'Istirahatkan Mata', isi: 'Alihkan pandangan dari layar setiap 20 menit untuk mengurangi kelelahan mata.' },
+    { judul: 'Jaga Kebersihan Tangan', isi: 'Biasakan mencuci tangan dengan sabun sebelum makan dan setelah beraktivitas.' },
+    { judul: 'Konsumsi Protein yang Cukup', isi: 'Protein membantu memperbaiki jaringan tubuh dan menjaga massa otot.' },
+    { judul: 'Kurangi Makanan Cepat Saji', isi: 'Pilih makanan segar dan bergizi dibandingkan makanan olahan.' },
+    { judul: 'Makan Secara Teratur', isi: 'Jangan menunda waktu makan agar tubuh tetap memiliki energi yang cukup.' },
+    { judul: 'Pilih Lemak Sehat', isi: 'Konsumsi lemak sehat dari ikan, alpukat, atau kacang-kacangan.' },
+    { judul: 'Kelola Stres dengan Baik', isi: 'Luangkan waktu untuk relaksasi agar pikiran tetap tenang dan sehat.' },
+    { judul: 'Jaga Postur Tubuh', isi: 'Duduk dan berdiri dengan posisi yang benar dapat mengurangi risiko nyeri punggung.' },
+    { judul: 'Batasi Minuman Bersoda', isi: 'Gantilah minuman bersoda dengan air putih atau minuman tanpa gula.' },
+    { judul: 'Lakukan Pemeriksaan Kesehatan Berkala', isi: 'Pemeriksaan rutin membantu mendeteksi masalah kesehatan sejak dini.' },
+    { judul: 'Jaga Kebersihan Lingkungan', isi: 'Lingkungan yang bersih dapat membantu mencegah penyebaran penyakit.' },
+    { judul: 'Mulai dari Kebiasaan Kecil', isi: 'Perubahan kecil yang dilakukan secara konsisten akan memberikan manfaat besar bagi kesehatan.' },
+  ]
+
+  const tipHariIni = () => {
+    const start = new Date('2025-01-01')
+    const today = new Date()
+    const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24))
+    return tipsHarian[diff % tipsHarian.length]
+  }
+
   const kebutuhanHarian = latestResult ? [
     { label: 'Kalori', value: `${fmt(latestResult.calorie_target)} kkal`, bg: 'bg-green-50', text: 'text-green-700' },
     { label: 'Protein', value: `${fmt(latestResult.protein_g)} g`, bg: 'bg-blue-50', text: 'text-blue-700' },
@@ -95,8 +125,9 @@ export default function Dashboard() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-bold text-[#1F2937] dark:text-white mb-1">Tips Hari Ini</h3>
+                <p className="text-xs font-medium text-[#2563EB] dark:text-cyan-300 mb-1">{tipHariIni().judul}</p>
                 <p className="text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed">
-                  Minumlah minimal 8 gelas air setiap hari agar tubuh tetap terhidrasi dan membantu metabolisme tubuh bekerja dengan baik.
+                  {tipHariIni().isi}
                 </p>
               </div>
             </div>
