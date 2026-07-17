@@ -10,6 +10,7 @@ export default function History() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
     async function fetchHistory() {
@@ -38,10 +39,9 @@ export default function History() {
     return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
-    if (!confirm('Hapus riwayat ini?')) return;
+  const handleDelete = async (id) => {
     setDeletingId(id);
+    setConfirmDeleteId(null);
     await supabase.from('macro_targets').delete().eq('id', id);
     setResults((prev) => prev.filter((r) => r.id !== id));
     setDeletingId(null);
@@ -54,7 +54,7 @@ export default function History() {
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-400">Memuat...</p>
         </div>
-        <BottomNavbar />
+      <BottomNavbar />
       </div>
     );
   }
@@ -126,9 +126,9 @@ export default function History() {
                   </div>
                 </button>
                 <button
-                  onClick={(e) => handleDelete(e, item.id)}
+                  onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(item.id); }}
                   disabled={deletingId === item.id}
-                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-40"
+                  className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-40"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -137,6 +137,35 @@ export default function History() {
           </div>
         )}
       </div>
+
+      {/* Modal Konfirmasi Hapus */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm" onClick={() => setConfirmDeleteId(null)}>
+          <div
+            className="bg-white dark:bg-[#0e1522] rounded-3xl p-6 w-full max-w-xs border border-gray-100 dark:border-cyan-400/20 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Hapus Riwayat</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">Riwayat yang dihapus tidak dapat dikembalikan.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+              >
+                Tidak
+              </button>
+              <button
+                onClick={() => handleDelete(confirmDeleteId)}
+                disabled={deletingId === confirmDeleteId}
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 transition-colors disabled:opacity-50"
+              >
+                {deletingId === confirmDeleteId ? '...' : 'Iya'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <BottomNavbar />
     </div>
   );
