@@ -266,6 +266,10 @@ const CHIP_GROUPS = [
   },
 ];
 
+const NAME_MAP = Object.fromEntries(
+  CHIP_GROUPS.flatMap(g => g.items).map(i => [i.id, i.label])
+);
+
 /* ===================== SVG FIGURE GEOMETRY ===================== */
 /* each part: { m, paths: [d...], nodes: [[cx,cy]...] } */
 const FRONT_PARTS = [
@@ -492,52 +496,15 @@ export default function MuscleScan() {
             Select a target.{" "}
           </h2>
           <p className="max-w-xl mx-auto" style={{ color: C.ink2, fontSize: "1.04rem" }}>
-            Tap otot di chip atau langsung di avatar — AI panel menampilkan protokol 2× failure lengkap dengan form cue.
+            Tap otot langsung di avatar — AI panel menampilkan protokol 2× failure lengkap dengan form cue.
           </p>
         </div>
 
         {/* 3-column layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* ---- CHIP LIST ---- */}
-          <div className="lg:col-span-3">
-            {CHIP_GROUPS.map((group) => (
-              <div key={group.label} className="mb-6">
-                <div className="font-display flex items-center gap-2 uppercase mb-3" style={{ color: C.ink3, fontSize: "0.6rem", letterSpacing: "3px" }}>
-                  {group.label}
-                  <span className="flex-1 h-px" style={{ background: C.line2 }} />
-                </div>
-                <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
-                  {group.items.map((item) => {
-                    const isActive = muscle === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => selectMuscle(item.id)}
-                        className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left font-semibold transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                        style={{
-                          fontSize: "0.94rem",
-                          letterSpacing: ".5px",
-                          background: isActive ? "linear-gradient(100deg, rgba(15,123,74,.12), rgba(10,92,55,.08))" : C.panel,
-                          border: `1px solid ${isActive ? C.teal : C.line2}`,
-                          color: isActive ? C.teal : C.ink2,
-                          boxShadow: isActive ? C.glowTeal : "none",
-                        }}
-                      >
-                        {item.label}
-                        <span className="font-display" style={{ fontSize: "0.5rem", letterSpacing: "1px", color: isActive ? C.teal : C.ink3, opacity: isActive ? 1 : 0.8 }}>
-                          {item.tag}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* ---- AVATAR STAGE ---- */}
           <div
-            className="lg:col-span-5 relative flex flex-col items-center rounded-3xl p-4 overflow-hidden"
+            className="lg:col-span-6 relative flex flex-col items-center rounded-3xl p-4 overflow-hidden"
             style={{
               minHeight: 500,
               border: `1px solid ${C.line}`,
@@ -590,16 +557,15 @@ export default function MuscleScan() {
               </div>
             </div>
 
-            {/* readout */}
-            <div className="font-display flex items-center gap-2 uppercase mt-1.5 z-20" style={{ color: C.ink3, fontSize: "0.6rem", letterSpacing: "2px" }}>
+            <div className="font-display flex items-center gap-2 uppercase mt-1.5 z-20" style={{ color: C.ink3, fontSize: "0.8rem", letterSpacing: "2px" }}>
               <span className="w-1.5 h-1.5 rounded-full blink-anim" style={{ background: C.teal, boxShadow: `0 0 10px ${C.teal}` }} />
-              {muscle ? `Target locked — ${MUSCLE_DATA[muscle].name.split("—")[0].trim()}` : "Awaiting target — select a muscle"}
+              {muscle ? NAME_MAP[muscle] : "Select a muscle"}
             </div>
           </div>
 
           {/* ---- AI REC PANEL ---- */}
           <div
-            className="lg:col-span-4 rounded-3xl overflow-hidden"
+            className="lg:col-span-6 rounded-3xl overflow-hidden"
             style={{ minHeight: 560, background: C.panelSoft, border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
           >
             {!muscle ? (
@@ -609,9 +575,7 @@ export default function MuscleScan() {
               </div>
             ) : (
               <div className="p-6">
-                <div className="font-display flex items-center gap-2 uppercase mb-2" style={{ color: C.teal, fontSize: "0.58rem", letterSpacing: "2.5px" }}>
-                  ⚡ AI Protocol · 2× Failure Meta
-                </div>
+              
                 <div className="font-display font-bold mb-3 leading-snug" style={{ color: C.ink, fontSize: "1.12rem" }}>{md.name}</div>
                 <p className="leading-relaxed mb-5" style={{ color: C.ink2, fontSize: "0.9rem" }}>{md.func}</p>
 
