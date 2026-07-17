@@ -270,6 +270,10 @@ const NAME_MAP = Object.fromEntries(
   CHIP_GROUPS.flatMap(g => g.items).map(i => [i.id, i.label])
 );
 
+const TAG_MAP = Object.fromEntries(
+  CHIP_GROUPS.flatMap(g => g.items).map(i => [i.id, i.tag])
+);
+
 /* ===================== SVG FIGURE GEOMETRY ===================== */
 /* each part: { m, paths: [d...], nodes: [[cx,cy]...] } */
 const FRONT_PARTS = [
@@ -560,7 +564,7 @@ export default function MuscleScan() {
 
             <div className="font-display flex items-center gap-2 uppercase mt-1.5 z-20" style={{ color: C.ink3, fontSize: "0.8rem", letterSpacing: "2px" }}>
               <span className="w-1.5 h-1.5 rounded-full blink-anim" style={{ background: C.teal, boxShadow: `0 0 10px ${C.teal}` }} />
-              {muscle ? NAME_MAP[muscle] : "Select a muscle"}
+              {muscle ? `${NAME_MAP[muscle]} (${TAG_MAP[muscle].charAt(0) + TAG_MAP[muscle].slice(1).toLowerCase()})` : "Select a muscle"}
             </div>
           </div>
 
