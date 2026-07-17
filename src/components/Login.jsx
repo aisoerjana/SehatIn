@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User, Lock, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import SehatIn from '../assets/SehatIn.png';
+import SehatIn from '../assets/SehatIn2.png';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Login() {
