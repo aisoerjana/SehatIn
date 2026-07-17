@@ -3,6 +3,35 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const MAX_PER_KATEGORI = 6;
+
+// Fisher-Yates shuffle - menghindari bias posisi (item pertama selalu terpilih)
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Acak urutan lalu batasi jumlah per kategori supaya prompt tidak terlalu besar
+// (hemat token -> lebih jarang kena rate limit) dan variatif antar request
+function acakDanBatasi(catalog, kategoriKey, maxPerKategori = MAX_PER_KATEGORI) {
+  const acak = shuffle(catalog);
+  const perKategori = {};
+  const hasil = [];
+  for (const item of acak) {
+    const kat = item[kategoriKey] || "lain";
+    perKategori[kat] = perKategori[kat] || 0;
+    if (perKategori[kat] < maxPerKategori) {
+      perKategori[kat]++;
+      hasil.push(item);
+    }
+  }
+  return shuffle(hasil);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -47,20 +76,26 @@ Deno.serve(async (req) => {
         },
       ];
     } else if (mode === "result") {
-      const { macro_target, food_catalog } = body;
+      const { macro_target, food_catalog, previous_recommendations } = body;
       if (!macro_target || !food_catalog) throw new Error("macro_target dan food_catalog harus diisi");
 
-      const daftarMakanan = food_catalog
+      const catalogTerbatas = acakDanBatasi(food_catalog, "kategori");
+
+      const daftarMakanan = catalogTerbatas
         .map((b) =>
           `- ${b.nama} (${b.kategori}): ${b.kalori}kkal, P${b.protein_g}g, KH${b.carbs_g}g, L${b.lemak_g}g, S${b.serat_g}g per ${b.satuan}`
         )
         .join("\n");
 
+      const hindariBahan = Array.isArray(previous_recommendations) && previous_recommendations.length > 0
+        ? `\n\nPada rekomendasi-rekomendasi sebelumnya untuk pengguna ini, bahan berikut sudah pernah dipilih: ${previous_recommendations.join(", ")}. Utamakan bahan LAIN yang sama baiknya secara gizi, agar rekomendasi terasa baru dan bervariasi. Hanya ulangi salah satu dari daftar itu jika benar-benar tidak ada alternatif yang sepadan.`
+        : "";
+
       messages = [
         {
           role: "system",
           content:
-            "Kamu adalah asisten nutrisi yang membantu merekomendasikan bahan makanan dan menu berdasarkan target nutrisi harian pengguna.",
+            "Kamu adalah asisten nutrisi yang membantu merekomendasikan bahan makanan dan menu berdasarkan target nutrisi harian pengguna. Setiap kali diminta, usahakan memberi variasi pilihan (jangan selalu jatuh ke kombinasi paling umum/klise seperti dada ayam, nasi merah, dan brokoli) selama pilihan lain masih sesuai target gizi.",
         },
         {
           role: "user",
@@ -72,10 +107,10 @@ Deno.serve(async (req) => {
 - Serat: ${macro_target.serat}g
 - Gula: ${macro_target.gula}g
 
-Daftar bahan makanan yang tersedia:
+Daftar bahan makanan yang tersedia (urutan acak, tidak menunjukkan prioritas):
 ${daftarMakanan}
 
-Berdasarkan target di atas, pilih 4-6 bahan makanan dari daftar yang PALING SESUAI untuk memenuhi target nutrisi tersebut. Pertimbangkan variasi kategori (protein, karbohidrat, sayuran, dll).
+Berdasarkan target di atas, pilih 4-6 bahan makanan dari daftar yang PALING SESUAI untuk memenuhi target nutrisi tersebut. Pertimbangkan variasi kategori (protein, karbohidrat, sayuran, dll) dan jangan hanya memilih opsi paling umum jika ada alternatif lain dari daftar yang sama sesuainya.${hindariBahan}
 
 Kemudian buat 1 menu inspirasi (resep sederhana) yang menggunakan beberapa bahan yang direkomendasikan.
 
@@ -105,7 +140,9 @@ Berikan jawaban dalam format JSON PERSIS seperti ini, tanpa teks tambahan:
       const { macro_target, food_catalog } = body;
       if (!macro_target || !food_catalog) throw new Error("macro_target dan food_catalog harus diisi");
 
-      const daftarMakanan = food_catalog
+      const catalogTerbatas = acakDanBatasi(food_catalog, "category");
+
+      const daftarMakanan = catalogTerbatas
         .map((b) =>
           `- ${b.food_name} (${b.category}): ${b.kalori}kkal, P${b.protein_g}g, KH${b.carbs_g}g, L${b.lemak_g}g, S${b.serat_g}g per 100g`
         )
@@ -115,7 +152,7 @@ Berikan jawaban dalam format JSON PERSIS seperti ini, tanpa teks tambahan:
         {
           role: "system",
           content:
-            "Kamu adalah asisten nutrisi yang membuat rencana makan harian berdasarkan target nutrisi dan daftar bahan makanan.",
+            "Kamu adalah asisten nutrisi yang membuat rencana makan harian berdasarkan target nutrisi dan daftar bahan makanan. Usahakan memberi variasi pilihan antar kesempatan selama masih sesuai target gizi.",
         },
         {
           role: "user",
