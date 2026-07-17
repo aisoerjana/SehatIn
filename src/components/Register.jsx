@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { EyeOff, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import SehatIn from '../assets/SehatIn.png';
@@ -15,6 +15,8 @@ export default function Register() {
   const [confirmError, setConfirmError] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleEmailChange = (e) => {
     const value = e.target.value;
@@ -131,7 +133,7 @@ export default function Register() {
             </label>
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={handlePasswordChange}
                 className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
@@ -139,8 +141,15 @@ export default function Register() {
                 }`}
                 placeholder="Minimal 8 karakter"
               />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-                <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+              <div
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <Eye className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                ) : (
+                  <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                )}
               </div>
             </div>
             {passwordError && (
@@ -155,7 +164,7 @@ export default function Register() {
             </label>
             <div className="relative">
               <input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={handleConfirmChange}
                 className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
@@ -163,8 +172,15 @@ export default function Register() {
                 }`}
                 placeholder="Ulangi kata sandi"
               />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-                <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+              <div
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? (
+                  <Eye className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                ) : (
+                  <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+                )}
               </div>
             </div>
             {confirmError && (

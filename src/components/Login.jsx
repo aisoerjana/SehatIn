@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { User, Lock, EyeOff } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import SehatIn from '../assets/SehatIn.png';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Login() {
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleEmailChange = (e) => {
@@ -35,7 +38,28 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen px-6 py-12 transition-colors">
+    <div className="flex flex-col min-h-screen px-6 py-12 transition-colors relative">
+      {/* Dark/Light Mode Toggle */}
+      <button
+        onClick={toggleTheme}
+        aria-label={theme === 'dark' ? 'Aktifkan light mode' : 'Aktifkan dark mode'}
+        className="absolute top-4 right-6 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors
+          bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100
+          dark:bg-white/5 dark:border-white/10 dark:text-cyan-300 dark:hover:bg-white/10"
+      >
+        {theme === 'dark' ? (
+          <>
+            <Moon className="w-3.5 h-3.5" />
+            Dark
+          </>
+        ) : (
+          <>
+            <Sun className="w-3.5 h-3.5" />
+            Light
+          </>
+        )}
+      </button>
+
       {/* Logo & Header Section */}
       <div className="flex flex-col items-center mt-10 mb-12">
         <img src={SehatIn} alt="SehatIn" className="w-16 h-16 mb-4" />
@@ -76,14 +100,21 @@ export default function Login() {
               <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-white/10 rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white"
               placeholder="Masukkan kata sandi"
             />
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-              <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+            <div
+              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              ) : (
+                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              )}
             </div>
           </div>
         </div>
