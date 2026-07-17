@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChefHat, Sparkles, AlertCircle, Loader } from 'lucide-react';
 import { supabase } from '../supabaseClient';
@@ -11,6 +11,7 @@ export default function Hasil() {
   const location = useLocation();
   const result = location.state?.result;
   const macro_target_id = location.state?.macro_target_id;
+  const isNew = location.state?.isNew === true;
   const hasil = useMemo(
     () =>
       result
@@ -30,6 +31,71 @@ export default function Hasil() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [rekomendasi, setRekomendasi] = useState(null);
+  const [belumAda, setBelumAda] = useState(false);
+
+  const loadFromAi = useCallback(async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+
+      let previous_recommendations = []
+      if (session) {
+        try {
+          const { data: riwayat } = await supabase
+            .from('hasil_rekomendasi')
+            .select('rekomendasi_bahan, macro_targets!inner(profile_id, created_at)')
+            .eq('macro_targets.profile_id', session.user.id)
+            .order('macro_targets(created_at)', { ascending: false })
+            .limit(3)
+          previous_recommendations = (riwayat || [])
+            .flatMap((r) => (r.rekomendasi_bahan || []).map((b) => b.nama))
+            .filter(Boolean)
+        } catch {
+          // riwayat gagal dimuat, lanjut tanpa daftar bahan yang perlu dihindari
+        }
+      }
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-proxy`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            mode: 'result',
+            macro_target: hasil,
+            food_catalog: foodData,
+            previous_recommendations,
+          }),
+        }
+      )
+      const body = await res.json()
+      if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`)
+      setRekomendasi(body)
+      if (macro_target_id) {
+        setSaving(true)
+        await supabase.from('hasil_rekomendasi').upsert({
+          macro_target_id,
+          rekomendasi_bahan: body.rekomendasi_bahan || [],
+          inspirasi_menu: body.inspirasi_menu || null,
+        }, { onConflict: 'macro_target_id' })
+        setSaving(false)
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [hasil, macro_target_id]);
+
+  const handleGenerateClick = () => {
+    setBelumAda(false);
+    setError(null);
+    setLoading(true);
+    loadFromAi();
+  };
 
   useEffect(() => {
     if (!hasil) {
@@ -37,68 +103,18 @@ export default function Hasil() {
       return;
     }
 
-    async function loadFromAi() {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-
-        let previous_recommendations = []
-        if (session) {
-          try {
-            const { data: riwayat } = await supabase
-              .from('hasil_rekomendasi')
-              .select('rekomendasi_bahan, macro_targets!inner(profile_id, created_at)')
-              .eq('macro_targets.profile_id', session.user.id)
-              .order('macro_targets(created_at)', { ascending: false })
-              .limit(3)
-            previous_recommendations = (riwayat || [])
-              .flatMap((r) => (r.rekomendasi_bahan || []).map((b) => b.nama))
-              .filter(Boolean)
-          } catch {
-            // riwayat gagal dimuat, lanjut tanpa daftar bahan yang perlu dihindari
-          }
-        }
-
-        const res = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-proxy`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              mode: 'result',
-              macro_target: hasil,
-              food_catalog: foodData,
-              previous_recommendations,
-            }),
-          }
-        )
-        const body = await res.json()
-        if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`)
-        setRekomendasi(body)
-        if (macro_target_id) {
-          setSaving(true)
-          await supabase.from('hasil_rekomendasi').upsert({
-            macro_target_id,
-            rekomendasi_bahan: body.rekomendasi_bahan || [],
-            inspirasi_menu: body.inspirasi_menu || null,
-          }, { onConflict: 'macro_target_id' })
-          setSaving(false)
-        }
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     if (!macro_target_id) {
-      loadFromAi();
+      // Asesmen baru yang belum tersimpan (mis. gagal simpan macro_target) - tetap generate langsung.
+      queueMicrotask(() => loadFromAi());
       return;
     }
 
+    queueMicrotask(() => {
+      setRekomendasi(null);
+      setBelumAda(false);
+      setError(null);
+      setLoading(true);
+    });
     supabase
       .from('hasil_rekomendasi')
       .select('rekomendasi_bahan, inspirasi_menu')
@@ -111,12 +127,26 @@ export default function Hasil() {
             inspirasi_menu: data.inspirasi_menu,
           });
           setLoading(false);
-        } else {
+        } else if (isNew) {
+          // Baru saja submit asesmen -> boleh panggil AI sekali.
           loadFromAi();
+        } else {
+          // Riwayat lama tanpa rekomendasi -> jangan panggil AI otomatis (hemat kuota).
+          // Biarkan pengguna memicunya manual lewat tombol.
+          setBelumAda(true);
+          setLoading(false);
         }
       })
-      .catch(() => loadFromAi());
-  }, [hasil, navigate, macro_target_id]);
+      .catch(() => {
+        if (isNew) {
+          loadFromAi();
+        } else {
+          setBelumAda(true);
+          setLoading(false);
+        }
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasil, navigate, macro_target_id, isNew]);
 
   if (!hasil) return null;
 
@@ -187,6 +217,21 @@ export default function Hasil() {
               <p className="font-bold mb-0.5">Gagal memuat rekomendasi</p>
               <p>{error}</p>
             </div>
+          </div>
+        )}
+
+        {belumAda && !loading && !error && (
+          <div className="page-enter mt-8 flex flex-col items-center text-center gap-3 py-8">
+            <Sparkles className="w-8 h-8 text-gray-400 dark:text-gray-600" />
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Asesmen ini belum punya rekomendasi bahan dari AI.
+            </p>
+            <button
+              onClick={handleGenerateClick}
+              className="px-5 py-2.5 rounded-xl bg-[#2563EB] dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 text-white text-sm font-bold shadow-sm active:scale-[0.98] transition-all"
+            >
+              Buat Rekomendasi Sekarang
+            </button>
           </div>
         )}
 

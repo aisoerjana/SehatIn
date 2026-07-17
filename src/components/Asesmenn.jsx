@@ -53,6 +53,7 @@ export default function Asesmen() {
             fiber: mt.fiber_g,
           },
           macro_target_id: mt.id,
+          isNew: true,
         },
       });
     } finally {
