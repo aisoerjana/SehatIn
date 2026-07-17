@@ -16,8 +16,24 @@ const categoryColors = {
   lain: { text: 'text-gray-700', bg: 'bg-gray-100' },
 };
 
+const categoryLabels = {
+  buah: 'Fruit',
+  sayuran: 'Vegetable',
+  protein: 'Protein',
+  karbohidrat: 'Carbs',
+  lemak: 'Fat',
+  susu: 'Dairy',
+  minuman: 'Drink',
+  bumbu: 'Seasoning',
+  lain: 'Other',
+};
+
 function getCategoryColor(category) {
   return categoryColors[category?.toLowerCase()] || { text: 'text-green-700', bg: 'bg-green-50' };
+}
+
+function getCategoryLabel(category) {
+  return categoryLabels[category?.toLowerCase()] || category;
 }
 
 export default function FoodList() {
@@ -59,7 +75,7 @@ export default function FoodList() {
       <UpperNavbar />
       <div className="flex-1 p-5 overflow-y-auto pb-24">
         <div className="navbar-enter-down flex items-center justify-between mb-5">
-          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">Daftar Makanan</h1>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">Food List</h1>
           <div className="relative">
             <button
               onClick={() => setShowFilter(!showFilter)}
@@ -71,7 +87,7 @@ export default function FoodList() {
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowFilter(false)} />
                 <div className="modal-panel-enter absolute right-0 top-full mt-2 z-20 bg-white dark:bg-[#0b0f17] border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg p-3 w-48">
-                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Filter Kategori</p>
+                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Filter by Category</p>
                   <div className="space-y-1.5">
                     {allCategories.map((cat) => {
                       const cc = getCategoryColor(cat);
@@ -83,7 +99,7 @@ export default function FoodList() {
                             onChange={() => toggleCategory(cat)}
                             className="accent-blue-600"
                           />
-                          <span className={`text-xs font-medium ${cc.text} ${cc.bg} dark:opacity-90 px-2 py-0.5 rounded-full`}>{cat}</span>
+                          <span className={`text-xs font-medium ${cc.text} ${cc.bg} dark:opacity-90 px-2 py-0.5 rounded-full`}>{getCategoryLabel(cat)}</span>
                         </label>
                       );
                     })}
@@ -108,18 +124,18 @@ export default function FoodList() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari makanan..."
+            placeholder="Search food..."
             className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-[#0b0f17] border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white dark:placeholder-gray-500"
           />
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center mt-20">
-            <p className="text-gray-400 dark:text-gray-500">Memuat...</p>
+            <p className="text-gray-400 dark:text-gray-500">Loading...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Makanan tidak ditemukan.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">No food found.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -128,15 +144,15 @@ export default function FoodList() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className="font-bold text-gray-900 dark:text-white">{food.food_name}</h3>
-                    <span className={`text-[10px] font-medium ${getCategoryColor(food.category).text} ${getCategoryColor(food.category).bg} dark:opacity-90 px-2 py-0.5 rounded-full`}>{food.category}</span>
+                    <span className={`text-[10px] font-medium ${getCategoryColor(food.category).text} ${getCategoryColor(food.category).bg} dark:opacity-90 px-2 py-0.5 rounded-full`}>{getCategoryLabel(food.category)}</span>
                   </div>
-                  <span className="text-sm font-bold text-blue-700 dark:text-cyan-300">{food.kalori} kkal</span>
+                  <span className="text-sm font-bold text-blue-700 dark:text-cyan-300">{food.kalori} kcal</span>
                 </div>
                 <div className="flex gap-3 text-[11px] text-gray-500 dark:text-gray-400">
                   <span>Protein {food.protein_g}g</span>
-                  <span>KH {food.carbs_g}g</span>
-                  <span>Lemak {food.lemak_g}g</span>
-                  <span>Serat {food.serat_g}g</span>
+                  <span>Carbs {food.carbs_g}g</span>
+                  <span>Fat {food.lemak_g}g</span>
+                  <span>Fiber {food.serat_g}g</span>
                 </div>
               </div>
             ))}

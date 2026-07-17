@@ -5,17 +5,17 @@ import UpperNavbar from './UpperNavbar';
 import BottomNavbar from './BottomNavbar';
 
 const suggestions = [
-  'Saya punya dada ayam, brokoli, dan tahu. Saya ingin bulking, apa yang harus saya masak?',
-  'Ada tempe, telur, dan kangkung di rumah. Menu apa yang enak untuk cutting?',
-  'Saya punya ikan kembung, nasi merah, dan bayam. Resep simple untuk makan siang?',
-  'Bahan yang ada: kentang, wortel, dan daging sapi. Mau buat makan malam yang hangat.',
+  'I have chicken breast, broccoli, and tofu. I want to bulk, what should I cook?',
+  "I have tempeh, eggs, and water spinach at home. What's a good menu for cutting?",
+  'I have mackerel, brown rice, and spinach. A simple recipe for lunch?',
+  'Ingredients I have: potatoes, carrots, and beef. I want to make a warm dinner.',
 ];
 
 export default function Ask() {
   const [messages, setMessages] = useState([
     {
       role: 'bot',
-      text: 'Halo! Saya **Ask** — koki virtual kamu. Ceritakan bahan makanan yang kamu punya dan tujuanmu (bulking/cutting/maintain), saya akan bantu buatkan resep!',
+      text: "Hi! I'm **Ask** — your virtual chef. Tell me what ingredients you have and your goal (bulking/cutting/maintain), and I'll help you create a recipe!",
     },
   ]);
   const [input, setInput] = useState('');
@@ -49,14 +49,14 @@ export default function Ask() {
 
       const recipe = data.judul
         ? data
-        : { judul: 'Resep', bahan: [], langkah: [], estimasi_kalori: 0 };
+        : { judul: 'Recipe', bahan: [], langkah: [], estimasi_kalori: 0 };
 
       setMessages((prev) => [...prev, { role: 'bot', recipe }]);
     } catch (err) {
       setError(err.message);
       setMessages((prev) => [
         ...prev,
-        { role: 'bot', text: `Maaf, terjadi kesalahan: ${err.message}. Silakan coba lagi.` },
+        { role: 'bot', text: `Sorry, an error occurred: ${err.message}. Please try again.` },
       ]);
     } finally {
       setLoading(false);
@@ -81,7 +81,7 @@ export default function Ask() {
             </div>
             <div>
               <h1 className="text-lg font-bold text-gray-900 dark:text-white">Ask</h1>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400">Tanya resep dari bahan yang ada</p>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">Ask for recipes from ingredients you have</p>
             </div>
           </div>
 
@@ -169,7 +169,7 @@ export default function Ask() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Contoh: Saya punya dada ayam, tahu, brokoli..."
+              placeholder="e.g. I have chicken breast, tofu, broccoli..."
               disabled={loading}
               className="flex-1 bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 py-2 focus:outline-none"
             />
@@ -218,10 +218,10 @@ function RecipeCard({ recipe }) {
           )}
         </div>
 
-        {/* Bahan */}
+        {/* Ingredients */}
         {recipe.bahan?.length > 0 && (
           <div className="mb-3">
-            <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">Bahan-bahan:</p>
+            <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">Ingredients:</p>
             <ul className="space-y-1">
               {recipe.bahan.map((b, i) => (
                 <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
@@ -233,10 +233,10 @@ function RecipeCard({ recipe }) {
           </div>
         )}
 
-        {/* Langkah */}
+        {/* Steps */}
         {recipe.langkah?.length > 0 && (
           <div className="mb-3">
-            <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">Cara masak:</p>
+            <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">How to cook:</p>
             <ol className="space-y-1.5">
               {recipe.langkah.map((l, i) => (
                 <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
@@ -256,17 +256,17 @@ function RecipeCard({ recipe }) {
           </div>
         )}
 
-        {/* Nutrisi */}
+        {/* Nutrition */}
         {(recipe.estimasi_protein_g || recipe.estimasi_carbs_g || recipe.estimasi_lemak_g) && (
           <div className="flex gap-3 mt-3 pt-3 border-t border-gray-100 dark:border-white/10">
             {recipe.estimasi_protein_g && (
               <span className="text-[10px] font-medium text-red-600 dark:text-red-400">P {recipe.estimasi_protein_g}g</span>
             )}
             {recipe.estimasi_carbs_g && (
-              <span className="text-[10px] font-medium text-yellow-600 dark:text-yellow-400">KH {recipe.estimasi_carbs_g}g</span>
+              <span className="text-[10px] font-medium text-yellow-600 dark:text-yellow-400">C {recipe.estimasi_carbs_g}g</span>
             )}
             {recipe.estimasi_lemak_g && (
-              <span className="text-[10px] font-medium text-orange-600 dark:text-orange-400">L {recipe.estimasi_lemak_g}g</span>
+              <span className="text-[10px] font-medium text-orange-600 dark:text-orange-400">F {recipe.estimasi_lemak_g}g</span>
             )}
           </div>
         )}
