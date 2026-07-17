@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChefHat, Sparkles, AlertCircle, Loader } from 'lucide-react';
 import { supabase } from '../supabaseClient';
@@ -9,8 +9,22 @@ import foodData, { kategoriWarna } from '../data/foodData';
 export default function Hasil() {
   const navigate = useNavigate();
   const location = useLocation();
-  const hasil = location.state?.hasil;
+  const result = location.state?.result;
   const macro_target_id = location.state?.macro_target_id;
+  const hasil = useMemo(
+    () =>
+      result
+        ? {
+            kalori: result.calories,
+            protein: result.protein,
+            karbo: result.carbs,
+            lemak: result.fat,
+            gula: result.sugar,
+            serat: result.fiber,
+          }
+        : null,
+    [result]
+  );
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
