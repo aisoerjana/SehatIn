@@ -21,9 +21,9 @@ export default function BottomNavbar() {
         <span className={`text-[10px] font-bold ${isActive('/muscle-scan') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Muscle</span>
       </Link>
 
-      <Link to="/asesmen" className="flex flex-col items-center -mt-7">
-        <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg bg-blue-600 dark:bg-gradient-to-br dark:from-cyan-400 dark:to-blue-500 text-white border-2 border-blue-600 dark:border-cyan-400">
-          <Plus className="w-7 h-7" />
+      <Link to="/asesmen" className="flex flex-col items-center gap-1">
+        <div className="w-12 h-8 rounded-full flex items-center justify-center shadow-lg bg-blue-600 dark:bg-gradient-to-br dark:from-cyan-400 dark:to-blue-500 text-white border-2 border-blue-600 dark:border-cyan-400">
+          <Plus className="w-5 h-5" />
         </div>
       </Link>
 

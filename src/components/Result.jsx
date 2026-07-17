@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Sprout, Leaf, Egg } from 'lucide-react';
+import { ArrowLeft, Sprout, Leaf, Egg } from 'lucide-react';
 import UpperNavbar from './UpperNavbar';
 import BottomNavbar from './BottomNavbar';
 
@@ -22,6 +22,13 @@ export default function Hasil() {
       <UpperNavbar />
 
       <div className="flex-1 p-5 overflow-y-auto pb-8">
+        <div className="flex items-center gap-2 mb-5">
+          <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+            <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+          </button>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">Riwayat</h1>
+        </div>
+
         {/* Hasil Kebutuhan Harian */}
         <div className="bg-white dark:bg-[#0b0f17] rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-white/10 transition-colors">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Hasil Kebutuhan Harian</h3>
