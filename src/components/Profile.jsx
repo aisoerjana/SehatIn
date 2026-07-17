@@ -151,6 +151,7 @@ export default function Profile() {
   })
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [uploading, setUploading] = useState(false)
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false)
   const fileInputRef = useRef(null)
 
   useEffect(() => {
@@ -211,7 +212,11 @@ export default function Profile() {
     setUploading(false)
   }
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setShowConfirmLogout(true)
+  }
+
+  const confirmLogout = async () => {
     await supabase.auth.signOut()
     navigate('/login')
   }
@@ -422,6 +427,64 @@ export default function Profile() {
 
         </div>
       </main>
+
+      {/* Modal Konfirmasi Keluar */}
+      {showConfirmLogout && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 50,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '0 16px', background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+          }}
+          onClick={() => setShowConfirmLogout(false)}
+        >
+          <div
+            style={{
+              background: colors.surface,
+              borderRadius: 24,
+              padding: 24,
+              width: '100%', maxWidth: 280,
+              border: `1px solid ${colors.border}`,
+              boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
+              Konfirmasi Keluar
+            </h3>
+            <p style={{ fontSize: 13, color: colors.textMuted, textAlign: 'center', marginBottom: 24 }}>
+              Apakah kamu yakin ingin keluar?
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button
+                onClick={() => setShowConfirmLogout(false)}
+                style={{
+                  flex: 1, padding: '12px 0', borderRadius: 12,
+                  fontSize: 13, fontWeight: 600,
+                  border: 'none', cursor: 'pointer',
+                  background: colors.field,
+                  color: colors.text,
+                }}
+              >
+                Tidak
+              </button>
+              <button
+                onClick={confirmLogout}
+                style={{
+                  flex: 1, padding: '12px 0', borderRadius: 12,
+                  fontSize: 13, fontWeight: 600,
+                  border: 'none', cursor: 'pointer',
+                  background: colors.danger,
+                  color: '#fff',
+                }}
+              >
+                Iya
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <BottomNavbar />
     </div>
