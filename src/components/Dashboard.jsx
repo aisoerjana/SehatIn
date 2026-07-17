@@ -7,23 +7,23 @@ import BottomNavbar from './BottomNavbar'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [userName, setUserName] = useState('Pengguna')
-  const [avatarUrl, setAvatarUrl] = useState(null) // state foto profil — di-fetch dari tabel profiles; default null = icon default
+  const [userName, setUserName] = useState('User')
+  const [avatarUrl, setAvatarUrl] = useState(null) // profile photo state — fetched from the profiles table; default null = default icon
   const [latestResult, setLatestResult] = useState(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { navigate('/login'); return }
-      setUserName(session.user.user_metadata?.name || 'Pengguna')
+      setUserName(session.user.user_metadata?.name || 'User')
 
-      // Ambil foto profil dari tabel profiles — field avatar_url diisi saat user upload lewat halaman Profile
+      // Fetch profile photo from the profiles table — avatar_url is set when the user uploads via the Profile page
       const { data: profile } = await supabase
         .from('profiles')
         .select('avatar_url')
         .eq('id', session.user.id)
         .maybeSingle()
 
-      if (profile?.avatar_url) setAvatarUrl(profile.avatar_url) // kalau ada foto, simpan ke state; kalau null, nanti render icon default
+      if (profile?.avatar_url) setAvatarUrl(profile.avatar_url) // if a photo exists, save it to state; if null, render the default icon
 
       const { data } = await supabase
         .from('macro_targets')
@@ -39,56 +39,56 @@ export default function Dashboard() {
 
   const greetingTime = () => {
     const hour = new Date().getHours()
-    if (hour < 12) return 'Selamat pagi'
-    if (hour < 15) return 'Selamat siang'
-    if (hour < 18) return 'Selamat sore'
-    return 'Selamat malam'
+    if (hour < 12) return 'Good morning'
+    if (hour < 15) return 'Good afternoon'
+    if (hour < 18) return 'Good evening'
+    return 'Good night'
   }
 
   const fmt = (val) => {
     if (val == null) return '0'
     const num = Number(val)
-    if (Number.isInteger(num)) return num.toLocaleString('id-ID')
-    return num.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+    if (Number.isInteger(num)) return num.toLocaleString('en-US')
+    return num.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
   }
 
-  const tipsHarian = [
-    { judul: 'Minum Air yang Cukup', isi: 'Minumlah minimal 8 gelas air setiap hari agar tubuh tetap terhidrasi.' },
-    { judul: 'Jangan Lewatkan Sarapan', isi: 'Sarapan bergizi membantu memberikan energi untuk memulai aktivitas.' },
-    { judul: 'Tidur yang Berkualitas', isi: 'Usahakan tidur selama 7–9 jam setiap malam untuk menjaga kesehatan tubuh.' },
-    { judul: 'Perbanyak Konsumsi Buah', isi: 'Buah mengandung vitamin dan antioksidan yang baik untuk daya tahan tubuh.' },
-    { judul: 'Makan Sayur Setiap Hari', isi: 'Lengkapi setiap waktu makan dengan sayuran agar kebutuhan serat terpenuhi.' },
-    { judul: 'Kurangi Konsumsi Gula', isi: 'Batasi makanan dan minuman manis untuk membantu menjaga kadar gula darah.' },
-    { judul: 'Batasi Garam Berlebih', isi: 'Mengurangi asupan garam dapat membantu menjaga tekanan darah tetap normal.' },
-    { judul: 'Lakukan Aktivitas Fisik', isi: 'Bergerak atau berolahraga selama 30 menit setiap hari membantu menjaga kebugaran.' },
-    { judul: 'Istirahatkan Mata', isi: 'Alihkan pandangan dari layar setiap 20 menit untuk mengurangi kelelahan mata.' },
-    { judul: 'Jaga Kebersihan Tangan', isi: 'Biasakan mencuci tangan dengan sabun sebelum makan dan setelah beraktivitas.' },
-    { judul: 'Konsumsi Protein yang Cukup', isi: 'Protein membantu memperbaiki jaringan tubuh dan menjaga massa otot.' },
-    { judul: 'Kurangi Makanan Cepat Saji', isi: 'Pilih makanan segar dan bergizi dibandingkan makanan olahan.' },
-    { judul: 'Makan Secara Teratur', isi: 'Jangan menunda waktu makan agar tubuh tetap memiliki energi yang cukup.' },
-    { judul: 'Pilih Lemak Sehat', isi: 'Konsumsi lemak sehat dari ikan, alpukat, atau kacang-kacangan.' },
-    { judul: 'Kelola Stres dengan Baik', isi: 'Luangkan waktu untuk relaksasi agar pikiran tetap tenang dan sehat.' },
-    { judul: 'Jaga Postur Tubuh', isi: 'Duduk dan berdiri dengan posisi yang benar dapat mengurangi risiko nyeri punggung.' },
-    { judul: 'Batasi Minuman Bersoda', isi: 'Gantilah minuman bersoda dengan air putih atau minuman tanpa gula.' },
-    { judul: 'Lakukan Pemeriksaan Kesehatan Berkala', isi: 'Pemeriksaan rutin membantu mendeteksi masalah kesehatan sejak dini.' },
-    { judul: 'Jaga Kebersihan Lingkungan', isi: 'Lingkungan yang bersih dapat membantu mencegah penyebaran penyakit.' },
-    { judul: 'Mulai dari Kebiasaan Kecil', isi: 'Perubahan kecil yang dilakukan secara konsisten akan memberikan manfaat besar bagi kesehatan.' },
+  const dailyTips = [
+    { title: 'Drink Enough Water', body: 'Drink at least 8 glasses of water every day to keep your body hydrated.' },
+    { title: "Don't Skip Breakfast", body: 'A nutritious breakfast helps provide energy to start your activities.' },
+    { title: 'Get Quality Sleep', body: "Aim for 7–9 hours of sleep every night to maintain your body's health." },
+    { title: 'Eat More Fruit', body: 'Fruit contains vitamins and antioxidants that are good for your immune system.' },
+    { title: 'Eat Vegetables Every Day', body: 'Complete every meal with vegetables to meet your fiber needs.' },
+    { title: 'Reduce Sugar Intake', body: 'Limit sugary foods and drinks to help maintain healthy blood sugar levels.' },
+    { title: 'Limit Excess Salt', body: 'Reducing salt intake can help keep your blood pressure normal.' },
+    { title: 'Stay Physically Active', body: 'Moving or exercising for 30 minutes a day helps maintain your fitness.' },
+    { title: 'Rest Your Eyes', body: 'Look away from the screen every 20 minutes to reduce eye strain.' },
+    { title: 'Keep Your Hands Clean', body: 'Make it a habit to wash your hands with soap before eating and after activities.' },
+    { title: 'Get Enough Protein', body: 'Protein helps repair body tissue and maintain muscle mass.' },
+    { title: 'Cut Down on Fast Food', body: 'Choose fresh, nutritious food over processed food.' },
+    { title: 'Eat Regularly', body: "Don't delay meals so your body always has enough energy." },
+    { title: 'Choose Healthy Fats', body: 'Get healthy fats from fish, avocado, or nuts.' },
+    { title: 'Manage Stress Well', body: 'Take time to relax so your mind stays calm and healthy.' },
+    { title: 'Maintain Good Posture', body: 'Sitting and standing correctly can reduce the risk of back pain.' },
+    { title: 'Limit Soft Drinks', body: 'Replace soft drinks with water or sugar-free beverages.' },
+    { title: 'Get Regular Health Checkups', body: 'Routine checkups help detect health issues early.' },
+    { title: 'Keep Your Environment Clean', body: 'A clean environment can help prevent the spread of disease.' },
+    { title: 'Start with Small Habits', body: 'Small changes made consistently will bring big benefits to your health.' },
   ]
 
-  const tipHariIni = () => {
+  const todaysTip = () => {
     const start = new Date('2025-01-01')
     const today = new Date()
     const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24))
-    return tipsHarian[diff % tipsHarian.length]
+    return dailyTips[diff % dailyTips.length]
   }
 
-  const kebutuhanHarian = latestResult ? [
-    { label: 'Kalori', value: `${fmt(latestResult.calorie_target)} kkal`, bg: 'bg-green-50', text: 'text-green-700' },
+  const dailyNeeds = latestResult ? [
+    { label: 'Calories', value: `${fmt(latestResult.calorie_target)} kcal`, bg: 'bg-green-50', text: 'text-green-700' },
     { label: 'Protein', value: `${fmt(latestResult.protein_g)} g`, bg: 'bg-blue-50', text: 'text-blue-700' },
-    { label: 'Karbohidrat', value: `${fmt(latestResult.carbs_g)} g`, bg: 'bg-orange-50', text: 'text-orange-700' },
-    { label: 'Lemak', value: `${fmt(latestResult.fat_g)} g`, bg: 'bg-yellow-50', text: 'text-yellow-700' },
-    { label: 'Gula', value: `${fmt(latestResult.sugar_max_g)} g`, bg: 'bg-red-50', text: 'text-red-700' },
-    { label: 'Serat', value: `${fmt(latestResult.fiber_g)} g`, bg: 'bg-purple-50', text: 'text-purple-700' },
+    { label: 'Carbs', value: `${fmt(latestResult.carbs_g)} g`, bg: 'bg-orange-50', text: 'text-orange-700' },
+    { label: 'Fat', value: `${fmt(latestResult.fat_g)} g`, bg: 'bg-yellow-50', text: 'text-yellow-700' },
+    { label: 'Sugar', value: `${fmt(latestResult.sugar_max_g)} g`, bg: 'bg-red-50', text: 'text-red-700' },
+    { label: 'Fiber', value: `${fmt(latestResult.fiber_g)} g`, bg: 'bg-purple-50', text: 'text-purple-700' },
   ] : []
 
   return (
@@ -102,11 +102,11 @@ export default function Dashboard() {
           <div className="page-enter-up flex items-center justify-between mb-6">
             <div>
               <p className="text-sm text-[#6B7280] dark:text-gray-400 font-medium">{greetingTime()},</p>
-              <h2 className="text-2xl font-bold text-[#1F2937] dark:text-cyan-300">Halo, {userName}!</h2>
+              <h2 className="text-2xl font-bold text-[#1F2937] dark:text-cyan-300">Hello, {userName}!</h2>
             </div>
-            {/* Foto profil (pojok kanan atas). Dibungkus Link ke /profile biar bisa diklik.
-                - Kalau avatarUrl terisi → tampilkan <img> dengan object-cover biar proporsional.
-                - Kalau null (belum upload) → tampilkan icon User di lingkaran abu-abu (default). */}
+            {/* Profile photo (top-right corner). Wrapped in a Link to /profile so it's clickable.
+                - If avatarUrl is set → render an <img> with object-cover to keep it proportional.
+                - If null (not uploaded yet) → render the default User icon in a gray circle. */}
             <Link to="/profile">
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Foto profil" className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-white/10 shadow-sm" />
@@ -121,14 +121,14 @@ export default function Dashboard() {
           <div className="page-enter-up bg-gradient-to-br from-[#EAF2FF] to-white dark:from-[#0e1522] dark:to-[#0b0f17] border border-[#E5E7EB] dark:border-cyan-400/20 rounded-3xl p-5 mb-5 shadow-sm relative overflow-hidden" style={{ animationDelay: '100ms' }}>
             <div className="relative z-10 w-2/3">
               <h3 className="text-lg font-bold text-[#1F2937] dark:text-white mb-2 leading-tight">
-                Cek Kesehatan<br/>Harian
+                Daily Health<br/>Check
               </h3>
               <p className="text-xs text-[#6B7280] dark:text-gray-400 mb-4 leading-relaxed">
-                Pantau kondisi tubuh Anda hari ini untuk hidup lebih sehat dan bertenaga.
+                Monitor your body's condition today for a healthier, more energetic life.
               </p>
               <Link to="/asesmen">
                 <button className="bg-[#2563EB] hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 text-white text-xs font-semibold py-2.5 px-4 rounded-xl flex items-center gap-2 transition-colors">
-                  Mulai Asesmen Kesehatan
+                  Start Health Assessment
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
@@ -136,34 +136,34 @@ export default function Dashboard() {
             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-blue-200/50 dark:bg-cyan-400/10 rounded-full blur-2xl"></div>
           </div>
 
-          {/* Tips Hari Ini */}
+          {/* Today's Tip */}
           <div className="page-enter-up mb-5 bg-white dark:bg-[#0b0f17] border border-[#E5E7EB] dark:border-white/10 rounded-2xl p-5 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300" style={{ animationDelay: '200ms' }}>
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-[#EAF2FF] dark:bg-cyan-400/10 rounded-xl flex items-center justify-center shrink-0">
                 <Lightbulb className="w-5 h-5 text-[#2563EB] dark:text-cyan-300" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-bold text-[#1F2937] dark:text-white mb-1">Tips Hari Ini</h3>
-                <p className="text-xs font-medium text-[#2563EB] dark:text-cyan-300 mb-1">{tipHariIni().judul}</p>
+                <h3 className="text-sm font-bold text-[#1F2937] dark:text-white mb-1">Today's Tip</h3>
+                <p className="text-xs font-medium text-[#2563EB] dark:text-cyan-300 mb-1">{todaysTip().title}</p>
                 <p className="text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed">
-                  {tipHariIni().isi}
+                  {todaysTip().body}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Riwayat Terakhir */}
+          {/* Latest Result */}
           {latestResult && (
             <div className="page-enter-up mb-5 bg-white dark:bg-[#0b0f17] border border-[#E5E7EB] dark:border-white/10 rounded-2xl p-5 shadow-sm" style={{ animationDelay: '300ms' }}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-[#1F2937] dark:text-white">Riwayat Terakhir</h3>
+                <h3 className="text-base font-bold text-[#1F2937] dark:text-white">Latest Result</h3>
                 <div className="flex items-center gap-1.5 text-[10px] text-[#6B7280] dark:text-gray-400 font-medium">
                   <Calendar className="w-3 h-3" />
-                  {new Date(latestResult.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(latestResult.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </div>
               </div>
               <div className="space-y-3">
-                {kebutuhanHarian.map((item, index) => (
+                {dailyNeeds.map((item, index) => (
                   <div
                     key={index}
                     className={`${item.bg} dark:bg-white/5 rounded-xl px-4 py-3 flex items-center justify-between hover:scale-[1.02] transition-all duration-300 stagger-item`}

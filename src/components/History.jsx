@@ -31,12 +31,12 @@ export default function History() {
 
   const formatDate = (iso) => {
     const d = new Date(iso);
-    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    return d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
   const formatTime = (iso) => {
     const d = new Date(iso);
-    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   };
 
   const handleDelete = async (id) => {
@@ -52,7 +52,7 @@ export default function History() {
       <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
         <UpperNavbar />
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-400">Memuat...</p>
+          <p className="text-gray-400">Loading...</p>
         </div>
       <BottomNavbar />
       </div>
@@ -63,12 +63,12 @@ export default function History() {
     <div className="page-enter flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
       <div className="flex-1 p-5 overflow-y-auto pb-24">
-        <h1 className="page-enter-up text-xl font-bold text-gray-900 dark:text-white mb-5">Riwayat Asesmen</h1>
+        <h1 className="page-enter-up text-xl font-bold text-gray-900 dark:text-white mb-5">Assessment History</h1>
         {results.length === 0 ? (
           <div className="page-enter-up flex flex-col items-center justify-center mt-20 text-center">
             <Clock className="w-16 h-16 text-gray-300 dark:text-white/20 mb-4" />
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Riwayat Asesmen</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Riwayat asesmen kesehatan akan muncul di sini.</p>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Assessment History</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Your health assessment history will appear here.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -82,13 +82,13 @@ export default function History() {
                   onClick={() =>
                     navigate('/result', {
                       state: {
-                        hasil: {
-                          kalori: item.calorie_target,
+                        result: {
+                          calories: item.calorie_target,
                           protein: item.protein_g,
-                          karbo: item.carbs_g,
-                          lemak: item.fat_g,
-                          gula: item.sugar_max_g,
-                          serat: item.fiber_g,
+                          carbs: item.carbs_g,
+                          fat: item.fat_g,
+                          sugar: item.sugar_max_g,
+                          fiber: item.fiber_g,
                         },
                         macro_target_id: item.id,
                       },
@@ -120,7 +120,7 @@ export default function History() {
                         </span>
                         <span className="flex items-center gap-1">
                           <User className="w-3.5 h-3.5" />
-                          {a} tahun
+                          {a} yrs
                         </span>
                       </>
                     ); })()}
@@ -139,28 +139,28 @@ export default function History() {
         )}
       </div>
 
-      {/* Modal Konfirmasi Hapus */}
+      {/* Delete Confirmation Modal */}
       {confirmDeleteId && (
         <div className="modal-backdrop-enter fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm" onClick={() => setConfirmDeleteId(null)}>
           <div
             className="modal-panel-enter bg-white dark:bg-[#0e1522] rounded-3xl p-6 w-full max-w-xs border border-gray-100 dark:border-cyan-400/20 shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Hapus Riwayat</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">Riwayat yang dihapus tidak dapat dikembalikan.</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Delete Result</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">Deleted results cannot be recovered.</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDeleteId(null)}
                 className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
               >
-                Tidak
+                No
               </button>
               <button
                 onClick={() => handleDelete(confirmDeleteId)}
                 disabled={deletingId === confirmDeleteId}
                 className="flex-1 py-3 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 transition-colors disabled:opacity-50"
               >
-                {deletingId === confirmDeleteId ? '...' : 'Iya'}
+                {deletingId === confirmDeleteId ? '...' : 'Yes'}
               </button>
             </div>
           </div>

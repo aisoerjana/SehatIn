@@ -19,7 +19,7 @@ export default function Login() {
     const value = e.target.value;
     setEmail(value);
     if (value && !value.includes('@gmail.com')) {
-      setEmailError('Email harus menggunakan @gmail.com');
+      setEmailError('Email must use @gmail.com');
     } else {
       setEmailError('');
     }
@@ -27,13 +27,13 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!email.includes('@gmail.com')) {
-      setEmailError('Email harus menggunakan @gmail.com');
+      setEmailError('Email must use @gmail.com');
       return;
     }
     setLoading(true); setLoginError('')
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
-    if (error) { setLoginError('Email atau kata sandi salah'); return }
+    if (error) { setLoginError('Incorrect email or password'); return }
     navigate('/dashboard')
   };
 
@@ -42,7 +42,7 @@ export default function Login() {
       {/* Dark/Light Mode Toggle */}
       <button
         onClick={toggleTheme}
-        aria-label={theme === 'dark' ? 'Aktifkan light mode' : 'Aktifkan dark mode'}
+        aria-label={theme === 'dark' ? 'Enable light mode' : 'Enable dark mode'}
         className="navbar-enter-down absolute top-4 right-6 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors
           bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100
           dark:bg-white/5 dark:border-white/10 dark:text-cyan-300 dark:hover:bg-white/10"
@@ -63,7 +63,7 @@ export default function Login() {
       {/* Logo & Header Section */}
       <div className="page-enter-up flex flex-col items-center mt-10 mb-12">
         <img src={SehatIn} alt="SehatIn" className="w-16 h-16 mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Selamat Datang</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome</h1>
       </div>
 
       {/* Form Section */}
@@ -83,7 +83,7 @@ export default function Login() {
               className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white ${
                 emailError ? 'border-red-500' : 'border-gray-300 dark:border-white/10'
               }`}
-              placeholder="Masukkan email"
+              placeholder="Enter your email"
             />
           </div>
           {emailError && (
@@ -93,7 +93,7 @@ export default function Login() {
 
         <div className="page-enter-up" style={{ animationDelay: '150ms' }}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-            Kata Sandi
+            Password
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -104,7 +104,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-white/10 rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm bg-white dark:bg-white/5 text-gray-900 dark:text-white"
-              placeholder="Masukkan kata sandi"
+              placeholder="Enter your password"
             />
             <div
               className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
@@ -130,15 +130,15 @@ export default function Login() {
           className="page-enter-up w-full bg-blue-700 hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 text-white font-semibold py-3.5 rounded-full transition-colors mt-4 shadow-sm disabled:opacity-50"
           style={{ animationDelay: '220ms' }}
         >
-          {loading ? 'Memproses...' : 'Masuk'}
+          {loading ? 'Processing...' : 'Log In'}
         </button>
       </form>
 
       <div className="page-enter mt-auto pt-8 pb-4 text-center" style={{ animationDelay: '300ms' }}>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Belum punya akun?{' '}
+          Don't have an account?{' '}
           <Link to="/register" className="text-blue-600 dark:text-cyan-300 font-bold hover:underline">
-            Daftar di sini
+            Register here
           </Link>
         </p>
       </div>

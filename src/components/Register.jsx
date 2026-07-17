@@ -22,7 +22,7 @@ export default function Register() {
     const value = e.target.value;
     setEmail(value);
     if (value && !value.includes('@gmail.com')) {
-      setEmailError('Email harus menggunakan @gmail.com');
+      setEmailError('Email must use @gmail.com');
     } else {
       setEmailError('');
     }
@@ -32,7 +32,7 @@ export default function Register() {
     const value = e.target.value;
     setPassword(value);
     if (value && value.length < 8) {
-      setPasswordError('Kata sandi minimal 8 karakter');
+      setPasswordError('Password must be at least 8 characters');
     } else {
       setPasswordError('');
     }
@@ -42,7 +42,7 @@ export default function Register() {
     const value = e.target.value;
     setConfirmPassword(value);
     if (value && value !== password) {
-      setConfirmError('Kata sandi tidak sama');
+      setConfirmError('Passwords do not match');
     } else {
       setConfirmError('');
     }
@@ -81,7 +81,7 @@ export default function Register() {
         <div className="flex flex-col items-center mb-6 mt-2">
           <img src={SehatIn} alt="SehatIn" className="w-32 h-auto mb-4" />
 
-          <h1 className="text-2xl font-bold text-blue-800 dark:text-cyan-300 mb-2">Buat Akun Baru</h1>
+          <h1 className="text-2xl font-bold text-blue-800 dark:text-cyan-300 mb-2">Create New Account</h1>
 
         </div>
 
@@ -93,21 +93,21 @@ export default function Register() {
 
         {/* Form Section */}
         <form className="flex flex-col gap-4 flex-grow">
-          {/* Input Nama Lengkap */}
+          {/* Full Name Input */}
           <div className="page-enter-up" style={{ animationDelay: '60ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
-              Nama Lengkap
+              Full Name
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="block w-full px-4 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors"
-              placeholder="Masukkan nama Anda"
+              placeholder="Enter your name"
             />
           </div>
 
-          {/* Input Email */}
+          {/* Email Input */}
           <div className="page-enter-up" style={{ animationDelay: '120ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
               Email
@@ -126,10 +126,10 @@ export default function Register() {
             )}
           </div>
 
-          {/* Input Kata Sandi */}
+          {/* Password Input */}
           <div className="page-enter-up" style={{ animationDelay: '180ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
-              Kata Sandi
+              Password
             </label>
             <div className="relative">
               <input
@@ -139,7 +139,7 @@ export default function Register() {
                 className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
                   passwordError ? 'border-red-500' : 'border-gray-200 dark:border-white/10'
                 }`}
-                placeholder="Minimal 8 karakter"
+                placeholder="At least 8 characters"
               />
               <div
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
@@ -157,10 +157,10 @@ export default function Register() {
             )}
           </div>
 
-          {/* Input Konfirmasi Kata Sandi */}
+          {/* Confirm Password Input */}
           <div className="page-enter-up" style={{ animationDelay: '240ms' }}>
             <label className="block text-sm font-semibold text-gray-800 dark:text-gray-300 mb-1.5">
-              Konfirmasi Kata Sandi
+              Confirm Password
             </label>
             <div className="relative">
               <input
@@ -170,7 +170,7 @@ export default function Register() {
                 className={`block w-full pl-4 pr-11 py-3 bg-[#F4F7F9] dark:bg-white/5 text-gray-900 dark:text-white border rounded-xl focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-cyan-400 dark:focus:border-cyan-400 text-sm transition-colors ${
                   confirmError ? 'border-red-500' : 'border-gray-200 dark:border-white/10'
                 }`}
-                placeholder="Ulangi kata sandi"
+                placeholder="Re-enter your password"
               />
               <div
                 className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
@@ -188,7 +188,7 @@ export default function Register() {
             )}
           </div>
 
-          {/* Tombol Daftar */}
+          {/* Register Button */}
           <button
             type="button"
             disabled={!isFormValid || loading}
@@ -200,7 +200,7 @@ export default function Register() {
                 : 'bg-gray-300 dark:bg-white/10 cursor-not-allowed'
             }`}
           >
-            {loading ? 'Memproses...' : 'Daftar'}
+            {loading ? 'Processing...' : 'Register'}
             {!loading && <ArrowRight className="w-5 h-5" />}
           </button>
         </form>
@@ -209,9 +209,9 @@ export default function Register() {
       {/* Footer / Login Link */}
       <div className="page-enter pt-6 pb-2 text-center" style={{ animationDelay: '350ms' }}>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Sudah punya akun?{' '}
+          Already have an account?{' '}
           <Link to="/login" className="text-blue-700 dark:text-cyan-300 font-bold hover:underline">
-            Masuk di sini
+            Log in here
           </Link>
         </p>
       </div>

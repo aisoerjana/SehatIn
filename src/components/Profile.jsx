@@ -38,7 +38,7 @@ const DARK_C = {
   page: "#05070d",
 };
 
-/* NOTE: colors di-pass sebagai prop — jangan module-level mutation */
+/* NOTE: colors are passed as a prop — no module-level mutation */
 
 
 const Icon = {
@@ -144,11 +144,11 @@ export default function Profile() {
   const { theme, toggleTheme } = useTheme()
   const colors = theme === "dark" ? DARK_C : LIGHT_C;
   const [profile, setProfile] = useState({
-    name: 'Pengguna',
+    name: 'User',
     email: '',
-    tinggi: '-',
-    berat: '-',
-    umur: '-',
+    height: '-',
+    weight: '-',
+    age: '-',
   })
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -164,11 +164,11 @@ export default function Profile() {
         .eq('id', session.user.id)
         .single()
       setProfile({
-        name: session.user.user_metadata?.name || data?.name || 'Pengguna',
+        name: session.user.user_metadata?.name || data?.name || 'User',
         email: session.user.email || '',
-        tinggi: data?.height_cm ?? '-',
-        berat: data?.weight_kg ?? '-',
-        umur: data?.age ?? '-',
+        height: data?.height_cm ?? '-',
+        weight: data?.weight_kg ?? '-',
+        age: data?.age ?? '-',
       })
       if (data?.avatar_url) setAvatarUrl(data.avatar_url)
     })
@@ -194,7 +194,7 @@ export default function Profile() {
       .upload(filePath, file, { upsert: true })
 
     if (uploadError) {
-      alert('Gagal upload foto: ' + uploadError.message)
+      alert('Failed to upload photo: ' + uploadError.message)
       setUploading(false)
       return
     }
@@ -260,7 +260,7 @@ export default function Profile() {
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
-                    alt="Foto profil"
+                    alt="Profile photo"
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 ) : (
@@ -268,7 +268,7 @@ export default function Profile() {
                 )}
               </div>
               <button
-                aria-label="Ubah foto profil"
+                aria-label="Change profile photo"
                 onClick={handleFileSelect}
                 disabled={uploading}
                 style={{
@@ -314,14 +314,14 @@ export default function Profile() {
               textTransform: "uppercase",
             }}
           >
-            Data Kesehatan
+            Health Data
           </p>
           <Card style={{ padding: 16, animationDelay: "120ms" }} colors={colors} className="page-enter-up">
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
               {[
-                { label: "Tinggi", value: profile.tinggi, unit: "cm" },
-                { label: "Berat", value: profile.berat, unit: "kg" },
-                { label: "Umur", value: profile.umur, unit: "Tahun" },
+                { label: "Height", value: profile.height, unit: "cm" },
+                { label: "Weight", value: profile.weight, unit: "kg" },
+                { label: "Age", value: profile.age, unit: "Years" },
               ].map((d, i) => (
                 <div
                   key={d.label}
@@ -382,7 +382,7 @@ export default function Profile() {
                 {theme === 'dark' ? <Moon width={18} height={18} /> : <Sun width={18} height={18} />}
               </span>
               <span style={{ fontSize: 14.5, fontWeight: 600, color: colors.text }}>
-                Mode Gelap
+                Dark Mode
               </span>
             </div>
             <button
@@ -425,16 +425,16 @@ export default function Profile() {
               textTransform: "uppercase",
             }}
           >
-            Lainnya
+            Other
           </p>
           <Card colors={colors} className="page-enter-up" style={{ animationDelay: "360ms" }}>
-            <MenuRow icon={Icon.logout} label="Keluar" danger last onClick={handleLogout} colors={colors} />
+            <MenuRow icon={Icon.logout} label="Log Out" danger last onClick={handleLogout} colors={colors} />
           </Card>
 
         </div>
       </main>
 
-      {/* Modal Konfirmasi Keluar */}
+      {/* Logout Confirmation Modal */}
       {showConfirmLogout && (
         <div
           className="modal-backdrop-enter"
@@ -459,10 +459,10 @@ export default function Profile() {
             onClick={e => e.stopPropagation()}
           >
             <h3 style={{ fontSize: 18, fontWeight: 700, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-              Konfirmasi Keluar
+              Confirm Logout
             </h3>
             <p style={{ fontSize: 13, color: colors.textMuted, textAlign: 'center', marginBottom: 24 }}>
-              Apakah kamu yakin ingin keluar?
+              Are you sure you want to log out?
             </p>
             <div style={{ display: 'flex', gap: 12 }}>
               <button
@@ -475,7 +475,7 @@ export default function Profile() {
                   color: colors.text,
                 }}
               >
-                Tidak
+                No
               </button>
               <button
                 onClick={confirmLogout}
@@ -487,7 +487,7 @@ export default function Profile() {
                   color: '#fff',
                 }}
               >
-                Iya
+                Yes
               </button>
             </div>
           </div>
