@@ -1,6 +1,6 @@
 import { User, Sun, Moon } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import SehatIn from '../assets/SehatIn.png'
+import SehatIn from '../assets/SehatIn2.png'
 import { useTheme } from '../context/ThemeContext'
 
 const UpperNavbar = () => {

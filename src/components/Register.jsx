@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import SehatIn from '../assets/SehatIn.png';
+import SehatIn from '../assets/SehatIn2.png';
 
 export default function Register() {
   const navigate = useNavigate();
