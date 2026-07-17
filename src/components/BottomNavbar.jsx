@@ -34,11 +34,11 @@ export default function BottomNavbar() {
         <span className={`text-[10px] font-bold ${isActive('/history') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>History</span>
       </Link>
 
-      <Link to="/food-list" className="flex flex-col items-center gap-1">
-        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/food-list') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
-          <List className={`w-5 h-5 ${isActive('/food-list') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
+      <Link to="/ask" className="flex flex-col items-center gap-1">
+        <div className={`w-12 h-8 rounded-full flex items-center justify-center ${isActive('/ask') ? 'bg-blue-300/40 dark:bg-cyan-400/20' : ''}`}>
+          <List className={`w-5 h-5 ${isActive('/ask') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`} />
         </div>
-        <span className={`text-[10px] font-bold ${isActive('/food-list') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Food </span>
+        <span className={`text-[10px] font-bold ${isActive('/ask') ? 'text-blue-800 dark:text-cyan-300' : 'text-gray-700 dark:text-gray-400'}`}>Ask</span>
       </Link>
     </div>
   )
