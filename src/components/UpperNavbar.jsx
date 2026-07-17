@@ -10,7 +10,7 @@ const UpperNavbar = () => {
       </Link>
 
       <Link to="/profile" className="text-gray-500 hover:text-blue-700 dark:text-gray-400 dark:hover:text-cyan-300 transition-colors">
-        <User className="w-5 h-5" />
+        <User className="w-7 h-7" />
       </Link>
     </div>
   )
