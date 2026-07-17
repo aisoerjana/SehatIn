@@ -38,9 +38,8 @@ const DARK_C = {
   page: "#05070d",
 };
 
-/* mutated per-render by Profile based on the active theme; Card/MenuRow read this
-   same module binding when React calls them during the same render pass */
-let C = LIGHT_C;
+/* NOTE: colors di-pass sebagai prop — jangan module-level mutation */
+
 
 const Icon = {
   leaf: (p) => (
@@ -79,12 +78,12 @@ const Icon = {
   ),
 };
 
-function Card({ children, style }) {
+function Card({ children, style, colors }) {
   return (
     <div
       style={{
-        background: C.surface,
-        border: `1px solid ${C.border}`,
+        background: colors.surface,
+        border: `1px solid ${colors.border}`,
         borderRadius: 16,
         overflow: "hidden",
         ...style,
@@ -95,8 +94,8 @@ function Card({ children, style }) {
   );
 }
 
-function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
-  const color = danger ? C.danger : C.text;
+function MenuRow({ icon: Ic, label, hint, danger, last, onClick, colors }) {
+  const color = danger ? colors.danger : colors.text;
   return (
     <button
       onClick={onClick}
@@ -108,7 +107,7 @@ function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
         padding: "14px 16px",
         background: "transparent",
         border: "none",
-        borderBottom: last ? "none" : `1px solid ${C.border}`,
+        borderBottom: last ? "none" : `1px solid ${colors.border}`,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "inherit",
@@ -121,8 +120,8 @@ function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
           borderRadius: 10,
           display: "grid",
           placeItems: "center",
-          background: danger ? C.dangerSoft : C.primarySoft,
-          color: danger ? C.danger : C.primary,
+          background: danger ? colors.dangerSoft : colors.primarySoft,
+          color: danger ? colors.danger : colors.primary,
           flexShrink: 0,
         }}
       >
@@ -131,7 +130,7 @@ function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 14.5, fontWeight: 600, color }}>{label}</span>
         {hint && (
-          <span style={{ display: "block", fontSize: 12.5, color: C.textMuted, marginTop: 1 }}>{hint}</span>
+          <span style={{ display: "block", fontSize: 12.5, color: colors.textMuted, marginTop: 1 }}>{hint}</span>
         )}
       </span>
       {!danger && <Icon.chevron width={18} height={18} style={{ color: "#9AA5B1", flexShrink: 0 }} />}
@@ -142,7 +141,7 @@ function MenuRow({ icon: Ic, label, hint, danger, last, onClick }) {
 export default function Profile() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
-  C = theme === "dark" ? DARK_C : LIGHT_C;
+  const colors = theme === "dark" ? DARK_C : LIGHT_C;
   const [profile, setProfile] = useState({
     name: 'Pengguna',
     email: '',
@@ -223,9 +222,9 @@ export default function Profile() {
         maxWidth: 400,
         margin: "0 auto",
         height: "100vh",
-        background: C.page,
+        background: colors.page,
         fontFamily: "'Inter', -apple-system, 'Segoe UI', sans-serif",
-        color: C.text,
+        color: colors.text,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -236,18 +235,18 @@ export default function Profile() {
       <main style={{ flex: 1, overflowY: "auto" }}>
 
         <div style={{ padding: "16px 16px 24px" }}>
-          <Card style={{ padding: 20, textAlign: "center" }}>
+          <Card style={{ padding: 20, textAlign: "center" }} colors={colors}>
             <div style={{ position: "relative", width: 84, height: 84, margin: "0 auto" }}>
               <div
                 style={{
                   width: 84,
                   height: 84,
                   borderRadius: "50%",
-                  background: avatarUrl ? 'none' : `linear-gradient(135deg, ${C.primarySoft}, #CFEBDD)`,
+                  background: avatarUrl ? 'none' : `linear-gradient(135deg, ${colors.primarySoft}, #CFEBDD)`,
                   display: "grid",
                   placeItems: "center",
-                  color: C.primary,
-                  border: `2px solid ${C.primary}`,
+                  color: colors.primary,
+                  border: `2px solid ${colors.primary}`,
                   overflow: "hidden",
                 }}
               >
@@ -272,7 +271,7 @@ export default function Profile() {
                   width: 30,
                   height: 30,
                   borderRadius: "50%",
-                  background: C.primary,
+                  background: colors.primary,
                   color: "#fff",
                   border: "2px solid #fff",
                   display: "grid",
@@ -292,10 +291,10 @@ export default function Profile() {
               />
             </div>
 
-            <h2 style={{ margin: "12px 0 2px", fontSize: 19, fontWeight: 800, color: C.primaryDark }}>
+            <h2 style={{ margin: "12px 0 2px", fontSize: 19, fontWeight: 800, color: colors.primaryDark }}>
               {profile.name}
             </h2>
-            <p style={{ margin: 0, fontSize: 13, color: C.textMuted }}>{profile.email}</p>
+            <p style={{ margin: 0, fontSize: 13, color: colors.textMuted }}>{profile.email}</p>
           </Card>
 
           <p
@@ -304,13 +303,13 @@ export default function Profile() {
               fontSize: 13,
               fontWeight: 700,
               letterSpacing: 0.2,
-              color: C.textMuted,
+              color: colors.textMuted,
               textTransform: "uppercase",
             }}
           >
             Data Kesehatan
           </p>
-          <Card style={{ padding: 16 }}>
+          <Card style={{ padding: 16 }} colors={colors}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
               {[
                 { label: "Tinggi", value: profile.tinggi, unit: "cm" },
@@ -320,15 +319,15 @@ export default function Profile() {
                 <div
                   key={d.label}
                   style={{
-                    background: C.field,
-                    border: `1px solid ${C.border}`,
+                    background: colors.field,
+                    border: `1px solid ${colors.border}`,
                     borderRadius: 12,
                     padding: "12px 8px",
                     textAlign: "center",
                   }}
                 >
-                  <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>{d.label}</p>
-                  <p style={{ margin: "4px 0 0", fontSize: 20, fontWeight: 800, color: C.primaryDark }}>
+                  <p style={{ margin: 0, fontSize: 12, color: colors.textMuted }}>{d.label}</p>
+                  <p style={{ margin: "4px 0 0", fontSize: 20, fontWeight: 800, color: colors.primaryDark }}>
                     {d.value}
                   </p>
                   <p
@@ -336,7 +335,7 @@ export default function Profile() {
                       margin: 0,
                       fontSize: 11.5,
                       fontWeight: 500,
-                      color: C.textMuted,
+                      color: colors.textMuted,
                     }}
                   >
                     {d.unit}
@@ -347,6 +346,7 @@ export default function Profile() {
           </Card>
 
           <Card
+            colors={colors}
             style={{
               display: "flex",
               alignItems: "center",
@@ -363,14 +363,14 @@ export default function Profile() {
                   borderRadius: 10,
                   display: "grid",
                   placeItems: "center",
-                  background: C.primarySoft,
-                  color: C.primary,
+                  background: colors.primarySoft,
+                  color: colors.primary,
                   flexShrink: 0,
                 }}
               >
                 {theme === 'dark' ? <Moon width={18} height={18} /> : <Sun width={18} height={18} />}
               </span>
-              <span style={{ fontSize: 14.5, fontWeight: 600, color: C.text }}>
+              <span style={{ fontSize: 14.5, fontWeight: 600, color: colors.text }}>
                 Mode Gelap
               </span>
             </div>
@@ -384,7 +384,7 @@ export default function Profile() {
                 border: "none",
                 cursor: "pointer",
                 position: "relative",
-                background: theme === 'dark' ? C.primary : C.border,
+                background: theme === 'dark' ? colors.primary : colors.border,
                 transition: "background 0.2s",
               }}
             >
@@ -410,14 +410,14 @@ export default function Profile() {
               fontSize: 13,
               fontWeight: 700,
               letterSpacing: 0.2,
-              color: C.textMuted,
+              color: colors.textMuted,
               textTransform: "uppercase",
             }}
           >
             Lainnya
           </p>
-          <Card>
-            <MenuRow icon={Icon.logout} label="Keluar" danger last onClick={handleLogout} />
+          <Card colors={colors}>
+            <MenuRow icon={Icon.logout} label="Keluar" danger last onClick={handleLogout} colors={colors} />
           </Card>
 
         </div>
