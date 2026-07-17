@@ -8,12 +8,22 @@ import BottomNavbar from './BottomNavbar'
 export default function Dashboard() {
   const navigate = useNavigate()
   const [userName, setUserName] = useState('Pengguna')
+  const [avatarUrl, setAvatarUrl] = useState(null) // state foto profil — di-fetch dari tabel profiles; default null = icon default
   const [latestResult, setLatestResult] = useState(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { navigate('/login'); return }
       setUserName(session.user.user_metadata?.name || 'Pengguna')
+
+      // Ambil foto profil dari tabel profiles — field avatar_url diisi saat user upload lewat halaman Profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', session.user.id)
+        .maybeSingle()
+
+      if (profile?.avatar_url) setAvatarUrl(profile.avatar_url) // kalau ada foto, simpan ke state; kalau null, nanti render icon default
 
       const { data } = await supabase
         .from('macro_targets')
@@ -94,9 +104,18 @@ export default function Dashboard() {
               <p className="text-sm text-[#6B7280] dark:text-gray-400 font-medium">{greetingTime()},</p>
               <h2 className="text-2xl font-bold text-[#1F2937] dark:text-cyan-300">Halo, {userName}!</h2>
             </div>
-            <div className="w-12 h-12 bg-gray-300 dark:bg-white/10 rounded-full flex items-center justify-center border-2 border-white dark:border-white/10 shadow-sm">
-              <User className="w-6 h-6 text-gray-500 dark:text-gray-300" />
-            </div>
+            {/* Foto profil (pojok kanan atas). Dibungkus Link ke /profile biar bisa diklik.
+                - Kalau avatarUrl terisi → tampilkan <img> dengan object-cover biar proporsional.
+                - Kalau null (belum upload) → tampilkan icon User di lingkaran abu-abu (default). */}
+            <Link to="/profile">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Foto profil" className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-white/10 shadow-sm" />
+              ) : (
+                <div className="w-12 h-12 bg-gray-300 dark:bg-white/10 rounded-full flex items-center justify-center border-2 border-white dark:border-white/10 shadow-sm">
+                  <User className="w-6 h-6 text-gray-500 dark:text-gray-300" />
+                </div>
+              )}
+            </Link>
           </div>
 
           <div className="bg-gradient-to-br from-[#EAF2FF] to-white dark:from-[#0e1522] dark:to-[#0b0f17] border border-[#E5E7EB] dark:border-cyan-400/20 rounded-3xl p-5 mb-5 shadow-sm relative overflow-hidden">
