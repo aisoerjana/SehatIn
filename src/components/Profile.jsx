@@ -4,7 +4,7 @@ import { supabase } from '../supabaseClient'
 import UpperNavbar from './UpperNavbar'
 import BottomNavbar from './BottomNavbar'
 import { useTheme } from '../context/ThemeContext'
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon, ArrowLeft } from 'lucide-react'
 
 const LIGHT_C = {
   primary: "#2563EB",
@@ -242,6 +242,29 @@ export default function Profile() {
       <main style={{ flex: 1, overflowY: "auto" }}>
 
         <div style={{ padding: "16px 16px 96px" }}>
+          <div className="navbar-enter-down" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+            <button
+              onClick={() => navigate(-1)}
+              aria-label="Back"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 10px",
+                marginLeft: -8,
+                borderRadius: 999,
+                border: "none",
+                background: "transparent",
+                color: colors.text,
+                cursor: "pointer",
+                fontSize: 14,
+                fontWeight: 700,
+              }}
+            >
+              <ArrowLeft width={20} height={20} />
+              Back
+            </button>
+          </div>
           <Card style={{ padding: 20, textAlign: "center", animationDelay: "60ms" }} colors={colors} className="page-enter-up">
             <div style={{ position: "relative", width: 84, height: 84, margin: "0 auto" }}>
               <div
