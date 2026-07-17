@@ -99,7 +99,7 @@ export default function Dashboard() {
       <div className="flex-1 overflow-y-auto pb-24">
 
         <div className="px-5 py-5">
-          <div className="flex items-center justify-between mb-6">
+          <div className="page-enter-up flex items-center justify-between mb-6">
             <div>
               <p className="text-sm text-[#6B7280] dark:text-gray-400 font-medium">{greetingTime()},</p>
               <h2 className="text-2xl font-bold text-[#1F2937] dark:text-cyan-300">Halo, {userName}!</h2>
@@ -118,7 +118,7 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          <div className="bg-gradient-to-br from-[#EAF2FF] to-white dark:from-[#0e1522] dark:to-[#0b0f17] border border-[#E5E7EB] dark:border-cyan-400/20 rounded-3xl p-5 mb-5 shadow-sm relative overflow-hidden">
+          <div className="page-enter-up bg-gradient-to-br from-[#EAF2FF] to-white dark:from-[#0e1522] dark:to-[#0b0f17] border border-[#E5E7EB] dark:border-cyan-400/20 rounded-3xl p-5 mb-5 shadow-sm relative overflow-hidden" style={{ animationDelay: '100ms' }}>
             <div className="relative z-10 w-2/3">
               <h3 className="text-lg font-bold text-[#1F2937] dark:text-white mb-2 leading-tight">
                 Cek Kesehatan<br/>Harian
@@ -137,7 +137,7 @@ export default function Dashboard() {
           </div>
 
           {/* Tips Hari Ini */}
-          <div className="mb-5 bg-white dark:bg-[#0b0f17] border border-[#E5E7EB] dark:border-white/10 rounded-2xl p-5 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+          <div className="page-enter-up mb-5 bg-white dark:bg-[#0b0f17] border border-[#E5E7EB] dark:border-white/10 rounded-2xl p-5 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300" style={{ animationDelay: '200ms' }}>
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 bg-[#EAF2FF] dark:bg-cyan-400/10 rounded-xl flex items-center justify-center shrink-0">
                 <Lightbulb className="w-5 h-5 text-[#2563EB] dark:text-cyan-300" />
@@ -154,7 +154,7 @@ export default function Dashboard() {
 
           {/* Riwayat Terakhir */}
           {latestResult && (
-            <div className="mb-5 bg-white dark:bg-[#0b0f17] border border-[#E5E7EB] dark:border-white/10 rounded-2xl p-5 shadow-sm">
+            <div className="page-enter-up mb-5 bg-white dark:bg-[#0b0f17] border border-[#E5E7EB] dark:border-white/10 rounded-2xl p-5 shadow-sm" style={{ animationDelay: '300ms' }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base font-bold text-[#1F2937] dark:text-white">Riwayat Terakhir</h3>
                 <div className="flex items-center gap-1.5 text-[10px] text-[#6B7280] dark:text-gray-400 font-medium">
@@ -166,7 +166,8 @@ export default function Dashboard() {
                 {kebutuhanHarian.map((item, index) => (
                   <div
                     key={index}
-                    className={`${item.bg} dark:bg-white/5 rounded-xl px-4 py-3 flex items-center justify-between hover:scale-[1.02] transition-all duration-300`}
+                    className={`${item.bg} dark:bg-white/5 rounded-xl px-4 py-3 flex items-center justify-between hover:scale-[1.02] transition-all duration-300 stagger-item`}
+                    style={{ animationDelay: `${350 + index * 60}ms` }}
                   >
                     <span className="text-sm font-semibold text-[#1F2937] dark:text-gray-200">{item.label}</span>
                     <span className={`text-sm font-bold ${item.text} dark:text-white/80`}>{item.value}</span>

@@ -78,9 +78,10 @@ const Icon = {
   ),
 };
 
-function Card({ children, style, colors }) {
+function Card({ children, style, colors, className }) {
   return (
     <div
+      className={className}
       style={{
         background: colors.surface,
         border: `1px solid ${colors.border}`,
@@ -223,6 +224,7 @@ export default function Profile() {
 
   return (
     <div
+      className="page-enter"
       style={{
         maxWidth: 400,
         margin: "0 auto",
@@ -240,7 +242,7 @@ export default function Profile() {
       <main style={{ flex: 1, overflowY: "auto" }}>
 
         <div style={{ padding: "16px 16px 96px" }}>
-          <Card style={{ padding: 20, textAlign: "center" }} colors={colors}>
+          <Card style={{ padding: 20, textAlign: "center", animationDelay: "60ms" }} colors={colors} className="page-enter-up">
             <div style={{ position: "relative", width: 84, height: 84, margin: "0 auto" }}>
               <div
                 style={{
@@ -314,21 +316,23 @@ export default function Profile() {
           >
             Data Kesehatan
           </p>
-          <Card style={{ padding: 16 }} colors={colors}>
+          <Card style={{ padding: 16, animationDelay: "120ms" }} colors={colors} className="page-enter-up">
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
               {[
                 { label: "Tinggi", value: profile.tinggi, unit: "cm" },
                 { label: "Berat", value: profile.berat, unit: "kg" },
                 { label: "Umur", value: profile.umur, unit: "Tahun" },
-              ].map((d) => (
+              ].map((d, i) => (
                 <div
                   key={d.label}
+                  className="stagger-item"
                   style={{
                     background: colors.field,
                     border: `1px solid ${colors.border}`,
                     borderRadius: 12,
                     padding: "12px 8px",
                     textAlign: "center",
+                    animationDelay: `${180 + i * 60}ms`,
                   }}
                 >
                   <p style={{ margin: 0, fontSize: 12, color: colors.textMuted }}>{d.label}</p>
@@ -352,12 +356,14 @@ export default function Profile() {
 
           <Card
             colors={colors}
+            className="page-enter-up"
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               padding: "14px 16px",
               marginTop: 20,
+              animationDelay: "300ms",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -421,7 +427,7 @@ export default function Profile() {
           >
             Lainnya
           </p>
-          <Card colors={colors}>
+          <Card colors={colors} className="page-enter-up" style={{ animationDelay: "360ms" }}>
             <MenuRow icon={Icon.logout} label="Keluar" danger last onClick={handleLogout} colors={colors} />
           </Card>
 
@@ -431,6 +437,7 @@ export default function Profile() {
       {/* Modal Konfirmasi Keluar */}
       {showConfirmLogout && (
         <div
+          className="modal-backdrop-enter"
           style={{
             position: 'fixed', inset: 0, zIndex: 50,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -440,6 +447,7 @@ export default function Profile() {
           onClick={() => setShowConfirmLogout(false)}
         >
           <div
+            className="modal-panel-enter"
             style={{
               background: colors.surface,
               borderRadius: 24,

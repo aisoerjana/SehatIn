@@ -358,11 +358,11 @@ function getRoleStyle(role) {
   }[role];
 }
 
-function ProtoCard({ ex }) {
+function ProtoCard({ ex, delay = 0 }) {
   return (
     <div
-      className="rounded-xl px-4 py-3 mb-3 transition-all duration-200 hover:-translate-y-px group"
-      style={{ background: C.panel, border: `1px solid ${C.line2}` }}
+      className="stagger-item rounded-xl px-4 py-3 mb-3 transition-all duration-200 hover:-translate-y-px group"
+      style={{ background: C.panel, border: `1px solid ${C.line2}`, animationDelay: `${delay}ms` }}
     >
       <div className="flex items-center justify-between gap-2 mb-2">
         <span className="font-display text-white uppercase rounded-md px-2 py-1" style={{ ...getRoleStyle(ex.role), fontSize: "0.52rem", letterSpacing: "1.5px" }}>
@@ -398,12 +398,12 @@ function VideoModal({ muscleId, idx, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="modal-backdrop-enter fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,.55)", backdropFilter: "blur(8px)" }}
       onClick={(ev) => ev.target === ev.currentTarget && onClose()}
     >
       <div
-        className="w-full max-w-2xl max-h-full overflow-y-auto rounded-3xl"
+        className="modal-panel-enter w-full max-w-2xl max-h-full overflow-y-auto rounded-3xl"
         style={{ background: C.panel, border: `1px solid ${C.line}`, boxShadow: "0 4px 24px rgba(0,0,0,.12)" }}
       >
         <div className="flex justify-between items-center px-6 pt-6">
@@ -455,7 +455,7 @@ export default function MuscleScan() {
   const proto = muscle ? PROTOCOL[muscle] : null;
 
   return (
-    <div className="flex flex-col h-screen w-full max-w-md mx-auto transition-colors" style={{ background: C.page, fontFamily: "'Inter', sans-serif" }}>
+    <div className="page-enter flex flex-col h-screen w-full max-w-md mx-auto transition-colors" style={{ background: C.page, fontFamily: "'Inter', sans-serif" }}>
       <UpperNavbar />
       <div className="flex-1 overflow-y-auto py-10 px-4 pb-24">
       {/* fonts + SVG interaction styles (things Tailwind can't express) */}
@@ -486,7 +486,7 @@ export default function MuscleScan() {
 
       <div className="max-w-6xl mx-auto">
         {/* section head */}
-        <div className="text-center mb-10">
+        <div className="page-enter-up text-center mb-10">
           <div className="font-display inline-flex items-center gap-2 uppercase mb-3 rounded-full px-4 py-1.5"
             style={{ color: C.teal, fontSize: "0.6rem", letterSpacing: "3px", background: "rgba(15,123,74,.07)", border: `1px solid ${C.line}` }}>
             <span className="w-1.5 h-1.5 rounded-full blink-anim" style={{ background: C.teal, boxShadow: `0 0 10px ${C.teal}` }} />
@@ -504,12 +504,13 @@ export default function MuscleScan() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* ---- AVATAR STAGE ---- */}
           <div
-            className="lg:col-span-6 relative flex flex-col items-center rounded-3xl p-4 overflow-hidden"
+            className="page-enter-up lg:col-span-6 relative flex flex-col items-center rounded-3xl p-4 overflow-hidden"
             style={{
               minHeight: 500,
               border: `1px solid ${C.line}`,
               background: C.stageBg,
               backdropFilter: "blur(14px)",
+              animationDelay: "100ms",
             }}
           >
             {/* HUD corners */}
@@ -565,17 +566,17 @@ export default function MuscleScan() {
 
           {/* ---- AI REC PANEL ---- */}
           <div
-            className="lg:col-span-6 rounded-3xl overflow-hidden"
-            style={{ minHeight: 560, background: C.panelSoft, border: `1px solid ${C.line}`, backdropFilter: "blur(14px)" }}
+            className="page-enter-up lg:col-span-6 rounded-3xl overflow-hidden"
+            style={{ minHeight: 560, background: C.panelSoft, border: `1px solid ${C.line}`, backdropFilter: "blur(14px)", animationDelay: "180ms" }}
           >
             {!muscle ? (
-              <div className="flex flex-col items-center justify-center h-full text-center p-8 gap-4" style={{ minHeight: 480, color: C.ink3 }}>
+              <div className="page-enter flex flex-col items-center justify-center h-full text-center p-8 gap-4" style={{ minHeight: 480, color: C.ink3 }}>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl spin-slow" style={{ border: `2px dashed ${C.line}` }}>◎</div>
                 <p className="max-w-xs leading-relaxed" style={{ fontSize: "0.94rem" }}>Select a muscle to generate its AI training protocol.</p>
               </div>
             ) : (
-              <div className="p-6">
-              
+              <div className="page-enter p-6" key={muscle}>
+
                 <div className="font-display font-bold mb-3 leading-snug" style={{ color: C.ink, fontSize: "1.12rem" }}>{md.name}</div>
                 <p className="leading-relaxed mb-5" style={{ color: C.ink2, fontSize: "0.9rem" }}>{md.func}</p>
 
@@ -583,9 +584,9 @@ export default function MuscleScan() {
                   Recommended protocol
                   <span className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(255,138,61,.4), transparent)" }} />
                 </div>
-                <ProtoCard ex={proto.main} />
-                <ProtoCard ex={proto.secondary} />
-                <ProtoCard ex={proto.finisher} />
+                <ProtoCard ex={proto.main} delay={0} />
+                <ProtoCard ex={proto.secondary} delay={80} />
+                <ProtoCard ex={proto.finisher} delay={160} />
 
                 <div className="font-display uppercase mt-5 mb-3" style={{ color: C.teal, fontSize: "0.58rem", letterSpacing: "2.5px" }}>
                   Exercise library — tap to watch form
@@ -594,8 +595,8 @@ export default function MuscleScan() {
                   <button
                     key={e.name}
                     onClick={() => setModal({ muscleId: muscle, idx: i })}
-                    className="w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                    style={{ background: C.panel, border: `1px solid ${C.line2}`, color: C.ink2, fontSize: "0.9rem" }}
+                    className="stagger-item w-full flex items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 mb-1.5 font-semibold text-left transition-all duration-200 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                    style={{ background: C.panel, border: `1px solid ${C.line2}`, color: C.ink2, fontSize: "0.9rem", animationDelay: `${260 + i * 60}ms` }}
                     onMouseEnter={(ev) => { ev.currentTarget.style.borderColor = C.teal; ev.currentTarget.style.color = C.teal; }}
                     onMouseLeave={(ev) => { ev.currentTarget.style.borderColor = C.line2; ev.currentTarget.style.color = C.ink2; }}
                   >

@@ -69,13 +69,13 @@ export default function Ask() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#F6F9FF] dark:bg-[#05070d] transition-colors">
+    <div className="page-enter flex flex-col h-screen w-full max-w-md mx-auto bg-[#F6F9FF] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
 
       <div className="flex-1 overflow-y-auto px-4 pb-24">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
-          <div className="flex items-center gap-3 py-4 border-b border-gray-100 dark:border-white/10 mb-4">
+          <div className="navbar-enter-down flex items-center gap-3 py-4 border-b border-gray-100 dark:border-white/10 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-md">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
@@ -88,7 +88,7 @@ export default function Ask() {
           {/* Messages */}
           <div className="space-y-4 mb-4">
             {messages.map((msg, idx) => (
-              <div key={idx}>
+              <div key={idx} className={msg.role === 'user' ? 'slide-in-right' : 'page-enter-up'}>
                 {msg.role === 'user' ? (
                   <div className="flex items-start gap-3 justify-end">
                     <div className="bg-blue-600 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-[85%] shadow-sm">
@@ -116,7 +116,7 @@ export default function Ask() {
             ))}
 
             {loading && (
-              <div className="flex items-start gap-3">
+              <div className="page-enter-up flex items-start gap-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shrink-0 mt-1">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
@@ -141,7 +141,8 @@ export default function Ask() {
                   key={i}
                   onClick={() => sendMessage(s)}
                   disabled={loading}
-                  className="text-left bg-white dark:bg-[#0b0f17] border border-gray-100 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-gray-600 dark:text-gray-400 hover:border-blue-200 dark:hover:border-cyan-400/30 hover:bg-blue-50/50 dark:hover:bg-white/5 transition-all shadow-sm"
+                  style={{ animationDelay: `${i * 70}ms` }}
+                  className="stagger-item text-left bg-white dark:bg-[#0b0f17] border border-gray-100 dark:border-white/10 rounded-xl px-4 py-3 text-xs text-gray-600 dark:text-gray-400 hover:border-blue-200 dark:hover:border-cyan-400/30 hover:bg-blue-50/50 dark:hover:bg-white/5 transition-all shadow-sm"
                 >
                   <Sparkles className="w-3 h-3 inline mr-1.5 text-cyan-400" />
                   {s}
@@ -190,7 +191,7 @@ export default function Ask() {
 
 function RecipeCard({ recipe }) {
   return (
-    <div className="flex items-start gap-3">
+    <div className="page-enter-up flex items-start gap-3">
       <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shrink-0 mt-1">
         <Bot className="w-4 h-4 text-white" />
       </div>

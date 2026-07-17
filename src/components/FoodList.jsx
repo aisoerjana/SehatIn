@@ -55,10 +55,10 @@ export default function FoodList() {
   });
 
   return (
-    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
+    <div className="page-enter flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
       <div className="flex-1 p-5 overflow-y-auto pb-24">
-        <div className="flex items-center justify-between mb-5">
+        <div className="navbar-enter-down flex items-center justify-between mb-5">
           <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">Daftar Makanan</h1>
           <div className="relative">
             <button
@@ -70,7 +70,7 @@ export default function FoodList() {
             {showFilter && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowFilter(false)} />
-                <div className="absolute right-0 top-full mt-2 z-20 bg-white dark:bg-[#0b0f17] border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg p-3 w-48">
+                <div className="modal-panel-enter absolute right-0 top-full mt-2 z-20 bg-white dark:bg-[#0b0f17] border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg p-3 w-48">
                   <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Filter Kategori</p>
                   <div className="space-y-1.5">
                     {allCategories.map((cat) => {
@@ -102,7 +102,7 @@ export default function FoodList() {
           </div>
         </div>
 
-        <div className="relative mb-4">
+        <div className="page-enter-up relative mb-4" style={{ animationDelay: '80ms' }}>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
@@ -123,8 +123,8 @@ export default function FoodList() {
           </div>
         ) : (
           <div className="space-y-3">
-            {filtered.map((food) => (
-              <div key={food.id} className="bg-white dark:bg-[#0b0f17] rounded-2xl p-4 border border-gray-100 dark:border-white/10 shadow-sm transition-colors">
+            {filtered.map((food, index) => (
+              <div key={food.id} className="stagger-item bg-white dark:bg-[#0b0f17] rounded-2xl p-4 border border-gray-100 dark:border-white/10 shadow-sm transition-colors" style={{ animationDelay: `${Math.min(index, 10) * 45}ms` }}>
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h3 className="font-bold text-gray-900 dark:text-white">{food.food_name}</h3>

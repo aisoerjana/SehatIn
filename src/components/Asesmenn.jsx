@@ -65,14 +65,14 @@ export default function Asesmen() {
       <UpperNavbar />
 
       <div className="flex-1 p-5 overflow-y-auto pb-24">
-        <div className="flex items-center gap-2 mb-5">
+        <div className="navbar-enter-down flex items-center gap-2 mb-5">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
             <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-gray-300" />
           </button>
           <h1 className="text-xl font-bold text-blue-800 dark:text-cyan-300">Kalkulator Gizi</h1>
         </div>
         {/* Card 1: Data Fisik */}
-        <div className="bg-white dark:bg-[#0b0f17] rounded-2xl p-5 mb-5 shadow-sm border border-gray-100 dark:border-white/10 transition-colors">
+        <div className="page-enter-up bg-white dark:bg-[#0b0f17] rounded-2xl p-5 mb-5 shadow-sm border border-gray-100 dark:border-white/10 transition-colors" style={{ animationDelay: '80ms' }}>
           <div className="flex items-center gap-3 mb-5">
             <div className="w-7 h-7 bg-blue-500 dark:bg-gradient-to-br dark:from-cyan-400 dark:to-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">1</div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Data Fisik</h2>
@@ -133,7 +133,7 @@ export default function Asesmen() {
         </div>
 
         {/* Card 2: Tujuan */}
-        <div className="bg-white dark:bg-[#0b0f17] rounded-2xl p-5 mb-5 shadow-sm border border-gray-100 dark:border-white/10 transition-colors">
+        <div className="page-enter-up bg-white dark:bg-[#0b0f17] rounded-2xl p-5 mb-5 shadow-sm border border-gray-100 dark:border-white/10 transition-colors" style={{ animationDelay: '160ms' }}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-7 h-7 bg-blue-500 dark:bg-gradient-to-br dark:from-cyan-400 dark:to-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">2</div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">Tujuan</h2>
@@ -166,7 +166,8 @@ export default function Asesmen() {
         <button
           onClick={hitung}
           disabled={!tinggi || !berat || !umur || !gender || !tujuan || loading}
-          className={`w-full text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-md transition-all ${
+          style={{ animationDelay: '240ms' }}
+          className={`page-enter-up w-full text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-md transition-all ${
             tinggi && berat && umur && gender && tujuan
               ? 'bg-[#2563EB] hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 active:scale-[0.98] cursor-pointer'
               : 'bg-gray-300 dark:bg-white/10 cursor-not-allowed'

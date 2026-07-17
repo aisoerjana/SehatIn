@@ -34,3 +34,77 @@ html.dark body {
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
+
+/* ============ Page & component animations ============ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideUpIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Whole-page fade, applied to a page's root wrapper on mount */
+.page-enter {
+  animation: fadeIn 0.4s ease both;
+}
+/* Content blocks that rise gently into place */
+.page-enter-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Top navbar / headers drop in from above */
+.navbar-enter-down {
+  animation: fadeInDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Bottom navbar slides up from below */
+.navbar-enter-up {
+  animation: slideUpIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Chat bubbles / cards that enter from the side */
+.slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* List / grid items — pair with an inline animationDelay for stagger */
+.stagger-item {
+  opacity: 0;
+  animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Modal backdrop fade + panel pop-in */
+.modal-backdrop-enter {
+  animation: fadeIn 0.2s ease both;
+}
+.modal-panel-enter {
+  animation: fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .page-enter-up,
+  .navbar-enter-down,
+  .navbar-enter-up,
+  .slide-in-right,
+  .stagger-item,
+  .modal-backdrop-enter,
+  .modal-panel-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

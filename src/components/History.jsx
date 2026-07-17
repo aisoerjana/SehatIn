@@ -60,22 +60,23 @@ export default function History() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
+    <div className="page-enter flex flex-col h-screen w-full max-w-md mx-auto bg-[#eff6ff] dark:bg-[#05070d] transition-colors">
       <UpperNavbar />
       <div className="flex-1 p-5 overflow-y-auto pb-24">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-5">Riwayat Asesmen</h1>
+        <h1 className="page-enter-up text-xl font-bold text-gray-900 dark:text-white mb-5">Riwayat Asesmen</h1>
         {results.length === 0 ? (
-          <div className="flex flex-col items-center justify-center mt-20 text-center">
+          <div className="page-enter-up flex flex-col items-center justify-center mt-20 text-center">
             <Clock className="w-16 h-16 text-gray-300 dark:text-white/20 mb-4" />
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Riwayat Asesmen</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Riwayat asesmen kesehatan akan muncul di sini.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {results.map((item) => (
+            {results.map((item, index) => (
               <div
                 key={item.id}
-                className="relative bg-white dark:bg-[#0b0f17] rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow"
+                className="stagger-item relative bg-white dark:bg-[#0b0f17] rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow"
+                style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
               >
                 <button
                   onClick={() =>
@@ -140,9 +141,9 @@ export default function History() {
 
       {/* Modal Konfirmasi Hapus */}
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm" onClick={() => setConfirmDeleteId(null)}>
+        <div className="modal-backdrop-enter fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm" onClick={() => setConfirmDeleteId(null)}>
           <div
-            className="bg-white dark:bg-[#0e1522] rounded-3xl p-6 w-full max-w-xs border border-gray-100 dark:border-cyan-400/20 shadow-2xl"
+            className="modal-panel-enter bg-white dark:bg-[#0e1522] rounded-3xl p-6 w-full max-w-xs border border-gray-100 dark:border-cyan-400/20 shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Hapus Riwayat</h3>
