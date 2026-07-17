@@ -83,6 +83,9 @@ Deno.serve(async (req) => {
       .from("macro_targets")
       .insert({
         profile_id: user.id,
+        height_cm,
+        weight_kg,
+        age,
         tdee,
         calorie_target,
         bmi,

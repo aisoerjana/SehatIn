@@ -28,9 +28,7 @@ export default function Ask() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [loading]);
+
 
   const sendMessage = async (text) => {
     const userText = text || input;

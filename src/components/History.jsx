@@ -19,7 +19,7 @@ export default function History() {
 
       const { data, error } = await supabase
         .from('macro_targets')
-        .select('id, calorie_target, protein_g, carbs_g, fat_g, fiber_g, sugar_max_g, created_at, profiles (height_cm, age, weight_kg)')
+        .select('id, calorie_target, protein_g, carbs_g, fat_g, fiber_g, sugar_max_g, height_cm, weight_kg, age, created_at, profiles (height_cm, age, weight_kg)')
         .eq('profile_id', session.user.id)
         .order('created_at', { ascending: false });
 
@@ -107,22 +107,22 @@ export default function History() {
                     </div>
                   </div>
                   <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
-                    {item.profiles && (
+                    {(() => { const h = item.height_cm ?? item.profiles?.height_cm; const w = item.weight_kg ?? item.profiles?.weight_kg; const a = item.age ?? item.profiles?.age; return h && (
                       <>
                         <span className="flex items-center gap-1">
                           <Ruler className="w-3.5 h-3.5" />
-                          {item.profiles.height_cm} cm
+                          {h} cm
                         </span>
                         <span className="flex items-center gap-1">
                           <Weight className="w-3.5 h-3.5" />
-                          {item.profiles.weight_kg} kg
+                          {w} kg
                         </span>
                         <span className="flex items-center gap-1">
                           <User className="w-3.5 h-3.5" />
-                          {item.profiles.age} tahun
+                          {a} tahun
                         </span>
                       </>
-                    )}
+                    ); })()}
                   </div>
                 </button>
                 <button
