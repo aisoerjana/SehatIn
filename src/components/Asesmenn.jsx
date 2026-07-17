@@ -13,6 +13,7 @@ export default function Asesmen() {
   const [umur, setUmur] = useState('');
   const [gender, setGender] = useState('');
   const [tujuan, setTujuan] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const hitung = async () => {
     const t = parseFloat(tinggi);
@@ -20,38 +21,43 @@ export default function Asesmen() {
     const u = parseFloat(umur);
     if (!t || !b || !u || !gender || !tujuan) return;
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { navigate('/login'); return; }
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { navigate('/login'); return; }
 
-    const { data, error } = await supabase.functions.invoke('rule-engine', {
-      body: {
-        gender: gender === 'laki' ? 'laki-laki' : 'perempuan',
-        weight_kg: b,
-        height_cm: t,
-        age: u,
-        goal: tujuan,
-      },
-    });
-
-    if (error || data?.error) {
-      console.error(error || data?.error);
-      return;
-    }
-
-    const mt = data.macro_target;
-    navigate('/result', {
-      state: {
-        hasil: {
-          kalori: mt.calorie_target,
-          protein: mt.protein_g,
-          karbo: mt.carbs_g,
-          lemak: mt.fat_g,
-          gula: mt.sugar_max_g,
-          serat: mt.fiber_g,
+      const { data, error } = await supabase.functions.invoke('rule-engine', {
+        body: {
+          gender: gender === 'laki' ? 'laki-laki' : 'perempuan',
+          weight_kg: b,
+          height_cm: t,
+          age: u,
+          goal: tujuan,
         },
-        macro_target_id: mt.id,
-      },
-    });
+      });
+
+      if (error || data?.error) {
+        console.error(error || data?.error);
+        return;
+      }
+
+      const mt = data.macro_target;
+      navigate('/result', {
+        state: {
+          hasil: {
+            kalori: mt.calorie_target,
+            protein: mt.protein_g,
+            karbo: mt.carbs_g,
+            lemak: mt.fat_g,
+            gula: mt.sugar_max_g,
+            serat: mt.fiber_g,
+          },
+          macro_target_id: mt.id,
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,14 +165,21 @@ export default function Asesmen() {
         {/* Tombol Hitung */}
         <button
           onClick={hitung}
-          disabled={!tinggi || !berat || !umur || !gender || !tujuan}
+          disabled={!tinggi || !berat || !umur || !gender || !tujuan || loading}
           className={`w-full text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-md transition-all ${
             tinggi && berat && umur && gender && tujuan
               ? 'bg-[#2563EB] hover:bg-blue-800 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-blue-500 dark:hover:opacity-90 active:scale-[0.98] cursor-pointer'
               : 'bg-gray-300 dark:bg-white/10 cursor-not-allowed'
-          }`}
+          } ${loading ? 'opacity-80 cursor-wait' : ''}`}
         >
-          Hitung Kebutuhan Gizi
+          {loading ? (
+            <>
+              <span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              Menghitung...
+            </>
+          ) : (
+            'Hitung Kebutuhan Gizi'
+          )}
         </button>
       </div>
 
